@@ -1,5 +1,5 @@
 /*
- * SK's Minecraft Launcher
+ * SK's Minecraft Launcher		And FFNMaster
  * Copyright (C) 2010, 2011 Albert Pham <http://www.sk89q.com>
  *
  * This program is free software: you can redistribute it and/or modify
