@@ -29,3 +29,6 @@
 *.ipr
 *.iws
 .idea/
+
+# Temp Files
+/tempfiles
