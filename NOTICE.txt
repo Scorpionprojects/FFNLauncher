@@ -1,4 +1,4 @@
-Copyright (c) 2013 Abel Hoogeveen (FFNMaster) <http://www.finalfront.nl>
+Copyright (c) 2013 Abel Hoogeveen (FFNMaster) <http://sigmacoders.nl>
 
 With many thanks to: Albert Pham <http://www.sk89q.com> for creating lots of the source files
 
