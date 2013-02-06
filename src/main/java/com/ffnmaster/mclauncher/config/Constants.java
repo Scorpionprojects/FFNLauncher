@@ -1,6 +1,6 @@
 /*
- * SK's Minecraft Launcher
- * Copyright (C) 2010, 2011 Albert Pham <http://www.sk89q.com>
+ * FFNLauncher
+ * Copyright (C) 2013 Abel Hoogeveen <http://www.sigmacoders.nl>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ public class Constants {
 
     public static final URL NEWS_URL;
         
-    private static final String NEWS_URL_BASE = "http://finalfront.nl/news.php?v=%version%";
+    private static final String NEWS_URL_BASE = "http://downloads.sigmacoders.nl/ffnlauncher/newsfeed/news.php?v=%version%";
     
     static {
         try {
