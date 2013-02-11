@@ -56,7 +56,10 @@ import com.ffnmaster.mclauncher.util.ConsoleFrame;
 import com.ffnmaster.mclauncher.util.SettingsList;
 import com.ffnmaster.mclauncher.util.UIUtil;
 import com.ffnmaster.mclauncher.util.Util;
+
 import com.ffnmaster.mclauncher.downgrade.DowngradeTask;
+
+
 
 /**
  * Used for launching the game.
@@ -357,6 +360,10 @@ public class LaunchTask extends Task {
             }
         }
         
+		
+		
+		
+		
         // Add enabled addons
         for (Addon addon : addons) {
             out.println("!" + addon.getFile().getAbsolutePath());

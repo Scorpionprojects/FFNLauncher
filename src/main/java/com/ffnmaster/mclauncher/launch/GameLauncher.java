@@ -260,7 +260,7 @@ public class GameLauncher  {
             if (context.length() < 2) {
                 throw new LaunchException("Missing parameters");
             }
-
+			
             redirectLogger();
             setLookAndFeel();
             
