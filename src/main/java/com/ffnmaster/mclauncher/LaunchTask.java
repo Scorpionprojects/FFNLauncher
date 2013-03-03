@@ -57,8 +57,6 @@ import com.ffnmaster.mclauncher.util.SettingsList;
 import com.ffnmaster.mclauncher.util.UIUtil;
 import com.ffnmaster.mclauncher.util.Util;
 
-import com.ffnmaster.mclauncher.downgrade.DowngradeTask;
-
 
 
 /**
