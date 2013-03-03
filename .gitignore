@@ -21,9 +21,6 @@
 /dist
 /manifest.mf
 
-#downgrader
-/src/main/java/com/ffnmaster/mclauncher/downgrade
-
 # Mac filesystem dust
 /.DS_Store
 
