@@ -94,6 +94,7 @@ public class LauncherFrame extends JFrame {
     private JComboBox jarCombo;
     private JComboBox userText;
     private JTextField passText;
+    private JComboBox serverText;
     private JCheckBox rememberPass;
     private JCheckBox forceUpdateCheck;
     private JCheckBox playOfflineCheck;
@@ -109,14 +110,14 @@ public class LauncherFrame extends JFrame {
      * Construct the launcher.
      */
     public LauncherFrame() {
-        setTitle("FinalFront Minecraft Launcher BETA");
+        setTitle("FFNLauncher v0.7");
         setSize(620, 500);
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         try {
             InputStream in = Launcher.class
-                    .getResourceAsStream("/resources/icon.png");
+                    .getResourceAsStream("/resources/newicon.png");
             if (in != null) {
                 setIconImage(ImageIO.read(in));
             }
@@ -517,17 +518,21 @@ public class LauncherFrame extends JFrame {
         final JLabel jarLabel = new JLabel("Active JAR:", SwingConstants.LEFT);
         JLabel userLabel = new JLabel("Username:", SwingConstants.LEFT);
         JLabel passLabel = new JLabel("Password:", SwingConstants.LEFT);
+        JLabel serverLabel = new JLabel("Server: ", SwingConstants.LEFT);
 
         jarCombo = new JComboBox();
         userText = new JComboBox();
+        serverText = new JComboBox();
         userText.setEditable(true);
         passText = new JPasswordField(20);
         jarLabel.setLabelFor(jarCombo);
         userLabel.setLabelFor(userText);
         passLabel.setLabelFor(passText);
+        serverLabel.setLabelFor(serverText);
         layout.setConstraints(jarCombo, fieldC);
         layout.setConstraints(userText, fieldC);
         layout.setConstraints(passText, fieldC);
+        layout.setConstraints(serverText, fieldC);
 
         rememberPass = new JCheckBox("Remember my password");
         rememberPass.setBorder(null);
@@ -558,6 +563,8 @@ public class LauncherFrame extends JFrame {
         panel.add(userText, fieldC);
         panel.add(passLabel, labelC);
         panel.add(passText, fieldC);
+        panel.add(serverLabel, labelC);
+        panel.add(serverText, fieldC);
         panel.add(rememberPass, checkboxC);
         panel.add(autoConnectCheck, checkboxC);
         panel.add(forceUpdateCheck, checkboxC);
@@ -867,7 +874,8 @@ public class LauncherFrame extends JFrame {
         // Want to update the GUI
         populateIdentities();
 
-        LaunchTask task = new LaunchTask(this, getWorkspace(), username, password, jar);
+        // JFrame frame, Configuration configuration, String username, String password, String jar, String autoConnect
+        LaunchTask task = new LaunchTask(this, getWorkspace(), username, password, jar, autoConnect);
         task.setForceUpdate(forceUpdateCheck.isSelected());
         task.setPlayOffline(playOfflineCheck.isSelected() || (test && options.getSettings().getBool(Def.FAST_TEST, false)));
         task.setShowConsole(showConsoleCheck.isSelected());

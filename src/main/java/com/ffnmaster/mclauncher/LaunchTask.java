@@ -97,14 +97,17 @@ public class LaunchTask extends Task {
      * @param username username
      * @param password password
      * @param jar jar name
+     * @param autoConnect server
      */
     public LaunchTask(JFrame frame, Configuration configuration,
-            String username, String password, String jar) {
+            String username, String password, String jar, String autoConnect) {
         this.frame = frame;
         this.configuration = configuration;
         this.username = username;
         this.password = password;
         this.activeJar = jar;
+        this.autoConnect = autoConnect;
+        
     }
     
     /**
