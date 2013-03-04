@@ -413,11 +413,13 @@ public class LauncherFrame extends JFrame {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new GridLayout(1, 3, 3, 0));
         playBtn = new JButton("Play");
+        JButton modpacksBtn = new JButton("Modpacks");
         final JButton optionsBtn = new JButton("Options...");
         JButton addonsBtn = new JButton("Addons...");
         buttonsPanel.add(playBtn);
         buttonsPanel.add(addonsBtn);
         buttonsPanel.add(optionsBtn);
+        //buttonsPanel.add(modpacksBtn);
 
         JPanel root = new JPanel();
         root.setBorder(BorderFactory.createEmptyBorder(0, PAD, PAD, PAD));
@@ -497,7 +499,13 @@ public class LauncherFrame extends JFrame {
         JPanel panel = new JPanel();
 
         panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-
+        
+        GridBagConstraints fieldD = new GridBagConstraints();
+        fieldD.fill = GridBagConstraints.HORIZONTAL;
+        fieldD.weightx = 0.8;
+        fieldD.gridwidth = GridBagConstraints.RELATIVE;
+        fieldD.insets = new Insets(2, 1, 2, 1);
+       
         GridBagConstraints fieldC = new GridBagConstraints();
         fieldC.fill = GridBagConstraints.HORIZONTAL;
         fieldC.weightx = 1.0;
@@ -519,10 +527,13 @@ public class LauncherFrame extends JFrame {
         JLabel userLabel = new JLabel("Username:", SwingConstants.LEFT);
         JLabel passLabel = new JLabel("Password:", SwingConstants.LEFT);
         JLabel serverLabel = new JLabel("Server: ", SwingConstants.LEFT);
+        
+        autoConnectCheck = new JCheckBox("");
+        autoConnectCheck.setBorder(null);
 
         jarCombo = new JComboBox();
         userText = new JComboBox();
-        serverText = new JTextField(20);
+        serverText = new JTextField(30);
         userText.setEditable(true);
         passText = new JPasswordField(20);
         jarLabel.setLabelFor(jarCombo);
@@ -540,9 +551,6 @@ public class LauncherFrame extends JFrame {
         playOfflineCheck = new JCheckBox("Play in offline mode");
         playOfflineCheck.setBorder(null);		
 		
-        autoConnectCheck = new JCheckBox("Auto-connect");
-        autoConnectCheck.setBorder(null);
-
         forceUpdateCheck = new JCheckBox("Force a game update");
         forceUpdateCheck.setBorder(null);
 
@@ -564,15 +572,15 @@ public class LauncherFrame extends JFrame {
         panel.add(passLabel, labelC);
         panel.add(passText, fieldC);
         panel.add(serverLabel, labelC);
-        panel.add(serverText, fieldC);
-        panel.add(rememberPass, checkboxC);
+        panel.add(serverText, fieldD);
         panel.add(autoConnectCheck, checkboxC);
+        panel.add(rememberPass, checkboxC);
         panel.add(forceUpdateCheck, checkboxC);
         panel.add(playOfflineCheck, checkboxC);
         panel.add(showConsoleCheck, checkboxC);
         panel.add(expandContainer, checkboxC);
 
-        autoConnectCheck.setVisible(false);
+        autoConnectCheck.setVisible(true);
         jarLabel.setVisible(false);
         jarCombo.setVisible(false);
         forceUpdateCheck.setVisible(false);
@@ -833,8 +841,9 @@ public class LauncherFrame extends JFrame {
     public void parseServer() {
     	// Server Address String
     	String serverAddress = serverText.getText();
+    	boolean yes = autoConnectCheck.isSelected();
     	
-        if (serverAddress == null) {
+        if (yes == false) {
             launch();
         } else {
             launch(serverAddress);

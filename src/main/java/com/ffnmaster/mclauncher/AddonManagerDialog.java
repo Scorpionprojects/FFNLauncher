@@ -305,6 +305,47 @@ public class AddonManagerDialog extends JDialog {
     }
 
     /**
+     * Open the downgrade menu.
+     * 
+     * @param component
+     *            component to open from
+     */
+    private void popupDownMenu(Component component) {
+        final AddonManagerDialog self = this;
+
+        JPopupMenu popup = new JPopupMenu();
+        JMenuItem menuItem;
+        
+        // Insert XML parser here, and output as menuItem and menuItem.addActionListener
+        
+        
+        menuItem = new JMenuItem("Open Minecraft data folder...");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                UIUtil.browse(configuration.getMinecraftDir(), self);
+            }
+        });
+        popup.add(menuItem);
+
+        menuItem = new JMenuItem("Open texture packs folder...");
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File f = new File(configuration.getMinecraftDir(),
+                        "texturepacks");
+                f.mkdirs();
+                UIUtil.browse(f, self);
+            }
+        });
+        popup.add(menuItem);
+
+        popup.show(component, 0, component.getHeight());
+    }    
+    
+    
+    
+    /**
      * Build the UI.
      */
     private void buildUI() {
@@ -343,11 +384,22 @@ public class AddonManagerDialog extends JDialog {
 
         jarCombo = new JComboBox();
         panel.add(jarCombo);
-
+        
         panel.add(Box.createHorizontalGlue());
-
+        
+        JButton downBtn = new JButton("Downgrade");
         JButton toolsBtn = new JButton("Tools...");
+        
+        panel.add(downBtn);
         panel.add(toolsBtn);
+        
+        downBtn.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		popupDownMenu((Component) e.getSource());
+        	}
+        });
+        
         toolsBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

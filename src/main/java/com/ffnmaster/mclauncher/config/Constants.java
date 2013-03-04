@@ -93,7 +93,7 @@ public class Constants {
         keyStore.addRootCertificates(Launcher.class
                 .getResourceAsStream("/resources/mcupdate.cer"));
         keyStore.addRootCertificates(Launcher.class
-                .getResourceAsStream("/resources/sk89q.cer"));
+                .getResourceAsStream("/resources/sigmacoders.cer"));
     }
     
     /**
