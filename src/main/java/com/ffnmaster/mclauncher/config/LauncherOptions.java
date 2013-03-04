@@ -73,6 +73,7 @@ public class LauncherOptions {
     private File file;
     private String lastConfigName;
     private String lastUsername;
+    private String lastServer;
     private File lastInstallDir;
     private ServerHotListManager serverHotList = new ServerHotListManager();
     private ConfigurationsManager configsManager = new ConfigurationsManager();
@@ -238,6 +239,22 @@ public class LauncherOptions {
     }
     
     /**
+     * Get the last entered server
+     * @return lastServername servername
+     */
+    public String getLastServer() {
+    	return lastServer;
+    }
+    
+    /**
+     * Set the last connected server
+     * @param lastServer lastServer
+     */
+    public void setLastServer(String lastServer) {
+    	this.lastServer = lastServer;
+    }
+    
+    /**
      * Gets the directory of where addons were last installed from.
      * 
      * @return directory, or null if one isn't set
@@ -285,6 +302,7 @@ public class LauncherOptions {
             XPath xpath = XPathFactory.newInstance().newXPath();
 
             lastUsername = getStringOrNull(doc, xpath.compile("/launcher/username"));
+            lastServer = getStringorNull(doc, xpath.compile("/launcher/servername"));
             lastConfigName = getStringOrNull(doc,
                     xpath.compile("/launcher/lastConfiguration"));
             lastInstallDir = Util.getClosestDirectory(getStringOrNull(doc,
@@ -389,7 +407,12 @@ public class LauncherOptions {
         }
     }
     
-    /**
+    private String getStringorNull(Document doc, XPathExpression compile) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
      * Write to disk.
      * 
      * @throws IOException on I/O error
@@ -402,6 +425,7 @@ public class LauncherOptions {
             SimpleNode root = start(doc, "launcher");
             
             root.addNode("username").addValue(lastUsername);
+            root.addNode("servername").addValue(lastServer);
             root.addNode("lastConfiguration").addValue(lastConfigName);
             root.addNode("lastInstallDirectory").addValue(
                     lastInstallDir != null ? lastInstallDir

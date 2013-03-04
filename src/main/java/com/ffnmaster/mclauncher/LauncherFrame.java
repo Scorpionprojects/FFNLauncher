@@ -94,7 +94,7 @@ public class LauncherFrame extends JFrame {
     private JComboBox jarCombo;
     private JComboBox userText;
     private JTextField passText;
-    private JComboBox serverText;
+    private JTextField serverText;
     private JCheckBox rememberPass;
     private JCheckBox forceUpdateCheck;
     private JCheckBox playOfflineCheck;
@@ -276,7 +276,7 @@ public class LauncherFrame extends JFrame {
      */
     public void setAutoConnect(String address) {
         this.autoConnect = address;
-
+         
         if (address == null) {
             autoConnectCheck.setSelected(false);
             autoConnectCheck.setVisible(true);
@@ -440,7 +440,7 @@ public class LauncherFrame extends JFrame {
         playBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                launch();
+                parseServer();
             }
         });
 
@@ -522,7 +522,7 @@ public class LauncherFrame extends JFrame {
 
         jarCombo = new JComboBox();
         userText = new JComboBox();
-        serverText = new JComboBox();
+        serverText = new JTextField(20);
         userText.setEditable(true);
         passText = new JPasswordField(20);
         jarLabel.setLabelFor(jarCombo);
@@ -599,7 +599,7 @@ public class LauncherFrame extends JFrame {
                         }
 
                         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                            launch();
+                        	parseServer();
                         }
                     }
                 });
@@ -623,16 +623,28 @@ public class LauncherFrame extends JFrame {
                         }
                     }
                 });
+        
 
+        
         passText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    launch();
+                	parseServer();
                 }
             }
         });
-
+        
+        serverText.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyReleased(KeyEvent e) {
+        		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        			String serverAddress = serverText.getText();
+        			launch(serverAddress);
+        		}
+        	}
+        });
+        
         expandBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -797,6 +809,7 @@ public class LauncherFrame extends JFrame {
 
         loadSavedPassword();
     }
+    
 
     /**
      * Load the saved password for the current entered username.
@@ -813,7 +826,21 @@ public class LauncherFrame extends JFrame {
             }
         }
     }
-
+    
+    /**
+     * Send server address to launcher, independant of mouse/keyboard position
+     */
+    public void parseServer() {
+    	// Server Address String
+    	String serverAddress = serverText.getText();
+    	
+        if (serverAddress == null) {
+            launch();
+        } else {
+            launch(serverAddress);
+        }
+    }
+    
     /**
      * Launch the game.
      */
