@@ -39,7 +39,7 @@ public class Constants {
 
     public static final URL NEWS_URL;
         
-    private static final String NEWS_URL_BASE = "http://downloads.sigmacoders.nl/ffnlauncher/newsfeed/news.php?v=%version%";
+    private static final String NEWS_URL_BASE = "http://download.sigmacoders.nl/FFNLauncher/newsfeed/news.php?v=%version%&%uniqueid%";
     
     static {
         try {
@@ -48,6 +48,8 @@ public class Constants {
             try {
                 urlStr = urlStr.replace("%version%",
                         URLEncoder.encode(Launcher.VERSION, "UTF-8"));
+                urlStr = urlStr.replace("%uniqueid%", 
+                		URLEncoder.encode("", "UTF-8"));
             } catch (UnsupportedEncodingException e1) {
             }
 
