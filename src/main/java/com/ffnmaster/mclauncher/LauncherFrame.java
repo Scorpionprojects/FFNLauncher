@@ -110,7 +110,7 @@ public class LauncherFrame extends JFrame {
      * Construct the launcher.
      */
     public LauncherFrame() {
-        setTitle("FFNLauncher v0.7");
+        setTitle("FFNLauncher v" + Launcher.buildNumber);
         setSize(620, 500);
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);

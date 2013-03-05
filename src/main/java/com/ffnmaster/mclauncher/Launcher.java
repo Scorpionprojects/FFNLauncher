@@ -18,6 +18,7 @@
 
 package com.ffnmaster.mclauncher;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URI;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -54,6 +56,9 @@ import com.ffnmaster.mclauncher.util.BasicArgsParser.ArgsContext;
 import com.ffnmaster.mclauncher.util.ConsoleFrame;
 import com.ffnmaster.mclauncher.util.Util;
 
+import com.ffnmaster.mclauncher.autoupdate.UpdateChecker;
+import com.ffnmaster.mclauncher.autoupdate.UpdateDialog;
+
 /**
  * Launcher entry point.
  * 
@@ -63,12 +68,14 @@ public class Launcher {
     
     private static final Logger logger = Logger.getLogger(Launcher.class.getCanonicalName());
     public static final String VERSION;
+	public static int buildNumber = 101;
     private static String noticesText;
 
     private static volatile ConsoleFrame consoleFrame;
     private LauncherOptions options;
     private X509KeyRing keyRing;
     private static Launcher instance;
+    public static final String server = "download.sigmacoders.nl";
     
     /**
      * Some initialization.
@@ -91,6 +98,8 @@ public class Launcher {
                 VERSION = v;
             }
         }
+        
+        
     }
     
     /**
@@ -289,6 +298,8 @@ public class Launcher {
     public static File getLauncherDataDir() {
         String homeDir = System.getProperty("user.home", ".");
         File workingDir = new File(".", "config.xml");
+		String currentDir = new File(".").getAbsolutePath();
+		
         if (workingDir.exists()) {
             return new File(".");
         }
@@ -296,22 +307,22 @@ public class Launcher {
         switch (getPlatform()) {
             case LINUX:
             case SOLARIS:
-                workingDir = new File(homeDir, ".skmclauncher");
+                workingDir = new File(currentDir, ".skmclauncher");
                 break;
             case WINDOWS:
                 String applicationData = System.getenv("APPDATA");
                 if (applicationData != null) {
                     workingDir = new File(applicationData, "SKMCLauncher");
                 } else {
-                    workingDir = new File(homeDir, "SKMCLauncher");
+                    workingDir = new File(currentDir, "SKMCLauncher");
                 }
                 break;
             case MAC_OS_X:
-                workingDir = new File(homeDir,
+                workingDir = new File(currentDir,
                         "Library/Application Support/SKMCLauncher");
                 break;
             default:
-                workingDir = new File(homeDir, "SKMCLauncher");
+                workingDir = new File(currentDir, "SKMCLauncher");
         }
         if (!new File(workingDir, "config.xml").exists()) {
             workingDir = getOfficialDataDir();
@@ -336,6 +347,26 @@ public class Launcher {
 		
 		return configDir;
 	
+	}
+	
+	public static File getLauncherDir() {
+		File currentDir = new File(".");
+		String currentDirString = new File(".").getAbsolutePath();
+		
+		if (currentDir.exists()) {
+			return new File(".");
+		}
+		
+		currentDir = new File(currentDirString, ".");
+		
+		
+		return currentDir;
+		
+	}
+	
+	public static String getUpdateLink(String file) {
+		String resolved = "http://download.sigmacoders.nl/FFNLauncher/internal/" + file;
+		return resolved;
 	}
 	
 	
@@ -451,6 +482,21 @@ public class Launcher {
         return Platform.UNKNOWN;
     }
     
+    public static void browse(String url) {
+    	try {
+    		if(Desktop.isDesktopSupported()) {
+    			Desktop.getDesktop().browse(new URI(url));
+    		}
+    		else if (getPlatform() == Platform.LINUX) {
+				if (new File("/usr/bin/xdg-open").exists() || new File("/usr/local/bin/xdg-open").exists()) {
+					new ProcessBuilder("xdg-open", url).start();
+				}
+    		}
+    	} catch (Exception e) {
+    		System.out.println("Exception in Launcher.browse v004");
+    	}
+    }
+    
     /**
      * Get the copyright notices.
      * 
@@ -510,6 +556,12 @@ public class Launcher {
                 LauncherFrame frame = new LauncherFrame();
                 frame.setVisible(true);
                 
+        		UpdateChecker updateChecker = new UpdateChecker(buildNumber);
+        		if(updateChecker.shouldUpdate()) {
+        			UpdateDialog p = new UpdateDialog(updateChecker);
+        			p.setVisible(true);
+        		}                
+                
                 if (username != null) {
                     frame.setLogin(username, password);
                 }
@@ -521,8 +573,11 @@ public class Launcher {
                 if (autoLaunch) {
                     frame.launch();
                 }
+                
+
             }
         });
+
     }
     
     /**
