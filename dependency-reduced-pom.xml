@@ -4,7 +4,7 @@
   <groupId>com.ffnmaster</groupId>
   <artifactId>mclauncher</artifactId>
   <name>FFNMaster's Launcher</name>
-  <version>0.0.6-SNAPSHOT</version>
+  <version>0.0.8-SNAPSHOT</version>
   <description>Complete Minecraft Launcher.</description>
   <url>http://finalfront.nl</url>
   <scm>

@@ -94,6 +94,7 @@ public class LauncherFrame extends JFrame {
     private JComboBox jarCombo;
     private JComboBox userText;
     private JTextField passText;
+    private JTextField serverText;
     private JCheckBox rememberPass;
     private JCheckBox forceUpdateCheck;
     private JCheckBox playOfflineCheck;
@@ -109,14 +110,14 @@ public class LauncherFrame extends JFrame {
      * Construct the launcher.
      */
     public LauncherFrame() {
-        setTitle("FinalFront Minecraft Launcher BETA");
+        setTitle("FFNLauncher v" + Launcher.buildNumber);
         setSize(620, 500);
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
         try {
             InputStream in = Launcher.class
-                    .getResourceAsStream("/resources/icon.png");
+                    .getResourceAsStream("/resources/newicon.png");
             if (in != null) {
                 setIconImage(ImageIO.read(in));
             }
@@ -275,7 +276,7 @@ public class LauncherFrame extends JFrame {
      */
     public void setAutoConnect(String address) {
         this.autoConnect = address;
-
+         
         if (address == null) {
             autoConnectCheck.setSelected(false);
             autoConnectCheck.setVisible(true);
@@ -412,11 +413,13 @@ public class LauncherFrame extends JFrame {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new GridLayout(1, 3, 3, 0));
         playBtn = new JButton("Play");
+        JButton modpacksBtn = new JButton("Modpacks");
         final JButton optionsBtn = new JButton("Options...");
         JButton addonsBtn = new JButton("Addons...");
         buttonsPanel.add(playBtn);
         buttonsPanel.add(addonsBtn);
         buttonsPanel.add(optionsBtn);
+        //buttonsPanel.add(modpacksBtn);
 
         JPanel root = new JPanel();
         root.setBorder(BorderFactory.createEmptyBorder(0, PAD, PAD, PAD));
@@ -439,7 +442,7 @@ public class LauncherFrame extends JFrame {
         playBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                launch();
+                parseServer();
             }
         });
 
@@ -496,7 +499,13 @@ public class LauncherFrame extends JFrame {
         JPanel panel = new JPanel();
 
         panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
-
+        
+        GridBagConstraints fieldD = new GridBagConstraints();
+        fieldD.fill = GridBagConstraints.HORIZONTAL;
+        fieldD.weightx = 0.8;
+        fieldD.gridwidth = GridBagConstraints.RELATIVE;
+        fieldD.insets = new Insets(2, 1, 2, 1);
+       
         GridBagConstraints fieldC = new GridBagConstraints();
         fieldC.fill = GridBagConstraints.HORIZONTAL;
         fieldC.weightx = 1.0;
@@ -517,17 +526,24 @@ public class LauncherFrame extends JFrame {
         final JLabel jarLabel = new JLabel("Active JAR:", SwingConstants.LEFT);
         JLabel userLabel = new JLabel("Username:", SwingConstants.LEFT);
         JLabel passLabel = new JLabel("Password:", SwingConstants.LEFT);
+        JLabel serverLabel = new JLabel("Server: ", SwingConstants.LEFT);
+        
+        autoConnectCheck = new JCheckBox("");
+        autoConnectCheck.setBorder(null);
 
         jarCombo = new JComboBox();
         userText = new JComboBox();
+        serverText = new JTextField(30);
         userText.setEditable(true);
         passText = new JPasswordField(20);
         jarLabel.setLabelFor(jarCombo);
         userLabel.setLabelFor(userText);
         passLabel.setLabelFor(passText);
+        serverLabel.setLabelFor(serverText);
         layout.setConstraints(jarCombo, fieldC);
         layout.setConstraints(userText, fieldC);
         layout.setConstraints(passText, fieldC);
+        layout.setConstraints(serverText, fieldC);
 
         rememberPass = new JCheckBox("Remember my password");
         rememberPass.setBorder(null);
@@ -535,9 +551,6 @@ public class LauncherFrame extends JFrame {
         playOfflineCheck = new JCheckBox("Play in offline mode");
         playOfflineCheck.setBorder(null);		
 		
-        autoConnectCheck = new JCheckBox("Auto-connect");
-        autoConnectCheck.setBorder(null);
-
         forceUpdateCheck = new JCheckBox("Force a game update");
         forceUpdateCheck.setBorder(null);
 
@@ -558,14 +571,16 @@ public class LauncherFrame extends JFrame {
         panel.add(userText, fieldC);
         panel.add(passLabel, labelC);
         panel.add(passText, fieldC);
-        panel.add(rememberPass, checkboxC);
+        panel.add(serverLabel, labelC);
+        panel.add(serverText, fieldD);
         panel.add(autoConnectCheck, checkboxC);
+        panel.add(rememberPass, checkboxC);
         panel.add(forceUpdateCheck, checkboxC);
         panel.add(playOfflineCheck, checkboxC);
         panel.add(showConsoleCheck, checkboxC);
         panel.add(expandContainer, checkboxC);
 
-        autoConnectCheck.setVisible(false);
+        autoConnectCheck.setVisible(true);
         jarLabel.setVisible(false);
         jarCombo.setVisible(false);
         forceUpdateCheck.setVisible(false);
@@ -592,7 +607,7 @@ public class LauncherFrame extends JFrame {
                         }
 
                         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                            launch();
+                        	parseServer();
                         }
                     }
                 });
@@ -616,16 +631,28 @@ public class LauncherFrame extends JFrame {
                         }
                     }
                 });
+        
 
+        
         passText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    launch();
+                	parseServer();
                 }
             }
         });
-
+        
+        serverText.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyReleased(KeyEvent e) {
+        		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        			String serverAddress = serverText.getText();
+        			launch(serverAddress);
+        		}
+        	}
+        });
+        
         expandBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -790,6 +817,7 @@ public class LauncherFrame extends JFrame {
 
         loadSavedPassword();
     }
+    
 
     /**
      * Load the saved password for the current entered username.
@@ -806,7 +834,22 @@ public class LauncherFrame extends JFrame {
             }
         }
     }
-
+    
+    /**
+     * Send server address to launcher, independant of mouse/keyboard position
+     */
+    public void parseServer() {
+    	// Server Address String
+    	String serverAddress = serverText.getText();
+    	boolean yes = autoConnectCheck.isSelected();
+    	
+        if (yes == false) {
+            launch();
+        } else {
+            launch(serverAddress);
+        }
+    }
+    
     /**
      * Launch the game.
      */
@@ -867,7 +910,8 @@ public class LauncherFrame extends JFrame {
         // Want to update the GUI
         populateIdentities();
 
-        LaunchTask task = new LaunchTask(this, getWorkspace(), username, password, jar);
+        // JFrame frame, Configuration configuration, String username, String password, String jar, String autoConnect
+        LaunchTask task = new LaunchTask(this, getWorkspace(), username, password, jar, autoConnect);
         task.setForceUpdate(forceUpdateCheck.isSelected());
         task.setPlayOffline(playOfflineCheck.isSelected() || (test && options.getSettings().getBool(Def.FAST_TEST, false)));
         task.setShowConsole(showConsoleCheck.isSelected());

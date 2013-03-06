@@ -19,8 +19,11 @@
 package com.ffnmaster.mclauncher.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.UnknownHostException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -281,5 +284,38 @@ public class XMLUtil {
         StreamResult result = new StreamResult(file);
         transformer.transform(source, result);
     }
+    
+	public static Document downloadXML(URL url) throws IOException, SAXException {
+		return getXML(url.openStream());
+	}
+
+	/**
+	 * Reads XML from a file
+	 * @param file the URL to fetch
+	 * @return The document
+	 * @throws IOException, SAXException if an error occurs when reading from the stream
+	 */
+	public static Document readXML(File file) throws IOException, SAXException {
+		return getXML(new FileInputStream(file));
+	}
+
+	/**
+	 * Reads XML from a stream
+	 * @param stream the stream to read the document from
+	 * @return The document
+	 * @return The document
+	 * @throws IOException, SAXException if an error occurs when reading from the stream
+	 */
+	public static Document getXML(InputStream stream) throws IOException, SAXException {
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		try {
+			return docFactory.newDocumentBuilder().parse(stream);
+		} catch (ParserConfigurationException ignored) {
+			System.out.println("getXML parser error v001");
+		} catch (UnknownHostException e) {
+			System.out.println("getXML UnknowHost error v002");
+		}
+		return null;
+	}    
     
 }

@@ -47,7 +47,7 @@ class GameFrame extends JFrame {
         setBackground(Color.BLACK);
         
         try {
-            InputStream in = Launcher.class.getResourceAsStream("/resources/icon.png");
+            InputStream in = Launcher.class.getResourceAsStream("/resources/newicon.png");
             if (in != null) {
                 setIconImage(ImageIO.read(in));
             }
