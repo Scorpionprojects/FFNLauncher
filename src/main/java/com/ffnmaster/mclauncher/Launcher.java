@@ -140,9 +140,9 @@ public class Launcher {
         try {
             Constants.register(keyRing);
         } catch (CertificateException e) {
-            logger.log(Level.SEVERE, "Failed to install register built-in certificates", e);
+            logger.log(Level.SEVERE, "Failed to install register built-in certificates");
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Failed to install register built-in certificates", e);
+            logger.log(Level.SEVERE, "Failed to install register built-in certificates");
         }
     }
 
@@ -307,22 +307,22 @@ public class Launcher {
         switch (getPlatform()) {
             case LINUX:
             case SOLARIS:
-                workingDir = new File(currentDir, ".skmclauncher");
+                workingDir = new File(homeDir, ".skmclauncher");
                 break;
             case WINDOWS:
                 String applicationData = System.getenv("APPDATA");
                 if (applicationData != null) {
                     workingDir = new File(applicationData, "SKMCLauncher");
                 } else {
-                    workingDir = new File(currentDir, "SKMCLauncher");
+                    workingDir = new File(homeDir, "SKMCLauncher");
                 }
                 break;
             case MAC_OS_X:
-                workingDir = new File(currentDir,
+                workingDir = new File(homeDir,
                         "Library/Application Support/SKMCLauncher");
                 break;
             default:
-                workingDir = new File(currentDir, "SKMCLauncher");
+                workingDir = new File(homeDir, "SKMCLauncher");
         }
         if (!new File(workingDir, "config.xml").exists()) {
             workingDir = getOfficialDataDir();
@@ -537,7 +537,10 @@ public class Launcher {
      * @param args arguments
      */
     public static void main(String[] args) {
-        BasicArgsParser parser = new BasicArgsParser();
+        System.out.println("Starting FFNLauncher build: " + buildNumber + " :SNAPSHOT --" + VERSION);
+    	
+        
+    	BasicArgsParser parser = new BasicArgsParser();
         parser.addValueArg("address");
         parser.addValueArg("username");
         parser.addValueArg("password");

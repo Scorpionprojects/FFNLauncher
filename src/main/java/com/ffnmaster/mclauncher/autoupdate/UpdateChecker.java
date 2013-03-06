@@ -91,7 +91,7 @@ public class UpdateChecker {
 		} catch (IOException e) {
 			System.out.println("Error in UpdateChecker.update v005");
 		}
-		String temporaryUpdatePath = Launcher.getLauncherDir() + File.separator + "updatetemp" + File.separator + path.substring(path.lastIndexOf(File.separator) + 1);
+		String temporaryUpdatePath = Launcher.getLauncherDataDir() + File.separator + "updatetemp" + File.separator + path.substring(path.lastIndexOf(File.separator) + 1);
 		
 		String extension = path.substring(path.lastIndexOf('.') +1);
 		extension = "exe".equalsIgnoreCase(extension) ? extension : "jar";
