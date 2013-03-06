@@ -68,7 +68,7 @@ public class Launcher {
     
     private static final Logger logger = Logger.getLogger(Launcher.class.getCanonicalName());
     public static final String VERSION;
-	public static int buildNumber = 101;
+	public static int buildNumber = 102;
     private static String noticesText;
 
     private static volatile ConsoleFrame consoleFrame;
@@ -298,7 +298,7 @@ public class Launcher {
     public static File getLauncherDataDir() {
         String homeDir = System.getProperty("user.home", ".");
         File workingDir = new File(".", "config.xml");
-		String currentDir = new File(".").getAbsolutePath();
+		//String currentDir = new File(".").getAbsolutePath();
 		
         if (workingDir.exists()) {
             return new File(".");
@@ -343,7 +343,7 @@ public class Launcher {
 			return new File(".");
 		}
 		
-		configDir = new File(currentDir, ".ffnconfig");
+		configDir = new File(currentDir, "config");
 		
 		return configDir;
 	
@@ -537,8 +537,9 @@ public class Launcher {
      * @param args arguments
      */
     public static void main(String[] args) {
-        System.out.println("Starting FFNLauncher build: " + buildNumber + " :SNAPSHOT --" + VERSION);
-    	
+        // DEBUG
+    	System.out.println("DEBUG: Starting FFNLauncher build: " + buildNumber + " :SNAPSHOT --" + VERSION);
+    	    	
         
     	BasicArgsParser parser = new BasicArgsParser();
         parser.addValueArg("address");
@@ -551,7 +552,9 @@ public class Launcher {
         final String username = context.get("username");
         final String password = context.get("password");
         final boolean autoLaunch = context.has("launch");
-
+        
+        // DEBUG
+        System.out.println("Starting Launcher Window");
         new Launcher();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -561,6 +564,8 @@ public class Launcher {
                 
         		UpdateChecker updateChecker = new UpdateChecker(buildNumber);
         		if(updateChecker.shouldUpdate()) {
+        			// DEBUG
+        			System.out.println("DEBUG: New Update Available!");
         			UpdateDialog p = new UpdateDialog(updateChecker);
         			p.setVisible(true);
         		}                

@@ -57,6 +57,8 @@ public class ConfigurationCellRenderer implements ListCellRenderer {
             infoText = "Default Minecraft installation";
         } else if (configuration.getUpdateUrl() != null) {
             infoText = "via " + configuration.getUpdateUrl().getHost();
+        } else if (configuration.isFTB() == true) {
+        	infoText = "FTB Modpack";
         } else {
             infoText = "Custom installation";
         }

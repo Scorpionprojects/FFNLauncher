@@ -22,7 +22,7 @@ public class DefaultVersion {
 
     @Override
     public String toString() {
-        return "<default>";
+        return "[default]";
     }
     
 }

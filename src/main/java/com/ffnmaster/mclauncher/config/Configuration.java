@@ -62,6 +62,7 @@ public class Configuration {
     private SettingsList settings = new SettingsList();
     private boolean builtIn = false;
     private BufferedImage cachedIcon;
+    private boolean isFTB = false;
     
     /**
      * Construct a configuration.
@@ -147,6 +148,10 @@ public class Configuration {
      */
     public File getCustomBasePath() {
         return customBasePath;
+    }
+    
+    public boolean isFTB() {
+    	return false;
     }
 
     /**
