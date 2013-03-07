@@ -300,7 +300,7 @@ public class OptionsDialog extends JDialog {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         JLabel label;
-        label = new JLabel("FinalFront Minecraft Launcher");
+        label = new JLabel("FFNLauncher");
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(label);
         label = new JLabel("Version " + Launcher.VERSION);

@@ -18,6 +18,7 @@
 
 package com.ffnmaster.mclauncher.config;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,6 +64,7 @@ public class Configuration {
     private boolean builtIn = false;
     private BufferedImage cachedIcon;
     private boolean isFTB = false;
+    private Image icon;
     
     /**
      * Construct a configuration.
