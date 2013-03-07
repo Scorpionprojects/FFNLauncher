@@ -349,18 +349,14 @@ public class Launcher {
 	
 	}
 	
-	public static File getLauncherDir() {
+	public static String getLauncherDir() {
 		File currentDir = new File(".");
 		String currentDirString = new File(".").getAbsolutePath();
-		
-		if (currentDir.exists()) {
-			return new File(".");
-		}
 		
 		currentDir = new File(currentDirString, ".");
 		
 		
-		return currentDir;
+		return currentDirString;
 		
 	}
 	

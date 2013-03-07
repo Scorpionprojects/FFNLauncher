@@ -18,7 +18,6 @@
 
 package com.ffnmaster.mclauncher.config;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,18 +62,27 @@ public class Configuration {
     private SettingsList settings = new SettingsList();
     private boolean builtIn = false;
     private BufferedImage cachedIcon;
-    private boolean isFTB = false;
-    private Image icon;
+    
+    // FTB
+    private String author;
+    private int version;
+    private String ftb;
+    private String serverURL;
+    private String iconaddress;
     
     /**
      * Construct a configuration.
-     * 
      * @param id id
      * @param name name
+     * @param author of the modpack
+     * @param int version of the modpack
+     * @param serverURL of the server software
+     * @param Bool isFTB
+     * @param String iconaddress
      * @param appDir data directory name
      * @param updateUrl URL to update from, or null to use default
      */
-    public Configuration(String id, String name, String appDir, URL updateUrl) {
+    public Configuration(String id, String name, String author, int version, String serverURL, String ftb, String iconaddress, String appDir, URL updateUrl) {
         if (!id.matches("^[A-Za-z0-9\\-]+{1,64}$")) {
             throw new IllegalArgumentException("Invalid configuration name");
         }
@@ -82,17 +90,53 @@ public class Configuration {
         setName(name);
         setAppDir(appDir);
         setUpdateUrl(updateUrl);
+        
+        // FTB Compat
+        setAuthor(author);
+        setVersion(version);
+        setServerURL(serverURL);
+        setFTB(ftb);
+        setIconAddress(iconaddress);
     }
+    
+    public void setAuthor(String author) {
+    	this.author = author;
+    }
+    
+    public void setVersion(int version) {
+    	this.version = version;
+    }
+    
+    public void setServerURL(String serverURL) {
+    	this.serverURL = serverURL;
+    }
+    
+    public void setFTB(String ftb) {
+    	this.ftb = ftb;
+    }
+    
+    public void setIconAddress(String iconaddress) {
+    	this.iconaddress = iconaddress;
+    }
+    
+    
+    
     
     /**
      * Construct a configuration.
      * 
      * @param id id
      * @param name name
+     * @param author of the modpack
+     * @param int version of the modpack
+     * @param serverURL of the server software
+     * @param String isFTB
+     * @param String iconaddress
      * @param customBasePath base path to use
      * @param updateUrl URL to update from, or null to use default
+     * @param
      */
-    public Configuration(String id, String name, File customBasePath, URL updateUrl) {
+    public Configuration(String id, String name, String author, int version, String serverURL, String ftb, String iconaddress, File customBasePath, URL updateUrl) {
         if (!id.matches("^[A-Za-z0-9\\-]+{1,64}$")) {
             throw new IllegalArgumentException("Invalid configuration name");
         }
@@ -100,6 +144,13 @@ public class Configuration {
         setName(name);
         setCustomBasePath(customBasePath);
         setUpdateUrl(updateUrl);
+        
+        // FTB Compat
+        setAuthor(author);
+        setVersion(version);
+        setServerURL(serverURL);
+        setFTB(ftb);
+        setIconAddress(iconaddress);
     }
 
     /**
@@ -111,6 +162,8 @@ public class Configuration {
         return id;
     }
 
+    
+    
     /**
      * Get the name.
      * 
@@ -150,10 +203,6 @@ public class Configuration {
      */
     public File getCustomBasePath() {
         return customBasePath;
-    }
-    
-    public boolean isFTB() {
-    	return false;
     }
 
     /**

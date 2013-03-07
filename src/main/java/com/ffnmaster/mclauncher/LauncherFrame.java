@@ -91,6 +91,7 @@ public class LauncherFrame extends JFrame {
     private static final int PAD = 12;
     private boolean allowOfflineName = true;
     private JList configurationList;
+    private JList modPackList;
     private JComboBox jarCombo;
     private JComboBox userText;
     private JTextField passText;
@@ -111,7 +112,8 @@ public class LauncherFrame extends JFrame {
      */
     public LauncherFrame() {
         setTitle("FFNLauncher v" + Launcher.buildNumber);
-        setSize(620, 500);
+        setSize(600, 500);
+        setResizable(false);
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -333,26 +335,26 @@ public class LauncherFrame extends JFrame {
     }
 	
     
-    private void showNews(JLayeredPane newsPanel) {
+    private void showModPacks(JLayeredPane modPacksPanel) {
         final LauncherFrame self = this;
-        newsPanel.setLayout(new NewsLayoutManager());
-        newsPanel
-            .setBorder(BorderFactory.createEmptyBorder(PAD, 0, PAD, PAD));
+        //modPacksPanel.setLayout(new NewsLayoutManager());
+        modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, 0, PAD, PAD));
         JEditorPane newsView = new JEditorPane();
-        newsView.setEditable(false);
-        newsView.addHyperlinkListener(new HyperlinkListener() {
+        newsView.setEditable(true);
+        
+        /*newsView.addHyperlinkListener(new HyperlinkListener() {
             @Override
             public void hyperlinkUpdate(HyperlinkEvent e) {
                 if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                     UIUtil.openURL(e.getURL(), self);
                 }
             }
-        });
+        }); */
         JScrollPane newsScroll = new JScrollPane(newsView);
-        newsPanel.add(newsScroll, new Integer(1));
+        modPacksPanel.add(newsScroll, new Integer(1));
         JProgressBar newsProgress = new JProgressBar();
         newsProgress.setIndeterminate(true);
-        newsPanel.add(newsProgress, new Integer(2));
+        modPacksPanel.add(newsProgress, new Integer(2));
         NewsFetcher.update(newsView, newsProgress);
     }
 
@@ -369,36 +371,36 @@ public class LauncherFrame extends JFrame {
         
         if (!hidenews) {
             if (options.getSettings().getBool(Def.LAUNCHER_NO_NEWS, false)) {
-                final JLayeredPane newsPanel = new JLayeredPane();
+                final JLayeredPane modPacksPanel = new JLayeredPane();
                 
-                newsPanel.setBorder(new CompoundBorder(BorderFactory
+                modPacksPanel.setBorder(new CompoundBorder(BorderFactory
                         .createEmptyBorder(PAD, 0, PAD, PAD), new CompoundBorder(
                         BorderFactory.createEtchedBorder(), BorderFactory
                                 .createEmptyBorder(4, 4, 4, 4))));
-                newsPanel.setLayout(new BoxLayout(newsPanel, BoxLayout.Y_AXIS));
+                modPacksPanel.setLayout(new BoxLayout(modPacksPanel, BoxLayout.Y_AXIS));
                 
-                final JButton showNews = new JButton("Show news");
-                showNews.setAlignmentX(Component.CENTER_ALIGNMENT);
-                showNews.addActionListener(new ActionListener() {
+                final JButton showModPacks = new JButton("Show Anyway");
+                showModPacks.setAlignmentX(Component.CENTER_ALIGNMENT);
+                showModPacks.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        showNews.setVisible(false);
-                        showNews(newsPanel);
+                        showModPacks.setVisible(false);
+                        showModPacks(modPacksPanel);
                     }
                 });
                 
                 // Center the button vertically.
-                newsPanel.add(new Box.Filler(new Dimension(0,0), 
+                modPacksPanel.add(new Box.Filler(new Dimension(0,0), 
                         new Dimension(0,0), new Dimension(1000,1000)));
-                newsPanel.add(showNews);
-                newsPanel.add(new Box.Filler(new Dimension(0,0), 
+                modPacksPanel.add(showModPacks);
+                modPacksPanel.add(new Box.Filler(new Dimension(0,0), 
                         new Dimension(0,0), new Dimension(1000,1000)));
                 
-                add(newsPanel, BorderLayout.CENTER);
+                add(modPacksPanel, BorderLayout.CENTER);
             } else {
-                JLayeredPane newsPanel = new JLayeredPane();
-                showNews(newsPanel);
-                add(newsPanel, BorderLayout.CENTER);
+                JLayeredPane modPacksPanel = new JLayeredPane();
+                showModPacks(modPacksPanel);
+                add(modPacksPanel, BorderLayout.CENTER);
             }
         }
         
@@ -427,6 +429,16 @@ public class LauncherFrame extends JFrame {
         root.add(createLoginPanel());
         root.add(buttonsPanel);
         leftPanel.add(root, BorderLayout.SOUTH);
+        
+        JPanel modPacksPanel = new JPanel();
+        modPacksPanel.setLayout(new BorderLayout(0,0));
+        modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, 0, PAD, PAD));
+        modPackList = new JList(options.getConfigurations());
+        modPackList.setCellRenderer(new ConfigurationCellRenderer());
+        modPackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane modPacksScroll = new JScrollPane(modPackList);
+        modPacksPanel.add(modPacksScroll, BorderLayout.CENTER);
+        leftPanel.add(modPacksPanel, BorderLayout.EAST);
 
         JPanel configurationsPanel = new JPanel();
         configurationsPanel.setLayout(new BorderLayout(0, 0));
@@ -484,10 +496,6 @@ public class LauncherFrame extends JFrame {
                 openAddons();
             }
         });
-        
-        if (hidenews) {
-            setSize(300, 500);
-        }
     }
 
     /**

@@ -56,6 +56,7 @@ import com.ffnmaster.mclauncher.util.SettingsList;
 import com.ffnmaster.mclauncher.util.SimpleNode;
 import com.ffnmaster.mclauncher.util.Util;
 import com.ffnmaster.mclauncher.util.XMLUtil;
+import com.ffnmaster.mclauncher.modpack.ModPacksManager;
 
 import static com.ffnmaster.mclauncher.util.XMLUtil.*;
 
@@ -77,6 +78,7 @@ public class LauncherOptions {
     private File lastInstallDir;
     private ServerHotListManager serverHotList = new ServerHotListManager();
     private ConfigurationsManager configsManager = new ConfigurationsManager();
+    private ModPacksManager modmanager = new ModPacksManager();
     private Map<String, String> identities = new HashMap<String, String>();
     private SettingsList defaultSettings = new SettingsList();
     private SettingsList settings = new SettingsList(defaultSettings);
@@ -116,6 +118,7 @@ public class LauncherOptions {
         return configsManager;
     }
     
+  
     /**
      * Get the server hot list manager.
      * 
@@ -338,6 +341,15 @@ public class LauncherOptions {
             XPathExpression lastJarExpr = xpath.compile("lastJar/text()");
             XPathExpression settingsExpr = xpath.compile("settings");
             
+            // FTB Compatibility, icon, author, version, url, serverUrl, ftbbool
+            XPathExpression iconExpr = xpath.compile("icon/text()");
+            XPathExpression authorExpr = xpath.compile("author/text()");
+            XPathExpression versionExpr = xpath.compile("version/text()");
+            XPathExpression urlExpr = xpath.compile("url/text()");
+            XPathExpression serverURLExpr = xpath.compile("serverurl/text()");
+            XPathExpression ftbboolExpr = xpath.compile("ftbbool/text()");
+            
+            
             // Read all the <configuration> elements
             for (Node node : getNodes(doc, xpath.compile("/launcher/configurations/configuration"))) {
                 String id = getString(node, idExpr);
@@ -346,14 +358,31 @@ public class LauncherOptions {
                 String basePath = getStringOrNull(node, basePathExpr);
                 String urlString = getStringOrNull(node, updateURLExpr);
                 String lastJar = getStringOrNull(node, lastJarExpr);
+                                
+                // FTB Compat
+                String icon = getString(node, iconExpr);
+                String author = getString(node, authorExpr);
+                String version = getString(node, versionExpr);
+                String serverURL = getString(node, serverURLExpr);
+                String ftbstring = getString(node, ftbboolExpr);
                 
+                //int versionint = Integer.parseInt(version);
+                int versionint = 5;
+                
+                if (ftbstring == "true") {
+                	boolean ftb = true;
+                } else {
+                	boolean ftb = false;
+                }
+                
+                // String id, String name, String author, int version, String serverURL, boolean ftb, String iconaddress, File customBasePath, URL updateUrl
                 try {
                     URL updateUrl = urlString != null ? new URL(urlString) : null;
                     Configuration config;
                     if (basePath != null) {
-                        config = new Configuration(id, name, new File(basePath), updateUrl);
+                        config = new Configuration(id, name, author, versionint, serverURL, ftbstring, icon, new File(basePath), updateUrl);
                     } else {
-                        config = new Configuration(id, name, appDir, updateUrl);
+                        config = new Configuration(id, name, author, versionint, serverURL, ftbstring, icon, appDir, updateUrl);
                     }
                     
                     Node settingsNode = XMLUtil.getNode(node, settingsExpr);
