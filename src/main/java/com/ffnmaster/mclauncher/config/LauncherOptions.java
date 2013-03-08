@@ -343,11 +343,10 @@ public class LauncherOptions {
             
             // FTB Compatibility, icon, author, version, url, serverUrl, ftbbool
             XPathExpression iconExpr = xpath.compile("icon/text()");
-            XPathExpression authorExpr = xpath.compile("author/text()");
+            XPathExpression subtitleExpr = xpath.compile("subtitle/text()");
             XPathExpression versionExpr = xpath.compile("version/text()");
-            XPathExpression urlExpr = xpath.compile("url/text()");
             XPathExpression serverURLExpr = xpath.compile("serverurl/text()");
-            XPathExpression ftbboolExpr = xpath.compile("ftbbool/text()");
+            XPathExpression ftbboolExpr = xpath.compile("ftb/text()");
             
             
             // Read all the <configuration> elements
@@ -361,13 +360,13 @@ public class LauncherOptions {
                                 
                 // FTB Compat
                 String icon = getString(node, iconExpr);
-                String author = getString(node, authorExpr);
+                String subtitle = getString(node, subtitleExpr);
                 String version = getString(node, versionExpr);
                 String serverURL = getString(node, serverURLExpr);
                 String ftbstring = getString(node, ftbboolExpr);
                 
                 //int versionint = Integer.parseInt(version);
-                int versionint = 5;
+                int versionint = Integer.parseInt(version);
                 
                 if (ftbstring == "true") {
                 	boolean ftb = true;
@@ -380,9 +379,9 @@ public class LauncherOptions {
                     URL updateUrl = urlString != null ? new URL(urlString) : null;
                     Configuration config;
                     if (basePath != null) {
-                        config = new Configuration(id, name, author, versionint, serverURL, ftbstring, icon, new File(basePath), updateUrl);
+                        config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, icon, new File(basePath), updateUrl);
                     } else {
-                        config = new Configuration(id, name, author, versionint, serverURL, ftbstring, icon, appDir, updateUrl);
+                        config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, icon, appDir, updateUrl);
                     }
                     
                     Node settingsNode = XMLUtil.getNode(node, settingsExpr);
@@ -480,6 +479,11 @@ public class LauncherOptions {
                 configurationNode.addNode("name").addValue(config.getName());
                 configurationNode.addNode("appDir").addValue(config.getAppDir());
                 configurationNode.addNode("basePath").addValue(f != null ? f.getPath() : null);
+                configurationNode.addNode("icon");
+                configurationNode.addNode("subtitle");
+                configurationNode.addNode("version").addValue("0");
+                configurationNode.addNode("serverURL");
+                configurationNode.addNode("ftb");
                 configurationNode.addNode("updateURL").addValue(config.getUpdateUrl() != null ?
                         config.getUpdateUrl().toString() : null);
                 configurationNode.addNode("lastJar").addValue(config.getLastActiveJar());

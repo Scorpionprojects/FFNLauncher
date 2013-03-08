@@ -360,7 +360,10 @@ public class ConfigurationDialog extends JDialog {
         
         if (configuration == null) { // New configuration
             String id = UUID.randomUUID().toString();
-            Configuration config = new Configuration(id, name, f, updateUrl);
+            
+            // String id, String name, String author, int version, String serverURL, String ftb, String iconaddress, File customBasePath, URL updateUrl
+            
+            Configuration config = new Configuration(id, name, "", 0, "", "", "",  f, updateUrl);
             config.setSettings(settings);
             configsManager.register(config);
             this.configuration = config;

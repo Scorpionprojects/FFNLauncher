@@ -18,6 +18,8 @@
 
 package com.ffnmaster.mclauncher.config;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,9 +64,10 @@ public class Configuration {
     private SettingsList settings = new SettingsList();
     private boolean builtIn = false;
     private BufferedImage cachedIcon;
+    private Image logo, image;
     
     // FTB
-    private String author;
+    private String subtitle;
     private int version;
     private String ftb;
     private String serverURL;
@@ -82,7 +85,7 @@ public class Configuration {
      * @param appDir data directory name
      * @param updateUrl URL to update from, or null to use default
      */
-    public Configuration(String id, String name, String author, int version, String serverURL, String ftb, String iconaddress, String appDir, URL updateUrl) {
+    public Configuration(String id, String name, String subtitle, int version, String serverURL, String ftb, String iconaddress, String appDir, URL updateUrl) {
         if (!id.matches("^[A-Za-z0-9\\-]+{1,64}$")) {
             throw new IllegalArgumentException("Invalid configuration name");
         }
@@ -92,15 +95,15 @@ public class Configuration {
         setUpdateUrl(updateUrl);
         
         // FTB Compat
-        setAuthor(author);
+        setSubtitle(subtitle);
         setVersion(version);
         setServerURL(serverURL);
         setFTB(ftb);
         setIconAddress(iconaddress);
     }
     
-    public void setAuthor(String author) {
-    	this.author = author;
+    public void setSubtitle(String subtitle) {
+    	this.subtitle = subtitle;
     }
     
     public void setVersion(int version) {
@@ -117,6 +120,13 @@ public class Configuration {
     
     public void setIconAddress(String iconaddress) {
     	this.iconaddress = iconaddress;
+    }
+    
+    public String getSubtitle() {
+    	/*if (subtitle == "") {
+    		return null;
+    	}*/
+    	return subtitle;
     }
     
     
@@ -136,7 +146,7 @@ public class Configuration {
      * @param updateUrl URL to update from, or null to use default
      * @param
      */
-    public Configuration(String id, String name, String author, int version, String serverURL, String ftb, String iconaddress, File customBasePath, URL updateUrl) {
+    public Configuration(String id, String name, String subtitle, int version, String serverURL, String ftb, String iconaddress, File customBasePath, URL updateUrl) {
         if (!id.matches("^[A-Za-z0-9\\-]+{1,64}$")) {
             throw new IllegalArgumentException("Invalid configuration name");
         }
@@ -145,8 +155,12 @@ public class Configuration {
         setCustomBasePath(customBasePath);
         setUpdateUrl(updateUrl);
         
+        // Set the logo
+        File dir = new File(customBasePath, "Logo");
+        this.logo = Toolkit.getDefaultToolkit().createImage(dir.getPath() + File.separator + logo );
+        
         // FTB Compat
-        setAuthor(author);
+        setSubtitle(subtitle);
         setVersion(version);
         setServerURL(serverURL);
         setFTB(ftb);
@@ -169,8 +183,20 @@ public class Configuration {
      * 
      * @return name
      */
+    public String getTitle() {
+        String title;
+    	if (version == 0) {
+    		title = name;
+    	}
+        else {
+        	title = name + " | " + version;
+        }
+        
+        return title;
+    }
+    
     public String getName() {
-        return name;
+    	return name;
     }
 
     /**
@@ -391,7 +417,11 @@ public class Configuration {
      * @return icon or null
      */
     public BufferedImage getIcon() {
-        return cachedIcon;
+    	return cachedIcon;
+    }
+    
+    public Image getLogo() {
+    	return logo;
     }
     
     /**
