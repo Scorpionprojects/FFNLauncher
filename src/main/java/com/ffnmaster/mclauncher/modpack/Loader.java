@@ -86,13 +86,11 @@ public class Loader extends Thread{
 					NamedNodeMap modPackattr = modPackNode.getAttributes();
 					try {
 						Pack.addPack(new Pack(modPackattr.getNamedItem("name").getTextContent(), modPackattr.getNamedItem("author").getTextContent(),
-								modPackattr.getNamedItem("version").getTextContent(), modPackattr.getNamedItem("logo").getTextContent(),
-								modPackattr.getNamedItem("url").getTextContent(), modPackattr.getNamedItem("image").getTextContent(),
-								modPackattr.getNamedItem("dir").getTextContent(), modPackattr.getNamedItem("mcVersion").getTextContent(), 
+								modPackattr.getNamedItem("repoVersion").getTextContent(), modPackattr.getNamedItem("logo").getTextContent(),
+								modPackattr.getNamedItem("url").getTextContent(), modPackattr.getNamedItem("dir").getTextContent(), modPackattr.getNamedItem("mcVersion").getTextContent(), 
 								modPackattr.getNamedItem("serverPack").getTextContent(), modPackattr.getNamedItem("description").getTextContent(),
 								modPackattr.getNamedItem("mods") != null ? modPackattr.getNamedItem("mods").getTextContent() : "", 
-								modPackattr.getNamedItem("oldVersions") != null ? modPackattr.getNamedItem("oldVersions").getTextContent() : "",
-								modPackattr.getNamedItem("animation") != null ? modPackattr.getNamedItem("animation").getTextContent() : "", counter, privatePack, xmlFile));
+								modPackattr.getNamedItem("oldVersions") != null ? modPackattr.getNamedItem("oldVersions").getTextContent() : ""));
 						counter++;
 					} catch (Exception e) {
 						System.out.println(e);

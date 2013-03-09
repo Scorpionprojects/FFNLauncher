@@ -22,6 +22,12 @@ import static com.ffnmaster.mclauncher.util.XMLUtil.*;
  */
 public class ModPackParser {
 	private File file;
+	private ModPacksManager modpacksManager;
+	
+	
+	public ModPacksManager getModPacks() {
+		return modpacksManager;
+	}
 	
 	
 	public void read() {
@@ -63,6 +69,15 @@ public class ModPackParser {
 				String oldVersions = getString(node, oldVersionsExpr);
 				//Adding more is possible
 				
+				try {
+					Pack ModPack;
+					ModPack = new Pack(name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions);
+					
+					
+					
+				} catch (Exception e) {
+					System.out.println("An error occured in ModpackParser:: " + e);
+				}
 				
 				
 			}

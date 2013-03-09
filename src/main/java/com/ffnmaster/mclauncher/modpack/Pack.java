@@ -22,9 +22,9 @@ import com.ffnmaster.mclauncher.config.Configuration;
 import com.ffnmaster.mclauncher.modpack.Loader;
 
 public class Pack {
-	private String name, author, version, url, dir, mcVersion, serverUrl, logoName, imageName, info, animation, sep = File.separator, xml;
+	private String name, author, repoVersion, url, dir, mcVersion, serverPack, logoName, description, sep = File.separator;
 	private String[] mods, oldVersions;
-	private Image logo, image;
+	private Image logo;
 	private int index;
 	private boolean updated = false;
 	private final static ArrayList<Pack> packs = new ArrayList<Pack>();
@@ -65,14 +65,15 @@ public class Pack {
 		}
 	}
 	
-	public static void removePacks(String xml) {
+	// GBH
+	/*public static void removePacks(String xml) {
 		ArrayList<Pack> remove = new ArrayList<Pack>();
 		for(Pack pack : packs) {
 			if(pack.getParentXml().equalsIgnoreCase(xml)) {
 				remove.add(pack);
 			}
 		}
-	}
+	}*/
 	
 	public static ArrayList<Pack> getPackArray() {
 		return packs;
@@ -109,26 +110,18 @@ public class Pack {
 	 * The Modpack itself (DAM DAM DAM)
 	 * @return
 	 */
-	public Pack(String name, String author, String version, String logo, String url, String image, String dir, String mcVersion, String serverUrl, String info, String mods, 
-			String oldVersions, String animation, int idx, boolean privatePack, String xml) throws IOException, NoSuchAlgorithmException {
-		index = idx;
+	// name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions
+	public Pack(String name, String author, String repoVersion, String logo, String url, String dir, String mcVersion, String serverPack, String description, String mods, 
+			String oldVersions) throws IOException, NoSuchAlgorithmException {
 		this.name = name;
 		this.author = author;
-		this.version = version;
+		this.repoVersion = repoVersion;
 		this.dir = dir;
 		this.mcVersion = mcVersion;
 		this.url = url;
-		this.serverUrl = serverUrl;
-		this.privatePack = privatePack;
-		this.xml = xml;
-		if(!animation.equalsIgnoreCase("")) {
-			this.animation = animation;
-		} else {
-			this.animation = "empty";
-		}
+		this.serverPack = serverPack;
 		logoName = logo;
-		imageName = image;
-		this.info = info;
+		this.description = description;
 		if(mods.isEmpty()) {
 			this.mods = null;
 		} else {
@@ -157,15 +150,6 @@ public class Pack {
 				this.logo = Toolkit.getDefaultToolkit().createImage(url_);
 				BufferedImage tempImg = ImageIO.read(url_);
 				ImageIO.write(tempImg, "png", new File(tempDir, logo));
-				tempImg.flush();
-			}
-			if(new File(tempDir, image).exists()) {
-				this.image = Toolkit.getDefaultToolkit().createImage(tempDir.getPath() + sep + image);
-			} else {
-				url_ = new URL(Launcher.getUpdateLink(image));
-				this.image = Toolkit.getDefaultToolkit().createImage(url_);
-				BufferedImage tempImg = ImageIO.read(url_);
-				ImageIO.write(tempImg, "png", new File(tempDir, image));
 				tempImg.flush();
 			}
 			
@@ -208,9 +192,9 @@ public class Pack {
 			}
 			BufferedReader in = new BufferedReader(new FileReader(verFile));
 			String line;
-			if((line = in.readLine()) == null || Integer.parseInt(version.replace(".", "")) > Integer.parseInt(line.replace(".", ""))) {
+			if((line = in.readLine()) == null || Integer.parseInt(repoVersion.replace(".", "")) > Integer.parseInt(line.replace(".", ""))) {
 				BufferedWriter out = new BufferedWriter(new FileWriter(verFile));
-				out.write(version);
+				out.write(repoVersion);
 				out.flush();
 				out.close();
 				result = false;
@@ -251,8 +235,8 @@ public class Pack {
 	 * Used to get the version of the modpack
 	 * @return - the modpacks version
 	 */
-	public String getVersion() {
-		return version;
+	public String getrepoVersion() {
+		return repoVersion;
 	}
 
 	/**
@@ -273,10 +257,10 @@ public class Pack {
 	
 	public String getTitle() {
 		String title;
-		if (Integer.parseInt(version.replace(".", "")) == 0) {
+		if (Integer.parseInt(repoVersion.replace(".", "")) == 0) {
 			title = name;
 		} else {
-			title = name + " | " + version;
+			title = name + " | " + repoVersion;
 		}
 		
 		return title;
@@ -286,13 +270,6 @@ public class Pack {
 		return cachedIcon;
 	}
 
-	/**
-	 * Used to get an Image variable of the modpack's splash image
-	 * @return - the modpacks splash image
-	 */
-	public Image getImage() {
-		return image;
-	}
 
 	/**
 	 * Used to get the directory of the modpack
@@ -315,7 +292,7 @@ public class Pack {
 	 * @return - the info for the modpack
 	 */
 	public String getInfo() {
-		return info;
+		return description;
 	}
 
 	/**
@@ -331,7 +308,7 @@ public class Pack {
 	 * @return - string representing server file name
 	 */
 	public String getServerUrl() {
-		return serverUrl;
+		return serverPack;
 	}
 
 	/**
@@ -342,13 +319,6 @@ public class Pack {
 		return logoName;
 	}
 
-	/**
-	 * Used to get the splash file name
-	 * @return - the splash image name as saved on the repo
-	 */
-	public String getImageName() {
-		return imageName;
-	}
 
 	/**
 	 * Used to set whether the modpack has been updated
@@ -382,21 +352,10 @@ public class Pack {
 		mcVersion = version;
 	}
 
-	/**
-	 * @return the filename of the gif animation to display before minecraft loads
-	 */
-	public String getAnimation() {
-		return animation;
-	}
 
 	public boolean isPrivatePack() {
 		return privatePack;
-	}
-
-	public String getParentXml() {
-		return xml;
-	}
-	
+	}	
 	
 	
 	
