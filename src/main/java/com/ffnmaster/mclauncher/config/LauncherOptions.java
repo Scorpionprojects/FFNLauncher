@@ -75,6 +75,7 @@ public class LauncherOptions {
     private String lastConfigName;
     private String lastUsername;
     private String lastServer;
+    private String ftbURL;
     private File lastInstallDir;
     private ServerHotListManager serverHotList = new ServerHotListManager();
     private ConfigurationsManager configsManager = new ConfigurationsManager();
@@ -257,6 +258,14 @@ public class LauncherOptions {
     	this.lastServer = lastServer;
     }
     
+    public void setftbURL(String ftbURL) {
+    	this.ftbURL = ftbURL;
+    }
+    
+    public String getftbURL() {
+    	return ftbURL;
+    }
+    
     /**
      * Gets the directory of where addons were last installed from.
      * 
@@ -306,6 +315,7 @@ public class LauncherOptions {
 
             lastUsername = getStringOrNull(doc, xpath.compile("/launcher/username"));
             lastServer = getStringorNull(doc, xpath.compile("/launcher/servername"));
+            ftbURL = getStringorNull(doc, xpath.compile("/launcher/ftbdownloadurl"));
             lastConfigName = getStringOrNull(doc,
                     xpath.compile("/launcher/lastConfiguration"));
             lastInstallDir = Util.getClosestDirectory(getStringOrNull(doc,
@@ -374,7 +384,6 @@ public class LauncherOptions {
                 	boolean ftb = false;
                 }
                 
-                // String id, String name, String author, int version, String serverURL, boolean ftb, String iconaddress, File customBasePath, URL updateUrl
                 try {
                     URL updateUrl = urlString != null ? new URL(urlString) : null;
                     Configuration config;
@@ -454,6 +463,7 @@ public class LauncherOptions {
             
             root.addNode("username").addValue(lastUsername);
             root.addNode("servername").addValue(lastServer);
+            root.addNode("ftbdownloadurl").addValue(ftbURL);
             root.addNode("lastConfiguration").addValue(lastConfigName);
             root.addNode("lastInstallDirectory").addValue(
                     lastInstallDir != null ? lastInstallDir

@@ -79,6 +79,7 @@ import com.ffnmaster.mclauncher.config.Def;
 import com.ffnmaster.mclauncher.config.LauncherOptions;
 import com.ffnmaster.mclauncher.config.ServerHotListManager;
 import com.ffnmaster.mclauncher.util.UIUtil;
+import com.ffnmaster.mclauncher.modpack.ModPackParser;
 
 /**
  * Main launcher GUI frame.
@@ -105,6 +106,7 @@ public class LauncherFrame extends JFrame {
     private LinkButton expandBtn;
     private JButton playBtn;
     private LauncherOptions options;
+    private ModPackParser parser;
     private TaskWorker worker = new TaskWorker();
 
     /**
@@ -433,7 +435,7 @@ public class LauncherFrame extends JFrame {
         JPanel modPacksPanel = new JPanel();
         modPacksPanel.setLayout(new BorderLayout(0,0));
         modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, 0, PAD, PAD));
-        modPackList = new JList(options.getConfigurations());
+        modPackList = new JList(parser.getModPacks());
         modPackList.setCellRenderer(new ConfigurationCellRenderer());
         modPackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane modPacksScroll = new JScrollPane(modPackList);

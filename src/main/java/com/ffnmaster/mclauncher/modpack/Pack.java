@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import com.ffnmaster.mclauncher.Launcher;
-import com.ffnmaster.mclauncher.NewsLayoutManager;
+import com.ffnmaster.mclauncher.config.Configuration;
 import com.ffnmaster.mclauncher.modpack.Loader;
 
 public class Pack {
@@ -29,6 +30,7 @@ public class Pack {
 	private final static ArrayList<Pack> packs = new ArrayList<Pack>();
 	private static List<ModPackListener> listeners = new ArrayList<ModPackListener>();
 	private boolean privatePack;
+	private BufferedImage cachedIcon;
 	
 	
 	/**
@@ -99,9 +101,9 @@ public class Pack {
 	}
 	
 
-	public static Pack getSelectedPack() {
+	/*public static Pack getSelectedPack() {
 		return getPack(NewsLayoutManager.getSelectedModIndex());
-	}
+	}*/
 	
 	/**
 	 * The Modpack itself (DAM DAM DAM)
@@ -169,6 +171,27 @@ public class Pack {
 			
 		}
 	}
+	
+	
+    /**
+     * Try to load an icon from the JAR.
+     * 
+     * @param path path
+     * @return this object
+     */
+    public Pack loadIcon(String path) {
+        InputStream in = Launcher.class.getResourceAsStream(path);
+        
+        if (in != null) {
+            try {
+                cachedIcon = ImageIO.read(in);
+            } catch (IOException e) {
+                System.out.println("Failed to load icon at " + path);
+            }
+        }
+        
+        return this;
+    }
 	
 	/**
 	 * Used to check if the cached items are up to date
@@ -246,6 +269,21 @@ public class Pack {
 	 */
 	public String getUrl() {
 		return url;
+	}
+	
+	public String getTitle() {
+		String title;
+		if (Integer.parseInt(version.replace(".", "")) == 0) {
+			title = name;
+		} else {
+			title = name + " | " + version;
+		}
+		
+		return title;
+	}
+	
+	public BufferedImage getIcon(){
+		return cachedIcon;
 	}
 
 	/**
