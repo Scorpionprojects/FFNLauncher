@@ -23,10 +23,26 @@ import static com.ffnmaster.mclauncher.util.XMLUtil.*;
 public class ModPackParser {
 	private File file;
 	private ModPacksManager modpacksManager;
-	
+	File modPackXML = getModpackXML();
 	
 	public ModPacksManager getModPacks() {
 		return modpacksManager;
+	}
+	
+	/**
+	 * Get Modpack.xml
+	 * @return modpackXML
+	 */
+	private static File getModpackXML() {
+		File configDir = new File(".", "modpacks.xml");
+		String currentDir = new File(".").getAbsolutePath();
+		
+		if (configDir.exists()) {
+			return new File(".");
+		}
+		
+		configDir = new File(currentDir, "config");
+		return configDir;
 	}
 	
 	
@@ -35,7 +51,7 @@ public class ModPackParser {
 		InputStream in = null;
 		
 		try {
-			in = new BufferedInputStream(new FileInputStream(file));
+			in = new BufferedInputStream(new FileInputStream(modPackXML));
 			
 			Document doc = parseXml(in);
 			XPath xpath = XPathFactory.newInstance().newXPath();
@@ -51,9 +67,6 @@ public class ModPackParser {
 			XPathExpression descriptionExpr = xpath.compile("description/text()");
 			XPathExpression modsExpr = xpath.compile("mods/text()");
 			XPathExpression oldVersionsExpr = xpath.compile("oldVersions/text()");
-			
-			
-			
 			
 			for (Node node : getNodes(doc, xpath.compile("/modpacks/modpack"))) {
 				String name = getString(node, nameExpr);
@@ -73,8 +86,6 @@ public class ModPackParser {
 					Pack ModPack;
 					ModPack = new Pack(name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions);
 					
-					
-					
 				} catch (Exception e) {
 					System.out.println("An error occured in ModpackParser:: " + e);
 				}
@@ -86,7 +97,7 @@ public class ModPackParser {
 			
 			
 		} catch ( Exception e) {
-			System.out.println(e);
+			System.out.println("ERROR IN YOLO" + e);
 		}
 		
 	}

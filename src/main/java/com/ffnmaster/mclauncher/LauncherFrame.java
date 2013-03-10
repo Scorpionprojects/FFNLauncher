@@ -80,6 +80,7 @@ import com.ffnmaster.mclauncher.config.LauncherOptions;
 import com.ffnmaster.mclauncher.config.ServerHotListManager;
 import com.ffnmaster.mclauncher.util.UIUtil;
 import com.ffnmaster.mclauncher.modpack.ModPackParser;
+import com.ffnmaster.mclauncher.modpack.ModPacksCellRenderer;
 
 /**
  * Main launcher GUI frame.
@@ -115,7 +116,7 @@ public class LauncherFrame extends JFrame {
     public LauncherFrame() {
         setTitle("FFNLauncher v" + Launcher.buildNumber);
         setSize(600, 500);
-        setResizable(false);
+        setResizable(true);
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -365,7 +366,6 @@ public class LauncherFrame extends JFrame {
      */
     private void buildUI() {
         final LauncherFrame self = this;
-
         setLayout(new BorderLayout(0, 0));
         boolean hidenews = options.getSettings().getBool(Def.LAUNCHER_HIDE_NEWS, false);
         allowOfflineName = options.getSettings().getBool(
@@ -373,46 +373,45 @@ public class LauncherFrame extends JFrame {
         
         if (!hidenews) {
             if (options.getSettings().getBool(Def.LAUNCHER_NO_NEWS, false)) {
-                final JLayeredPane modPacksPanel = new JLayeredPane();
+                final JLayeredPane newsPanel = new JLayeredPane();
                 
-                modPacksPanel.setBorder(new CompoundBorder(BorderFactory
+                newsPanel.setBorder(new CompoundBorder(BorderFactory
                         .createEmptyBorder(PAD, 0, PAD, PAD), new CompoundBorder(
                         BorderFactory.createEtchedBorder(), BorderFactory
                                 .createEmptyBorder(4, 4, 4, 4))));
-                modPacksPanel.setLayout(new BoxLayout(modPacksPanel, BoxLayout.Y_AXIS));
+                newsPanel.setLayout(new BoxLayout(newsPanel, BoxLayout.Y_AXIS));
                 
-                final JButton showModPacks = new JButton("Show Anyway");
-                showModPacks.setAlignmentX(Component.CENTER_ALIGNMENT);
-                showModPacks.addActionListener(new ActionListener() {
+                final JButton showNews = new JButton("Show news");
+                showNews.setAlignmentX(Component.CENTER_ALIGNMENT);
+                showNews.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        showModPacks.setVisible(false);
-                        showModPacks(modPacksPanel);
+                        showNews.setVisible(false);
+                        showModPacks(newsPanel);
                     }
                 });
                 
                 // Center the button vertically.
-                modPacksPanel.add(new Box.Filler(new Dimension(0,0), 
+                newsPanel.add(new Box.Filler(new Dimension(0,0), 
                         new Dimension(0,0), new Dimension(1000,1000)));
-                modPacksPanel.add(showModPacks);
-                modPacksPanel.add(new Box.Filler(new Dimension(0,0), 
+                newsPanel.add(showNews);
+                newsPanel.add(new Box.Filler(new Dimension(0,0), 
                         new Dimension(0,0), new Dimension(1000,1000)));
                 
-                add(modPacksPanel, BorderLayout.CENTER);
+                add(newsPanel, BorderLayout.CENTER);
             } else {
-                JLayeredPane modPacksPanel = new JLayeredPane();
-                showModPacks(modPacksPanel);
-                add(modPacksPanel, BorderLayout.CENTER);
+                JLayeredPane newsPanel = new JLayeredPane();
+                showModPacks(newsPanel);
+                add(newsPanel, BorderLayout.CENTER);
             }
         }
         
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BorderLayout());
-        if (!hidenews) {
-            add(leftPanel, BorderLayout.LINE_START);
-        } else {
-            add(leftPanel, BorderLayout.CENTER);
-        }
+        
+        //add(leftPanel, BorderLayout.LINE_START);
+        add(leftPanel, BorderLayout.CENTER);
+   
 
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new GridLayout(1, 3, 3, 0));
@@ -424,7 +423,7 @@ public class LauncherFrame extends JFrame {
         buttonsPanel.add(addonsBtn);
         buttonsPanel.add(optionsBtn);
         //buttonsPanel.add(modpacksBtn);
-
+        
         JPanel root = new JPanel();
         root.setBorder(BorderFactory.createEmptyBorder(0, PAD, PAD, PAD));
         root.setLayout(new BoxLayout(root, BoxLayout.Y_AXIS));
@@ -432,15 +431,16 @@ public class LauncherFrame extends JFrame {
         root.add(buttonsPanel);
         leftPanel.add(root, BorderLayout.SOUTH);
         
-        JPanel modPacksPanel = new JPanel();
+        
+        /*JPanel modPacksPanel = new JPanel();
         modPacksPanel.setLayout(new BorderLayout(0,0));
         modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, 0, PAD, PAD));
-        modPackList = new JList(parser.getModPacks());
-        modPackList.setCellRenderer(new ConfigurationCellRenderer());
+        modPackList = new JList(options.getConfigurations());
+        modPackList.setCellRenderer(new ModPacksCellRenderer());
         modPackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane modPacksScroll = new JScrollPane(modPackList);
         modPacksPanel.add(modPacksScroll, BorderLayout.CENTER);
-        leftPanel.add(modPacksPanel, BorderLayout.EAST);
+        leftPanel.add(modPacksPanel, BorderLayout.EAST);*/
 
         JPanel configurationsPanel = new JPanel();
         configurationsPanel.setLayout(new BorderLayout(0, 0));
@@ -451,7 +451,8 @@ public class LauncherFrame extends JFrame {
         JScrollPane configScroll = new JScrollPane(configurationList);
         configurationsPanel.add(configScroll, BorderLayout.CENTER);
         leftPanel.add(configurationsPanel, BorderLayout.CENTER);
-
+        
+        
         // Add listener
         playBtn.addActionListener(new ActionListener() {
             @Override

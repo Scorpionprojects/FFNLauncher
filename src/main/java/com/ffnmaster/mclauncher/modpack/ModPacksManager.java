@@ -15,14 +15,13 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
-import com.ffnmaster.mclauncher.config.Configuration;
+import com.ffnmaster.mclauncher.modpack.Pack;
 
-public class ModPacksManager implements Iterable<Configuration>, TableModel, ListModel {
+public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 	
 	private Map<String, Pack> modpacks = new HashMap<String, Pack>();
 	private List<Pack> modList = new ArrayList<Pack>();
 	private EventListenerList listenerList = new EventListenerList();
-	private Configuration defaultmodpack;
 	
 	/**
 	 * Get a Modpack
@@ -71,10 +70,9 @@ public class ModPacksManager implements Iterable<Configuration>, TableModel, Lis
 	/**
 	 * Get iterator
 	 */
-	/*
 	public Iterator<Pack> iterator() {
 		return modpacks.values().iterator();
-	}*/
+	}
 	
 	@Override
 	public int getRowCount() {
@@ -174,31 +172,38 @@ public class ModPacksManager implements Iterable<Configuration>, TableModel, Lis
 
 	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		// TODO Auto-generated method stub
-		return false;
+		switch (columnIndex) {
+		case 0:
+			return true;
+		case 1:
+			return false;
+		default:
+			return false;
+		}
 	}
 
 	@Override
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		// TODO Auto-generated method stub
-		
+	public void setValueAt(Object value, int rowIndex, int columnIndex) {
+		Pack pack = modList.get(rowIndex);
+		if (pack == null) {
+			return;
+		}
+		switch (columnIndex) {
+		case 0:
+			pack.setName((String) value);
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override
 	public void addTableModelListener(TableModelListener l) {
-		// TODO Auto-generated method stub
-		
+		listenerList.add(TableModelListener.class, l);
 	}
 
 	@Override
 	public void removeTableModelListener(TableModelListener l) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Iterator<Configuration> iterator() {
-		// TODO Auto-generated method stub
-		return null;
+		listenerList.remove(TableModelListener.class, l);
 	}
 }

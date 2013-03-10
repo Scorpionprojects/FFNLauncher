@@ -23,7 +23,6 @@ import com.ffnmaster.mclauncher.Launcher;
 public class ModPacksCellRenderer implements ListCellRenderer {
 	private static final int PAD = 5;
 	private static BufferedImage defaultIcon;
-	private JLabel logo;
 	
 	static {
 		try {
@@ -41,8 +40,6 @@ public class ModPacksCellRenderer implements ListCellRenderer {
     		int index, final boolean isSelected, boolean cellHasFocus) {
 		final Pack pack = (Pack) value;
 		
-		logo = new JLabel();
-		logo.setBounds(6,6,42,42);
 		
 		JIconPanel panel = new JIconPanel(pack.getIcon());
 		panel.setLayout(new GridLayout(2, 1, 0, 1));
@@ -56,8 +53,6 @@ public class ModPacksCellRenderer implements ListCellRenderer {
 		font = font.deriveFont((float) (font.getSize() * 1.3)).deriveFont(Font.BOLD);
 		titleLabel.setFont(font);
 		
-		logo.setIcon(new ImageIcon(pack.getLogo()));
-		panel.add(logo);
 		panel.add(titleLabel);
 		
 		String author;

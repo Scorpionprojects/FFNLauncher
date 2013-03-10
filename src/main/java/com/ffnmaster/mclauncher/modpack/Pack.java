@@ -357,6 +357,17 @@ public class Pack {
 		return privatePack;
 	}	
 	
+	/**
+	 * Set the name
+	 * @param name name
+	 */
+	public void setName(String name) {
+		if(!name.matches("^.{1,32}$")) {
+			throw new IllegalArgumentException("Invalid Name");
+		}
+		this.name = name;
+	}
+	
 	
 	
 	

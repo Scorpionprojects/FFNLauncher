@@ -126,6 +126,7 @@ public class Launcher {
 		configDir.mkdirs();
         File optionsFile = new File(configDir, "config.xml");
         options = new LauncherOptions(optionsFile);
+        
         options.load();
         
         // If the options file does not exist, try to import old data
@@ -347,6 +348,18 @@ public class Launcher {
 		
 		return configDir;
 	
+	}
+	
+	public static File getModpackXMLDir() {
+		File configDir = new File(".", "modpacks.xml");
+		String currentDir = new File(".").getAbsolutePath();
+		
+		if (configDir.exists()) {
+			return new File(".");
+		}
+		
+		configDir = new File(currentDir, "config");
+		return configDir;
 	}
 	
 	public static String getLauncherDir() {

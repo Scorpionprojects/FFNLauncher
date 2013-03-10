@@ -39,12 +39,10 @@ public class ConfigurationCellRenderer implements ListCellRenderer {
     @Override
     public Component getListCellRendererComponent(final JList list, final Object value,
         
-    		int index, final boolean isSelected, boolean cellHasFocus) {
+    	int index, final boolean isSelected, boolean cellHasFocus) {
         final Configuration configuration = (Configuration) value;
         
-        logo = new JLabel();
-        logo.setBounds(6,6,42,42);
-        
+       
         JIconPanel panel = new JIconPanel(configuration.getIcon());
         panel.setLayout(new GridLayout(2, 1, 0, 1));
         panel.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
@@ -57,8 +55,6 @@ public class ConfigurationCellRenderer implements ListCellRenderer {
         font = font.deriveFont((float) (font.getSize() * 1.3)).deriveFont(Font.BOLD);
         titleLabel.setFont(font);
         
-        logo.setIcon(new ImageIcon(configuration.getLogo()));
-        panel.add(logo);
         panel.add(titleLabel);
         
         String infoText;
