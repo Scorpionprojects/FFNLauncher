@@ -20,8 +20,23 @@ import com.ffnmaster.mclauncher.modpack.Pack;
 public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 	
 	private Map<String, Pack> modpacks = new HashMap<String, Pack>();
-	private List<Pack> modList = new ArrayList<Pack>();
+	private List<Pack> modPackList = new ArrayList<Pack>();
 	private EventListenerList listenerList = new EventListenerList();
+	private Pack defaultPack;
+	
+	/**
+	 * Get Default pack (NONESENSE)
+	 */
+	public Pack getPack() {
+		return defaultPack;
+	}
+	
+	/**
+	 * Set default pack
+	 */
+	public void setDefault(Pack pack) {
+		defaultPack = pack;
+	}
 	
 	/**
 	 * Get a Modpack
@@ -36,18 +51,34 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 	 * Register a modpack (GBH)
 	 */
 	public void register(Pack pack) {
-		int index = modList.indexOf(pack);
+		int index = modPackList.indexOf(pack);
 		
 		if(index == -1) {
-			modList.add(pack);
-			fireTableChanged(new TableModelEvent(this, modList.size() -1));
+			modPackList.add(pack);
+			fireTableChanged(new TableModelEvent(this, modPackList.size() -1));
 			fireListChanged(new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED,
-					modList.size() -1, modList.size() -1));
+					modPackList.size() -1, modPackList.size() -1));
 		} else {
 			fireTableChanged(new TableModelEvent(this, index));
 			fireListChanged(new ListDataEvent(this, ListDataEvent.INTERVAL_ADDED,
-					0, modList.size() -1));
+					0, modPackList.size() -1));
 		}
+	}
+	
+	/**
+	 * Remove a pack
+	 */
+	public boolean remove(Pack pack) {
+		int index = modPackList.indexOf(pack);
+		if (index == -1) {
+			return false;
+		}
+		modpacks.remove(pack.getId());
+		modPackList.remove(index);
+		fireTableChanged(new TableModelEvent(this));
+		fireListChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED,
+				0, modPackList.size() -1));
+		return true;
 	}
 	
 	/**
@@ -64,7 +95,7 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 	 * @return modpacks
 	 */
 	public Pack getModpackAt(int i) {
-		return modList.get(i);
+		return modPackList.get(i);
 	}
 	
 	/**
@@ -110,7 +141,7 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 	
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Pack pack = modList.get(rowIndex);
+		Pack pack = modPackList.get(rowIndex);
 		if (pack == null) {
 			return null;
 		}
@@ -184,7 +215,7 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 
 	@Override
 	public void setValueAt(Object value, int rowIndex, int columnIndex) {
-		Pack pack = modList.get(rowIndex);
+		Pack pack = modPackList.get(rowIndex);
 		if (pack == null) {
 			return;
 		}

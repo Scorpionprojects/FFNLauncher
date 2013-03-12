@@ -1,16 +1,24 @@
 package com.ffnmaster.mclauncher.modpack;
 
+import java.awt.List;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.ListModel;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
+import com.ffnmaster.mclauncher.Launcher;
 
 import static com.ffnmaster.mclauncher.util.XMLUtil.*;
 
@@ -23,10 +31,33 @@ import static com.ffnmaster.mclauncher.util.XMLUtil.*;
 public class ModPackParser {
 	private File file;
 	private ModPacksManager modpacksManager;
-	File modPackXML = getModpackXML();
+	private List ModPacksList;
+	private final static ArrayList<Pack> packs = new ArrayList<Pack>();
 	
-	public ModPacksManager getModPacks() {
+	
+	// DEVEl
+	private static DefaultListModel listModel;
+	
+	static File modPackXML = getModpackXML();
+	
+	
+	public ModPackParser(File file) {
+		this.file = file;
+		read();
+	}
+	
+	public ModPacksManager getModpacks() {
 		return modpacksManager;
+	}
+	
+	public static ListModel getList() {
+		read();
+		listModel = new DefaultListModel();
+		for(Pack pack : packs) {
+			listModel.addElement(pack.getId());			
+		}
+		
+		return listModel;
 	}
 	
 	/**
@@ -42,12 +73,13 @@ public class ModPackParser {
 		}
 		
 		configDir = new File(currentDir, "config");
-		return configDir;
+		
+        File optionsFile = new File(configDir, "modpacks.xml");
+		return optionsFile;
 	}
 	
 	
-	public void read() {
-		
+	public static void read() {
 		InputStream in = null;
 		
 		try {
@@ -56,6 +88,7 @@ public class ModPackParser {
 			Document doc = parseXml(in);
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			
+			XPathExpression idExpr = xpath.compile("id/text()");
 			XPathExpression nameExpr = xpath.compile("name/text()");
 			XPathExpression authorExpr = xpath.compile("author/text()");
 			XPathExpression repoVersionExpr = xpath.compile("repoVersion/text()");
@@ -69,6 +102,7 @@ public class ModPackParser {
 			XPathExpression oldVersionsExpr = xpath.compile("oldVersions/text()");
 			
 			for (Node node : getNodes(doc, xpath.compile("/modpacks/modpack"))) {
+				String id = getString(node, idExpr);
 				String name = getString(node, nameExpr);
 				String author = getString(node, authorExpr); 
 				String repoVersion = getString(node, repoVersionExpr);
@@ -80,11 +114,13 @@ public class ModPackParser {
 				String description = getString(node, descriptionExpr);
 				String mods = getString(node, modsExpr);
 				String oldVersions = getString(node, oldVersionsExpr);
+
 				//Adding more is possible
 				
 				try {
+					System.out.println(url);
 					Pack ModPack;
-					ModPack = new Pack(name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions);
+					ModPack = new Pack(id, name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions);
 					
 				} catch (Exception e) {
 					System.out.println("An error occured in ModpackParser:: " + e);

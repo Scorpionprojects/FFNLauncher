@@ -46,7 +46,7 @@ public class ConfigurationsManager implements Iterable<Configuration>, TableMode
     private List<Configuration> configurationsList = new ArrayList<Configuration>();
     private EventListenerList listenerList = new EventListenerList();
     private Configuration defaultConfiguration;
-
+    
     /**
      * Get the default configuration.
      * 

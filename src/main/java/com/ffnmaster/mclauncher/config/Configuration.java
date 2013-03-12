@@ -227,6 +227,7 @@ public class Configuration {
      * 
      * @return path or null
      */
+    
     public File getCustomBasePath() {
         return customBasePath;
     }

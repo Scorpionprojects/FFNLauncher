@@ -22,7 +22,7 @@ import com.ffnmaster.mclauncher.config.Configuration;
 import com.ffnmaster.mclauncher.modpack.Loader;
 
 public class Pack {
-	private String name, author, repoVersion, url, dir, mcVersion, serverPack, logoName, description, sep = File.separator;
+	private String id, name, author, repoVersion, url, dir, mcVersion, serverPack, logoName, description, sep = File.separator;
 	private String[] mods, oldVersions;
 	private Image logo;
 	private int index;
@@ -32,6 +32,10 @@ public class Pack {
 	private boolean privatePack;
 	private BufferedImage cachedIcon;
 	
+	
+	public String getId() {
+		return id;
+	}
 	
 	/**
 	 * Loads modpack.xml and adds it to the modpack array in this class
@@ -111,8 +115,9 @@ public class Pack {
 	 * @return
 	 */
 	// name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions
-	public Pack(String name, String author, String repoVersion, String logo, String url, String dir, String mcVersion, String serverPack, String description, String mods, 
+	public Pack(String id, String name, String author, String repoVersion, String logo, String url, String dir, String mcVersion, String serverPack, String description, String mods, 
 			String oldVersions) throws IOException, NoSuchAlgorithmException {
+		this.id = id;
 		this.name = name;
 		this.author = author;
 		this.repoVersion = repoVersion;
@@ -155,6 +160,16 @@ public class Pack {
 			
 		}
 	}
+	
+	public File getBaseDir() {
+		File path;
+		String stringpath = Launcher.getLauncherDir();
+		path = new File(stringpath, ".");
+		path.mkdirs();
+		return path;
+	}
+	
+	
 	
 	
     /**

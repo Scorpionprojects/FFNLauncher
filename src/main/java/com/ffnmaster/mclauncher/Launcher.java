@@ -19,6 +19,7 @@
 package com.ffnmaster.mclauncher;
 
 import java.awt.Desktop;
+import java.awt.List;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -44,11 +45,14 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import javax.swing.JList;
 import javax.swing.SwingUtilities;
 
 import com.ffnmaster.mclauncher.config.Constants;
 import com.ffnmaster.mclauncher.config.Def;
 import com.ffnmaster.mclauncher.config.LauncherOptions;
+import com.ffnmaster.mclauncher.modpack.ModPackParser;
+import com.ffnmaster.mclauncher.modpack.ModPacksManager;
 import com.ffnmaster.mclauncher.security.X509KeyRing;
 import com.ffnmaster.mclauncher.update.UpdateCache;
 import com.ffnmaster.mclauncher.util.BasicArgsParser;
@@ -70,6 +74,7 @@ public class Launcher {
     public static final String VERSION;
 	public static int buildNumber = 102;
     private static String noticesText;
+    private static boolean skipupdate = true;
 
     private static volatile ConsoleFrame consoleFrame;
     private LauncherOptions options;
@@ -77,6 +82,7 @@ public class Launcher {
     private static Launcher instance;
     public static final String server = "download.sigmacoders.nl";
     
+    private static ModPackParser parser;    
     /**
      * Some initialization.
      */
@@ -548,7 +554,14 @@ public class Launcher {
     public static void main(String[] args) {
         // DEBUG
     	System.out.println("DEBUG: Starting FFNLauncher build: " + buildNumber + " :SNAPSHOT --" + VERSION);
-    	    	
+    	
+    	int yomamarocks = 2;  
+    	
+    	if (yomamarocks == 1) {
+    		StupidTest mainFrame = new StupidTest();
+    		mainFrame.setVisible(true);   		
+    	}
+    	else {
         
     	BasicArgsParser parser = new BasicArgsParser();
         parser.addValueArg("address");
@@ -571,14 +584,18 @@ public class Launcher {
                 LauncherFrame frame = new LauncherFrame();
                 frame.setVisible(true);
                 
-        		UpdateChecker updateChecker = new UpdateChecker(buildNumber);
-        		if(updateChecker.shouldUpdate()) {
-        			// DEBUG
-        			System.out.println("DEBUG: New Update Available!");
-        			UpdateDialog p = new UpdateDialog(updateChecker);
-        			p.setVisible(true);
-        		}                
-                
+                if (skipupdate != true) {
+            		UpdateChecker updateChecker = new UpdateChecker(buildNumber);
+            		if(updateChecker.shouldUpdate()) {
+            			// DEBUG
+            			System.out.println("DEBUG: New Update Available!");
+            			UpdateDialog p = new UpdateDialog(updateChecker);
+            			p.setVisible(true);
+            		}  
+                } 
+                else {
+                	System.out.println("WARNING. AUTO-UPDATER HAS BEEN DISABLED BY DEVELOPER. ENABLE THIS LATER");
+                }
                 if (username != null) {
                     frame.setLogin(username, password);
                 }
@@ -594,7 +611,7 @@ public class Launcher {
 
             }
         });
-
+    	}
     }
     
     /**

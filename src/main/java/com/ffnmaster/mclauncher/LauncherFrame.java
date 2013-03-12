@@ -46,6 +46,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -109,6 +110,7 @@ public class LauncherFrame extends JFrame {
     private LauncherOptions options;
     private ModPackParser parser;
     private TaskWorker worker = new TaskWorker();
+    
 
     /**
      * Construct the launcher.
@@ -422,7 +424,7 @@ public class LauncherFrame extends JFrame {
         buttonsPanel.add(playBtn);
         buttonsPanel.add(addonsBtn);
         buttonsPanel.add(optionsBtn);
-        //buttonsPanel.add(modpacksBtn);
+        buttonsPanel.add(modpacksBtn);
         
         JPanel root = new JPanel();
         root.setBorder(BorderFactory.createEmptyBorder(0, PAD, PAD, PAD));
@@ -432,15 +434,20 @@ public class LauncherFrame extends JFrame {
         leftPanel.add(root, BorderLayout.SOUTH);
         
         
-        /*JPanel modPacksPanel = new JPanel();
+        JPanel modPacksPanel = new JPanel();
         modPacksPanel.setLayout(new BorderLayout(0,0));
         modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, 0, PAD, PAD));
-        modPackList = new JList(options.getConfigurations());
+        
+        // OLD
+        //modPackList = new JList(parser.getModpacks());
+        
+        // NEW
+        modPackList = new JList(ModPackParser.getList());
         modPackList.setCellRenderer(new ModPacksCellRenderer());
         modPackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane modPacksScroll = new JScrollPane(modPackList);
         modPacksPanel.add(modPacksScroll, BorderLayout.CENTER);
-        leftPanel.add(modPacksPanel, BorderLayout.EAST);*/
+        leftPanel.add(modPacksPanel, BorderLayout.EAST);
 
         JPanel configurationsPanel = new JPanel();
         configurationsPanel.setLayout(new BorderLayout(0, 0));

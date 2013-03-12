@@ -116,7 +116,7 @@ public class LauncherOptions {
      * @return configurations manager
      */
     public ConfigurationsManager getConfigurations() {
-        return configsManager;
+    	return configsManager;
     }
     
   
