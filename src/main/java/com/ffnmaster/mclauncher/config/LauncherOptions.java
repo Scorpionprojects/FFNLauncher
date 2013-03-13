@@ -79,7 +79,7 @@ public class LauncherOptions {
     private File lastInstallDir;
     private ServerHotListManager serverHotList = new ServerHotListManager();
     private ConfigurationsManager configsManager = new ConfigurationsManager();
-    private ModPacksManager modmanager = new ModPacksManager();
+    //private ModPacksManager modmanager = new ModPacksManager();
     private Map<String, String> identities = new HashMap<String, String>();
     private SettingsList defaultSettings = new SettingsList();
     private SettingsList settings = new SettingsList(defaultSettings);

@@ -424,7 +424,7 @@ public class LauncherFrame extends JFrame {
         buttonsPanel.add(playBtn);
         buttonsPanel.add(addonsBtn);
         buttonsPanel.add(optionsBtn);
-        buttonsPanel.add(modpacksBtn);
+        //buttonsPanel.add(modpacksBtn);
         
         JPanel root = new JPanel();
         root.setBorder(BorderFactory.createEmptyBorder(0, PAD, PAD, PAD));
@@ -442,7 +442,7 @@ public class LauncherFrame extends JFrame {
         //modPackList = new JList(parser.getModpacks());
         
         // NEW
-        modPackList = new JList(ModPackParser.getList());
+        modPackList = new JList(parser.getModpacks());
         modPackList.setCellRenderer(new ModPacksCellRenderer());
         modPackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane modPacksScroll = new JScrollPane(modPackList);

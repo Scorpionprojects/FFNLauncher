@@ -82,7 +82,7 @@ public class Launcher {
     private static Launcher instance;
     public static final String server = "download.sigmacoders.nl";
     
-    private static ModPackParser parser;    
+    private ModPackParser parser;    
     /**
      * Some initialization.
      */
@@ -134,6 +134,7 @@ public class Launcher {
         options = new LauncherOptions(optionsFile);
         
         options.load();
+        parser.load();
         
         // If the options file does not exist, try to import old data
         if (!optionsFile.exists()) {

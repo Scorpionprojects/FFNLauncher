@@ -4,21 +4,32 @@ import java.awt.List;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.ListModel;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import com.ffnmaster.mclauncher.Launcher;
+import com.ffnmaster.mclauncher.util.Util;
 
 import static com.ffnmaster.mclauncher.util.XMLUtil.*;
 
@@ -30,35 +41,34 @@ import static com.ffnmaster.mclauncher.util.XMLUtil.*;
  */
 public class ModPackParser {
 	private File file;
-	private ModPacksManager modpacksManager;
+	private ModPacksManager modpacksManager = new ModPacksManager();
 	private List ModPacksList;
-	private final static ArrayList<Pack> packs = new ArrayList<Pack>();
+	//private final static ArrayList<Pack> packs = new ArrayList<Pack>();
 	
-	
-	// DEVEl
-	private static DefaultListModel listModel;
+	// DEVEL
+	//private static DefaultListModel listModel;
 	
 	static File modPackXML = getModpackXML();
 	
 	
 	public ModPackParser(File file) {
 		this.file = file;
-		read();
 	}
 	
 	public ModPacksManager getModpacks() {
 		return modpacksManager;
 	}
-	
+	/*
 	public static ListModel getList() {
 		read();
 		listModel = new DefaultListModel();
 		for(Pack pack : packs) {
 			listModel.addElement(pack.getId());			
 		}
-		
 		return listModel;
-	}
+	}*/
+	
+	
 	
 	/**
 	 * Get Modpack.xml
@@ -79,11 +89,14 @@ public class ModPackParser {
 	}
 	
 	
-	public static void read() {
+	
+	public void read() throws IOException {
+		modpacksManager = new ModPacksManager();
 		InputStream in = null;
 		
 		try {
 			in = new BufferedInputStream(new FileInputStream(modPackXML));
+			System.out.println(modPackXML);
 			
 			Document doc = parseXml(in);
 			XPath xpath = XPathFactory.newInstance().newXPath();
@@ -100,6 +113,7 @@ public class ModPackParser {
 			XPathExpression descriptionExpr = xpath.compile("description/text()");
 			XPathExpression modsExpr = xpath.compile("mods/text()");
 			XPathExpression oldVersionsExpr = xpath.compile("oldVersions/text()");
+
 			
 			for (Node node : getNodes(doc, xpath.compile("/modpacks/modpack"))) {
 				String id = getString(node, idExpr);
@@ -118,25 +132,48 @@ public class ModPackParser {
 				//Adding more is possible
 				
 				try {
-					System.out.println(url);
 					Pack ModPack;
 					ModPack = new Pack(id, name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions);
+					modpacksManager.register(ModPack);
 					
-				} catch (Exception e) {
-					System.out.println("An error occured in ModpackParser:: " + e);
-				}
-				
-				
-			}
+				} catch (MalformedURLException e) {
+					System.out.println("ERROR: Malformed URL in ModpackParser:: " + e);
+				} catch (IllegalArgumentException e) {
+					System.out.println("ERROR: Illegal argument in ModpackParser:: " + e);
+				}	
+			}	
 			
-			
-			
-			
-		} catch ( Exception e) {
-			System.out.println("ERROR IN YOLO" + e);
-		}
+		} catch (FileNotFoundException e) {
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException(e);
+        } catch (XPathExpressionException e) {
+            throw new IOException(e);
+        } catch (ParserConfigurationException e) {
+            throw new IOException(e);
+        } catch (SAXException e) {
+            throw new IOException(e);
+        } finally {
+            //registerBuiltInConfigurations();
+            Util.close(in);
+        }
 		
 	}
+	
+    /**
+     * Load the configuration.
+     * 
+     * @return true if successful
+     */
+    public boolean load() {
+        try {
+            read();
+            return true;
+        } catch (IOException e) {
+            System.out.println("YOLO");
+        	e.printStackTrace();
+            return false;
+        }
+    }
 	
 	
 	
