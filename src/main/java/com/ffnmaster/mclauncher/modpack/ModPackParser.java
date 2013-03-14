@@ -8,16 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
 
-import javax.crypto.NoSuchPaddingException;
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.ListModel;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
@@ -28,7 +20,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import com.ffnmaster.mclauncher.Launcher;
 import com.ffnmaster.mclauncher.util.Util;
 
 import static com.ffnmaster.mclauncher.util.XMLUtil.*;
@@ -36,17 +27,14 @@ import static com.ffnmaster.mclauncher.util.XMLUtil.*;
 
 /**
  * Parses Modpack info to main launcher window (List 2)
- * @author FFNMaster
- *
+ * @author FFNMaster and sk89q
  */
 public class ModPackParser {
+	private String str;
 	private File file;
 	private ModPacksManager modpacksManager = new ModPacksManager();
 	private List ModPacksList;
 	//private final static ArrayList<Pack> packs = new ArrayList<Pack>();
-	
-	// DEVEL
-	//private static DefaultListModel listModel;
 	
 	static File modPackXML = getModpackXML();
 	
@@ -55,20 +43,18 @@ public class ModPackParser {
 		this.file = file;
 	}
 	
+	public ModPackParser(String str) {
+		this.str = str;
+	}
+	
+	/**
+	 * getModPacks
+	 * @return modpacksManager
+	 */
 	public ModPacksManager getModpacks() {
 		return modpacksManager;
 	}
-	/*
-	public static ListModel getList() {
-		read();
-		listModel = new DefaultListModel();
-		for(Pack pack : packs) {
-			listModel.addElement(pack.getId());			
-		}
-		return listModel;
-	}*/
-	
-	
+
 	
 	/**
 	 * Get Modpack.xml
@@ -91,17 +77,16 @@ public class ModPackParser {
 	
 	
 	public void read() throws IOException {
-		modpacksManager = new ModPacksManager();
+		//modpacksManager = new ModPacksManager();
 		InputStream in = null;
 		
 		try {
 			in = new BufferedInputStream(new FileInputStream(modPackXML));
-			System.out.println(modPackXML);
 			
 			Document doc = parseXml(in);
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			
-			XPathExpression idExpr = xpath.compile("id/text()");
+            XPathExpression idExpr = xpath.compile("id/text()");
 			XPathExpression nameExpr = xpath.compile("name/text()");
 			XPathExpression authorExpr = xpath.compile("author/text()");
 			XPathExpression repoVersionExpr = xpath.compile("repoVersion/text()");
@@ -113,6 +98,7 @@ public class ModPackParser {
 			XPathExpression descriptionExpr = xpath.compile("description/text()");
 			XPathExpression modsExpr = xpath.compile("mods/text()");
 			XPathExpression oldVersionsExpr = xpath.compile("oldVersions/text()");
+			XPathExpression isFTBExpr = xpath.compile("isFTB/text()");
 
 			
 			for (Node node : getNodes(doc, xpath.compile("/modpacks/modpack"))) {
@@ -128,12 +114,13 @@ public class ModPackParser {
 				String description = getString(node, descriptionExpr);
 				String mods = getString(node, modsExpr);
 				String oldVersions = getString(node, oldVersionsExpr);
-
+				String isFTB = getString(node, isFTBExpr);
+				boolean ftb = Boolean.parseBoolean(isFTB);
 				//Adding more is possible
 				
 				try {
 					Pack ModPack;
-					ModPack = new Pack(id, name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions);
+					ModPack = new Pack(id, name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions, ftb);
 					modpacksManager.register(ModPack);
 					
 				} catch (MalformedURLException e) {
@@ -164,14 +151,12 @@ public class ModPackParser {
      * 
      * @return true if successful
      */
-    public boolean load() {
+    public void load() {
         try {
             read();
-            return true;
         } catch (IOException e) {
-            System.out.println("YOLO");
+            System.out.println("ERROR: Problem loading modpackParser:: " + e);
         	e.printStackTrace();
-            return false;
         }
     }
 	

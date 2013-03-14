@@ -17,9 +17,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Formatter;
 
-import com.ffnmaster.mclauncher.config.LauncherOptions;
 
-public class FTBDownload {
+public class FTBDownload extends Thread {
 	// Vars
 	public static HashMap<String, String> downloadServers = new HashMap<String, String>();
 	public static boolean serversLoaded = false;
@@ -35,7 +34,7 @@ public class FTBDownload {
 		if (currentmd5.isEmpty()) {
 			currentmd5 = md5("mcepoch1" + getTime());
 		}
-		String resolved = "http://www.creeperrepo.net";
+		String resolved = (downloadServers.containsKey("Automatic")) ? "http://" + downloadServers.get("Automatic") : "http://www.creeperrepo.net";
 		resolved += "/direct/FTB2/" + currentmd5 + "/" + file;
 		HttpURLConnection connection = null;
 		try {
@@ -49,16 +48,16 @@ public class FTBDownload {
 		} catch (IOException e) { }
 		connection.disconnect();
 		System.out.println(resolved);
-		return resolved; 
-		
+		return resolved;
 	}
+	
 	
 	/**
 	 * @param file - the name of the file, as saved to the repo (including extension)
 	 * @return - the direct link
 	 */
 	public static String getStaticCreeperhostLink(String file) {
-		String resolved = "http://www.creeperrepo.net";
+		String resolved = (downloadServers.containsKey("Automatic")) ? "http://" + downloadServers.get("Automatic") : "http://www.creeperrepo.net";
 		resolved += "/static/FTB2/" + file;
 		HttpURLConnection connection = null;
 		try {
@@ -78,6 +77,31 @@ public class FTBDownload {
 		return resolved; 
 	}
 	
+	public static boolean staticFileExists(String file) {
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(getStaticCreeperhostLink(file)).openStream()));
+			return !reader.readLine().toLowerCase().contains("not found");
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * @param file - file on the repo
+	 * @return boolean representing if the file exists 
+	 */
+	public static boolean fileExists(String file) {
+		try {
+			if(currentmd5.isEmpty()) {
+				currentmd5 = md5("mcepoch1" + getTime());
+			}
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new URL("http://www.creeperrepo.net/direct/FTB2/" + currentmd5 + "/" + file).openStream()));
+			return !reader.readLine().toLowerCase().contains("not found");
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
 	public static String md5(String input) throws NoSuchAlgorithmException {
 		String result = input;
 		if (input != null) {
@@ -91,7 +115,8 @@ public class FTBDownload {
 		}
 		return result;
 	}
-		
+	
+	
 	public static String fileMD5(File file) throws IOException {
 		if(!file.exists()) {
 			return "";
@@ -161,6 +186,10 @@ public class FTBDownload {
 		FileOutputStream fos = new FileOutputStream(file);
 		fos.getChannel().transferFrom(rbc, 0, 1 << 24);
 		fos.close();
+	}
+	
+	public static void downloadToFile(String filename, String urlString) throws IOException {
+		downloadToFile(new URL(urlString), new File(filename));
 	}
 	
 	/**

@@ -4,9 +4,9 @@
   <groupId>com.ffnmaster</groupId>
   <artifactId>mclauncher</artifactId>
   <name>FFNMaster's Launcher</name>
-  <version>1.0.2-SNAPSHOT</version>
-  <description>Complete Minecraft Launcher.</description>
-  <url>http://finalfront.nl</url>
+  <version>1.0.3-SNAPSHOT</version>
+  <description>The Ultimate Minecraft launcher, in which you can control multiple versions of Minecraft, you can add Modpacks, including FTB Support. You can also directly connect to servers, manage mods in a special interface, and many more feautures!</description>
+  <url>http://sigmacoders.nl</url>
   <scm>
     <connection>scm:git:git://github.com/ffnmaster/FFNLauncher.git</connection>
     <developerConnection>scm:git:git@github.com:ffnmaster/FFNLauncher.git</developerConnection>

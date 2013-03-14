@@ -385,7 +385,7 @@ public class LauncherOptions {
                 }
                 
                 try {
-                    URL updateUrl = urlString != null ? new URL(urlString) : null;
+                	URL updateUrl = urlString != null ? new URL(urlString) : null;
                     Configuration config;
                     if (basePath != null) {
                         config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, icon, new File(basePath), updateUrl);

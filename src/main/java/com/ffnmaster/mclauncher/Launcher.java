@@ -51,6 +51,7 @@ import javax.swing.SwingUtilities;
 import com.ffnmaster.mclauncher.config.Constants;
 import com.ffnmaster.mclauncher.config.Def;
 import com.ffnmaster.mclauncher.config.LauncherOptions;
+import com.ffnmaster.mclauncher.modpack.FTBDownload;
 import com.ffnmaster.mclauncher.modpack.ModPackParser;
 import com.ffnmaster.mclauncher.modpack.ModPacksManager;
 import com.ffnmaster.mclauncher.security.X509KeyRing;
@@ -72,7 +73,7 @@ public class Launcher {
     
     private static final Logger logger = Logger.getLogger(Launcher.class.getCanonicalName());
     public static final String VERSION;
-	public static int buildNumber = 102;
+	public static int buildNumber = 103;
     private static String noticesText;
     private static boolean skipupdate = true;
 
@@ -132,6 +133,7 @@ public class Launcher {
 		configDir.mkdirs();
         File optionsFile = new File(configDir, "config.xml");
         options = new LauncherOptions(optionsFile);
+        parser = new ModPackParser("modpack.xml");
         
         options.load();
         parser.load();
@@ -162,6 +164,14 @@ public class Launcher {
     public LauncherOptions getOptions() {
         return options;
     }
+    
+    /**
+     * Get the modpacks
+     * @return modpacks
+     */
+	public ModPackParser getModPacks() {
+		return parser;
+	}
     
     /**
      * Get the key ring.
@@ -554,7 +564,7 @@ public class Launcher {
      */
     public static void main(String[] args) {
         // DEBUG
-    	System.out.println("DEBUG: Starting FFNLauncher build: " + buildNumber + " :SNAPSHOT --" + VERSION);
+    	System.out.println("DEBUG: Starting FFNLauncher build: " + VERSION);
     	
     	int yomamarocks = 2;  
     	
@@ -575,6 +585,9 @@ public class Launcher {
         final String username = context.get("username");
         final String password = context.get("password");
         final boolean autoLaunch = context.has("launch");
+        
+        FTBDownload thread = new FTBDownload();
+        thread.start();
         
         // DEBUG
         System.out.println("Starting Launcher Window");
@@ -627,4 +640,6 @@ public class Launcher {
             }
         });
     }
+
+
 }

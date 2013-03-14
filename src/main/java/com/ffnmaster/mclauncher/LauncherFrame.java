@@ -116,9 +116,9 @@ public class LauncherFrame extends JFrame {
      * Construct the launcher.
      */
     public LauncherFrame() {
-        setTitle("FFNLauncher v" + Launcher.buildNumber);
-        setSize(600, 500);
-        setResizable(true);
+        setTitle("FFNLauncher v" + Launcher.VERSION);
+        setSize(575, 500);
+        setResizable(false);
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -137,6 +137,7 @@ public class LauncherFrame extends JFrame {
         }
 
         options = Launcher.getInstance().getOptions();
+        parser = Launcher.getInstance().getModPacks();
 
         buildUI();
         
@@ -408,11 +409,17 @@ public class LauncherFrame extends JFrame {
             }
         }
         
+        JPanel rightPanel = new JPanel();
         JPanel leftPanel = new JPanel();
+        JPanel middlePanel = new JPanel(new GridLayout(4,4,4,4));
         leftPanel.setLayout(new BorderLayout());
+        rightPanel.setLayout(new BorderLayout());
+        //middlePanel.setLayout(new BorderLayout());
         
         //add(leftPanel, BorderLayout.LINE_START);
-        add(leftPanel, BorderLayout.CENTER);
+        add(leftPanel, BorderLayout.WEST);
+        add(middlePanel, BorderLayout.CENTER);
+        add(rightPanel, BorderLayout.EAST);
    
 
         JPanel buttonsPanel = new JPanel();
@@ -426,28 +433,32 @@ public class LauncherFrame extends JFrame {
         buttonsPanel.add(optionsBtn);
         //buttonsPanel.add(modpacksBtn);
         
+        JButton installBtn = new JButton(">");
+        JButton removeBtn = new JButton("<");
+	    installBtn.setPreferredSize(new Dimension(5,5));
+	    removeBtn.setPreferredSize(new Dimension(5,5));
+        
+        middlePanel.add(installBtn, BorderLayout.WEST);
+        middlePanel.add(removeBtn, BorderLayout.WEST);
+        
         JPanel root = new JPanel();
         root.setBorder(BorderFactory.createEmptyBorder(0, PAD, PAD, PAD));
         root.setLayout(new BoxLayout(root, BoxLayout.Y_AXIS));
         root.add(createLoginPanel());
         root.add(buttonsPanel);
         leftPanel.add(root, BorderLayout.SOUTH);
-        
+        leftPanel.add(middlePanel, BorderLayout.EAST);
+
         
         JPanel modPacksPanel = new JPanel();
         modPacksPanel.setLayout(new BorderLayout(0,0));
-        modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, 0, PAD, PAD));
-        
-        // OLD
-        //modPackList = new JList(parser.getModpacks());
-        
-        // NEW
+        modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
         modPackList = new JList(parser.getModpacks());
-        modPackList.setCellRenderer(new ModPacksCellRenderer());
+        modPackList.setCellRenderer(new ConfigurationCellRenderer());
         modPackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane modPacksScroll = new JScrollPane(modPackList);
-        modPacksPanel.add(modPacksScroll, BorderLayout.CENTER);
-        leftPanel.add(modPacksPanel, BorderLayout.EAST);
+        modPacksPanel.add(modPacksScroll, BorderLayout.WEST);
+        leftPanel.add(modPacksPanel, BorderLayout.WEST);
 
         JPanel configurationsPanel = new JPanel();
         configurationsPanel.setLayout(new BorderLayout(0, 0));
@@ -457,7 +468,7 @@ public class LauncherFrame extends JFrame {
         configurationList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane configScroll = new JScrollPane(configurationList);
         configurationsPanel.add(configScroll, BorderLayout.CENTER);
-        leftPanel.add(configurationsPanel, BorderLayout.CENTER);
+        rightPanel.add(configurationsPanel, BorderLayout.EAST);
         
         
         // Add listener
@@ -485,6 +496,7 @@ public class LauncherFrame extends JFrame {
                 }
             }
         });
+        
         
         configurationList.addListSelectionListener(new ListSelectionListener() {
             @Override

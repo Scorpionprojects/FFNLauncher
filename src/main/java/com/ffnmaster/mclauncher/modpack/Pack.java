@@ -23,6 +23,7 @@ import com.ffnmaster.mclauncher.modpack.Loader;
 
 public class Pack {
 	private String id, name, author, repoVersion, url, dir, mcVersion, serverPack, logoName, description, sep = File.separator;
+	boolean isFTB;
 	private String[] mods, oldVersions;
 	private Image logo;
 	private int index;
@@ -111,22 +112,24 @@ public class Pack {
 	}*/
 	
 	/**
-	 * The Modpack itself (DAM DAM DAM)
+	 * The Modpack itself
 	 * @return
 	 */
 	// name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions
 	public Pack(String id, String name, String author, String repoVersion, String logo, String url, String dir, String mcVersion, String serverPack, String description, String mods, 
-			String oldVersions) throws IOException, NoSuchAlgorithmException {
+			String oldVersions, boolean isFTB) throws IOException, NoSuchAlgorithmException {
 		this.id = id;
-		this.name = name;
+		setName(name);
 		this.author = author;
 		this.repoVersion = repoVersion;
 		this.dir = dir;
 		this.mcVersion = mcVersion;
 		this.url = url;
 		this.serverPack = serverPack;
+		this.isFTB = isFTB;
 		logoName = logo;
 		this.description = description;
+		
 		if(mods.isEmpty()) {
 			this.mods = null;
 		} else {
@@ -142,7 +145,13 @@ public class Pack {
 		File verFile = new File(tempDir, "version");
 		URL url_;
 		if(!upToDate(verFile)) {
-			url_ = new URL(Launcher.getUpdateLink(logo));
+			if(isFTB == true) {
+				url_ = new URL(FTBDownload.getStaticCreeperhostLink(logo));
+			} else {
+				url_ = new URL(Launcher.getUpdateLink(logo));
+			}
+
+			
 			this.logo = Toolkit.getDefaultToolkit().createImage(url_);
 			BufferedImage tempImg = ImageIO.read(url_);
 			ImageIO.write(tempImg, "png", new File(tempDir, logo));
@@ -151,7 +160,13 @@ public class Pack {
 			if (new File(tempDir, logo).exists()) {
 				this.logo = Toolkit.getDefaultToolkit().createImage(tempDir.getPath() + sep + logo);
 			} else {
-				url_ = new URL(Launcher.getUpdateLink(logo));
+				if(isFTB == true) {
+					url_ = new URL(FTBDownload.getStaticCreeperhostLink(logo));
+				} else {
+					url_ = new URL(Launcher.getUpdateLink(logo));
+				}
+				System.out.println(url_);
+				
 				this.logo = Toolkit.getDefaultToolkit().createImage(url_);
 				BufferedImage tempImg = ImageIO.read(url_);
 				ImageIO.write(tempImg, "png", new File(tempDir, logo));
@@ -272,11 +287,12 @@ public class Pack {
 	
 	public String getTitle() {
 		String title;
-		if (Integer.parseInt(repoVersion.replace(".", "")) == 0) {
+		/*if (Integer.parseInt(repoVersion.replace(".", "")) == 0) {
 			title = name;
 		} else {
 			title = name + " | " + repoVersion;
-		}
+		}*/
+		title = name + "|" + repoVersion;
 		
 		return title;
 	}
@@ -377,9 +393,9 @@ public class Pack {
 	 * @param name name
 	 */
 	public void setName(String name) {
-		if(!name.matches("^.{1,32}$")) {
+		/*if(!name.matches("^.{1,32}$")) {
 			throw new IllegalArgumentException("Invalid Name");
-		}
+		}*/
 		this.name = name;
 	}
 	

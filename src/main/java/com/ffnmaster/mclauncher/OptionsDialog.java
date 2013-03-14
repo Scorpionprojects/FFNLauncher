@@ -47,6 +47,7 @@ import javax.swing.text.DefaultCaret;
 import com.ffnmaster.mclauncher.config.Configuration;
 import com.ffnmaster.mclauncher.config.ConfigurationsManager;
 import com.ffnmaster.mclauncher.config.LauncherOptions;
+import com.ffnmaster.mclauncher.modpack.ModPackParser;
 import com.ffnmaster.mclauncher.util.UIUtil;
 
 /**
@@ -61,6 +62,9 @@ public class OptionsDialog extends JDialog {
     private JTable configsTable;
     private JTabbedPane tabs;
     private List<OptionsPanel> optionsPanels = new ArrayList<OptionsPanel>();
+    
+    //DEVEL
+    private ModPackParser parser;
 
     /**
      * Construct the dialog.
@@ -138,6 +142,7 @@ public class OptionsDialog extends JDialog {
         tabs.addTab("Environment",
                 wrap(new EnvironmentOptionsPanel(options.getSettings(), false)));
         tabs.addTab("Configurations", buildConfigurationsPanel());
+        tabs.addTab("ModPacks", modPackControl());
         tabs.addTab("About", buildAboutPanel());
         container.add(tabs, BorderLayout.CENTER);
 
@@ -168,7 +173,13 @@ public class OptionsDialog extends JDialog {
 
         add(container, BorderLayout.CENTER);
     }
-
+    
+    
+    private JPanel modPackControl() {
+    	JPanel panel = new JPanel();
+    	return panel;
+    }
+    
     /**
      * Build the configurations panel.
      * 
@@ -204,6 +215,8 @@ public class OptionsDialog extends JDialog {
         configsTable
                 .setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         configsTable.setModel(options.getConfigurations());
+        //configsTable.setModel(parser.getModpacks());
+        
         configsTable.getColumnModel().getColumn(0).setPreferredWidth(30);
         JScrollPane tableScroll = new JScrollPane(configsTable);
         panel.add(tableScroll, BorderLayout.CENTER);
