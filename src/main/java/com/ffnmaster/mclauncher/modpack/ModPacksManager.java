@@ -27,7 +27,7 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 	/**
 	 * Get Default pack (NONESENSE)
 	 */
-	public Pack getPack() {
+	public Pack getDefaultPack() {
 		return defaultPack;
 	}
 	
@@ -52,6 +52,7 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 	 */
 	public void register(Pack pack) {
 		int index = modPackList.indexOf(pack);
+		modpacks.put(pack.getId(), pack);
 		
 		if(index == -1) {
 			modPackList.add(pack);

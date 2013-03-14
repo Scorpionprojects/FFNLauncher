@@ -77,7 +77,7 @@ public class ModPackParser {
 	
 	
 	public void read() throws IOException {
-		//modpacksManager = new ModPacksManager();
+		modpacksManager = new ModPacksManager();
 		InputStream in = null;
 		
 		try {
