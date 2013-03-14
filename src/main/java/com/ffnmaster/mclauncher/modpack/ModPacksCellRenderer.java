@@ -19,25 +19,28 @@ import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
 import com.ffnmaster.mclauncher.Launcher;
+import com.ffnmaster.mclauncher.modpack.Pack;
 
 public class ModPacksCellRenderer implements ListCellRenderer {
 	private static final int PAD = 5;
 	private static BufferedImage defaultIcon;
+	private JLabel logo;
 	
-	static {
-		try {
-			InputStream in = Launcher.class
-					.getResourceAsStream("/resources/config_icon.png");
-			if (in != null) {
-				defaultIcon = ImageIO.read(in);
-			} 
-		} catch (IOException e) {}
-	}
+    static {
+        try {
+        	InputStream in = Launcher.class
+                    .getResourceAsStream("/resources/config_icon.png");
+            if (in != null) {
+                defaultIcon = ImageIO.read(in);
+            }
+        } catch (IOException e) {
+        }
+    }
 	
-	
+	@Override
 	public Component getListCellRendererComponent(final JList list, final Object value,
 	        
-    		int index, final boolean isSelected, boolean cellHasFocus) {
+    	int index, final boolean isSelected, boolean cellHasFocus) {
 		final Pack pack = (Pack) value;
 		
 		

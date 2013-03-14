@@ -390,7 +390,7 @@ public class AddonManagerDialog extends JDialog {
         JButton downBtn = new JButton("Downgrade");
         JButton toolsBtn = new JButton("Tools...");
         
-        panel.add(downBtn);
+        //panel.add(downBtn);
         panel.add(toolsBtn);
         
         downBtn.addActionListener(new ActionListener() {
