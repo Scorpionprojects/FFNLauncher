@@ -98,7 +98,7 @@ public class LauncherFrame extends JFrame {
     private JComboBox jarCombo;
     private JComboBox userText;
     private JTextField passText;
-    private JTextField serverText;
+    private JComboBox serverText;
     private JCheckBox rememberPass;
     private JCheckBox forceUpdateCheck;
     private JCheckBox playOfflineCheck;
@@ -117,8 +117,12 @@ public class LauncherFrame extends JFrame {
      */
     public LauncherFrame() {
         setTitle("FFNLauncher v" + Launcher.VERSION);
-        setSize(575, 500);
+        setSize(500, 500);
         setResizable(false);
+        
+        if (isResizable() == true) {
+        	System.out.println("WARNING: Window is resizable! Turn off before release");
+        }
         
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -425,21 +429,19 @@ public class LauncherFrame extends JFrame {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new GridLayout(1, 3, 3, 0));
         playBtn = new JButton("Play");
-        JButton modpacksBtn = new JButton("Modpacks");
         final JButton optionsBtn = new JButton("Options...");
         JButton addonsBtn = new JButton("Addons...");
         buttonsPanel.add(playBtn);
         buttonsPanel.add(addonsBtn);
         buttonsPanel.add(optionsBtn);
-        //buttonsPanel.add(modpacksBtn);
         
         JButton installBtn = new JButton(">");
         JButton removeBtn = new JButton("<");
 	    installBtn.setPreferredSize(new Dimension(5,5));
 	    removeBtn.setPreferredSize(new Dimension(5,5));
         
-        middlePanel.add(installBtn, BorderLayout.WEST);
-        middlePanel.add(removeBtn, BorderLayout.WEST);
+        //middlePanel.add(installBtn, BorderLayout.WEST);
+        //middlePanel.add(removeBtn, BorderLayout.WEST);
         
         JPanel root = new JPanel();
         root.setBorder(BorderFactory.createEmptyBorder(0, PAD, PAD, PAD));
@@ -454,7 +456,11 @@ public class LauncherFrame extends JFrame {
         modPacksPanel.setLayout(new BorderLayout(0,0));
         modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
         modPackList = new JList(parser.getModpacks());
-        modPackList.setCellRenderer(new ModPacksCellRenderer());
+        modPackList.setFixedCellWidth(250);
+        modPackList.setFixedCellHeight(50);
+        
+        
+        //modPackList.setCellRenderer(new ConfigurationCellRenderer());
         modPackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane modPacksScroll = new JScrollPane(modPackList);
         modPacksPanel.add(modPacksScroll, BorderLayout.WEST);
@@ -563,7 +569,7 @@ public class LauncherFrame extends JFrame {
 
         jarCombo = new JComboBox();
         userText = new JComboBox();
-        serverText = new JTextField(30);
+        serverText = new JComboBox();
         userText.setEditable(true);
         passText = new JPasswordField(20);
         jarLabel.setLabelFor(jarCombo);
@@ -602,7 +608,7 @@ public class LauncherFrame extends JFrame {
         panel.add(passLabel, labelC);
         panel.add(passText, fieldC);
         panel.add(serverLabel, labelC);
-        panel.add(serverText, fieldD);
+        panel.add(serverText, fieldC);
         panel.add(autoConnectCheck, checkboxC);
         panel.add(rememberPass, checkboxC);
         panel.add(forceUpdateCheck, checkboxC);
@@ -610,7 +616,7 @@ public class LauncherFrame extends JFrame {
         panel.add(showConsoleCheck, checkboxC);
         panel.add(expandContainer, checkboxC);
 
-        autoConnectCheck.setVisible(true);
+        autoConnectCheck.setVisible(false);
         jarLabel.setVisible(false);
         jarCombo.setVisible(false);
         forceUpdateCheck.setVisible(false);
@@ -671,16 +677,6 @@ public class LauncherFrame extends JFrame {
                 	parseServer();
                 }
             }
-        });
-        
-        serverText.addKeyListener(new KeyAdapter() {
-        	@Override
-        	public void keyReleased(KeyEvent e) {
-        		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-        			String serverAddress = serverText.getText();
-        			launch(serverAddress);
-        		}
-        	}
         });
         
         expandBtn.addActionListener(new ActionListener() {
@@ -773,7 +769,7 @@ public class LauncherFrame extends JFrame {
             menuItem.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    launch(servers.get(name));
+                    launch(/*servers.get(name)*/);
                 }
             });
             popup.add(menuItem);
@@ -870,13 +866,13 @@ public class LauncherFrame extends JFrame {
      */
     public void parseServer() {
     	// Server Address String
-    	String serverAddress = serverText.getText();
+    	JComboBox serverAddress = serverText;
     	boolean yes = autoConnectCheck.isSelected();
     	
         if (yes == false) {
             launch();
         } else {
-            launch(serverAddress);
+            launch();
         }
     }
     
@@ -887,9 +883,9 @@ public class LauncherFrame extends JFrame {
         launch(null, false);
     }
 
-    public void launch(String autoConnect) {
+    /*public void launch(String autoConnect) {
         launch(autoConnect, false);
-    }
+    }*/
     /**
      * Launch the game.
      * 

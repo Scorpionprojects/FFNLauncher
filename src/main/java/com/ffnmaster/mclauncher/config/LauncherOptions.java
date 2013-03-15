@@ -57,6 +57,7 @@ import com.ffnmaster.mclauncher.util.SimpleNode;
 import com.ffnmaster.mclauncher.util.Util;
 import com.ffnmaster.mclauncher.util.XMLUtil;
 import com.ffnmaster.mclauncher.modpack.ModPacksManager;
+import com.ffnmaster.mclauncher.modpack.Repository;
 
 import static com.ffnmaster.mclauncher.util.XMLUtil.*;
 
@@ -74,8 +75,6 @@ public class LauncherOptions {
     private File file;
     private String lastConfigName;
     private String lastUsername;
-    private String lastServer;
-    private String ftbURL;
     private File lastInstallDir;
     private ServerHotListManager serverHotList = new ServerHotListManager();
     private ConfigurationsManager configsManager = new ConfigurationsManager();
@@ -83,6 +82,7 @@ public class LauncherOptions {
     private Map<String, String> identities = new HashMap<String, String>();
     private SettingsList defaultSettings = new SettingsList();
     private SettingsList settings = new SettingsList(defaultSettings);
+    private Repository repository = new Repository();
     
     /**
      * Construct the options based off of the given file.
@@ -241,31 +241,8 @@ public class LauncherOptions {
     public void setLastUsername(String lastUsername) {
         this.lastUsername = lastUsername;
     }
-    
-    /**
-     * Get the last entered server
-     * @return lastServername servername
-     */
-    public String getLastServer() {
-    	return lastServer;
-    }
-    
-    /**
-     * Set the last connected server
-     * @param lastServer lastServer
-     */
-    public void setLastServer(String lastServer) {
-    	this.lastServer = lastServer;
-    }
-    
-    public void setftbURL(String ftbURL) {
-    	this.ftbURL = ftbURL;
-    }
-    
-    public String getftbURL() {
-    	return ftbURL;
-    }
-    
+        
+   
     /**
      * Gets the directory of where addons were last installed from.
      * 
@@ -314,8 +291,6 @@ public class LauncherOptions {
             XPath xpath = XPathFactory.newInstance().newXPath();
 
             lastUsername = getStringOrNull(doc, xpath.compile("/launcher/username"));
-            lastServer = getStringorNull(doc, xpath.compile("/launcher/servername"));
-            ftbURL = getStringorNull(doc, xpath.compile("/launcher/ftbdownloadurl"));
             lastConfigName = getStringOrNull(doc,
                     xpath.compile("/launcher/lastConfiguration"));
             lastInstallDir = Util.getClosestDirectory(getStringOrNull(doc,
@@ -421,6 +396,15 @@ public class LauncherOptions {
             for (Node node : getNodes(doc, xpath.compile("/launcher/settings"))) {
                 settings.read(node);
             }
+            
+            for (Node node : getNodes(doc, xpath.compile("/launcher/repository/repo"))) {
+                XPathExpression urlExpr= xpath.compile("url/text()");
+                XPathExpression repoNameExpr = xpath.compile("name/text()");
+            	String url = getString(node, urlExpr);
+            	String repoName = getString(node, repoNameExpr);
+            	repository.register(repoName, url);
+            }
+            
         } catch (FileNotFoundException e) {
         } catch (InvalidKeyException e) {
             throw new IOException(e);
@@ -462,8 +446,6 @@ public class LauncherOptions {
             SimpleNode root = start(doc, "launcher");
             
             root.addNode("username").addValue(lastUsername);
-            root.addNode("servername").addValue(lastServer);
-            root.addNode("ftbdownloadurl").addValue(ftbURL);
             root.addNode("lastConfiguration").addValue(lastConfigName);
             root.addNode("lastInstallDirectory").addValue(
                     lastInstallDir != null ? lastInstallDir
@@ -508,6 +490,14 @@ public class LauncherOptions {
                     serverNode.addNode("address").addValue(serverHotList.get(name));
                 }
             }
+            
+            SimpleNode repoNode = root.addNode("repository");
+            for (String repo : repository.getRepoNames()) {
+            	SimpleNode repoInputNode = repoNode.addNode("repo");
+            	repoInputNode.addNode("name").addValue(repo);
+            	repoInputNode.addNode("url").addValue(repository.get(repo));
+            }
+            
             
             SimpleNode settingsNode = root.addNode("settings");
             settings.write(settingsNode.getNode());

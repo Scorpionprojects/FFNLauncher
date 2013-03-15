@@ -60,6 +60,7 @@ public class OptionsDialog extends JDialog {
     private static final long serialVersionUID = -1889866989693082182L;
     private LauncherOptions options;
     private JTable configsTable;
+    private JTable modPacksTable;
     private JTabbedPane tabs;
     private List<OptionsPanel> optionsPanels = new ArrayList<OptionsPanel>();
     
@@ -175,8 +176,42 @@ public class OptionsDialog extends JDialog {
     }
     
     
+    /**
+     * Build the modpack and repo control panel
+     * @return created panel
+     */
     private JPanel modPackControl() {
-    	JPanel panel = new JPanel();
+        final OptionsDialog self = this;
+
+        JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+        JButton newBtn = new JButton("Add Source");
+        buttonsPanel.add(newBtn);
+        buttonsPanel.add(Box.createHorizontalStrut(3));
+        JButton modifyBtn = new JButton("Remove Source");
+        buttonsPanel.add(modifyBtn);
+        buttonsPanel.add(Box.createHorizontalGlue());
+        panel.add(buttonsPanel);
+        
+        panel.add(Box.createVerticalStrut(3));
+        modPacksTable = new JTable();
+        modPacksTable.setShowGrid(false);
+        modPacksTable.setRowHeight(modPacksTable.getRowHeight() +2);
+        modPacksTable.setIntercellSpacing(new Dimension(0,0));
+        modPacksTable.setFillsViewportHeight(true);
+        modPacksTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        //modPacksTable.setModel(parser.getModpacks());
+        //modPacksTable.getColumnModel().getColumn(0).setPreferredWidth(30);
+        JScrollPane tableScroll = new JScrollPane(modPacksTable);
+        panel.add(tableScroll, BorderLayout.CENTER);
+        
+        UIUtil.removeOpaqueness(modPacksTable);
+        
     	return panel;
     }
     

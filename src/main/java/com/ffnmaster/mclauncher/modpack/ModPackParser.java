@@ -20,9 +20,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
+import com.ffnmaster.mclauncher.util.SimpleNode;
 import com.ffnmaster.mclauncher.util.Util;
+import com.ffnmaster.mclauncher.modpack.Repository;
 
 import static com.ffnmaster.mclauncher.util.XMLUtil.*;
+
 
 
 /**
@@ -34,7 +37,8 @@ public class ModPackParser {
 	private File file;
 	private ModPacksManager modpacksManager = new ModPacksManager();
 	private List ModPacksList;
-	//private final static ArrayList<Pack> packs = new ArrayList<Pack>();
+	private Repository repository = new Repository();
+	
 	
 	static File modPackXML = getModpackXML();
 	
@@ -144,6 +148,34 @@ public class ModPackParser {
             Util.close(in);
         }
 		
+	}
+	
+	public void parseModPacks() throws IOException {
+		try {
+			Document doc = newXml();
+			SimpleNode root = start(doc, "modpacks");
+			
+			/*
+			 * 
+			 * INSERT FTB DOWNLOAD HERE
+			 * 
+			 */
+			
+			
+			for (String url : repository.getRepoNames()) {
+				
+				
+				
+				
+				
+			}
+			
+			
+			
+			
+		} catch (Exception e) {
+			System.out.println("EXCEPTION:: " + e);
+		}
 	}
 	
     /**
