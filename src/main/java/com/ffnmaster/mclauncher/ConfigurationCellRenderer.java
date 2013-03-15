@@ -17,6 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
+
 import com.ffnmaster.mclauncher.config.Configuration;
 
 public class ConfigurationCellRenderer implements ListCellRenderer {

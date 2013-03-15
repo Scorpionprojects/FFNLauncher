@@ -1,6 +1,5 @@
 package com.ffnmaster.mclauncher.modpack;
 
-import java.awt.List;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,8 +34,8 @@ import static com.ffnmaster.mclauncher.util.XMLUtil.*;
 public class ModPackParser {
 	private String str;
 	private File file;
+	private File settingsFile;
 	private ModPacksManager modpacksManager = new ModPacksManager();
-	private List ModPacksList;
 	private Repository repository = new Repository();
 	
 	
@@ -151,9 +150,15 @@ public class ModPackParser {
 	}
 	
 	public void parseModPacks() throws IOException {
+		InputStream input = null;
+		
+		
 		try {
 			Document doc = newXml();
-			SimpleNode root = start(doc, "modpacks");
+			input = new BufferedInputStream(new FileInputStream(settingsFile));
+			Document settingsDoc = parseXml(input);
+			
+			
 			
 			/*
 			 * 

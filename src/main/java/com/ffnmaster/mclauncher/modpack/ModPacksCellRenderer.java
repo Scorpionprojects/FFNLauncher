@@ -37,20 +37,20 @@ public class ModPacksCellRenderer implements ListCellRenderer {
     }
 	
 	@Override
-	public Component getListCellRendererComponent(final JList list, final Object value,
+	public Component getListCellRendererComponent(final JList list2, final Object value,
 	        
     	int index, final boolean isSelected, boolean cellHasFocus) {
 		final Pack pack = (Pack) value;
 		
 		
-		JIconPanel panel = new JIconPanel(pack.getIcon());
+		JIconPanel panel = new JIconPanel(null);
 		panel.setLayout(new GridLayout(2, 1, 0, 1));
-		panel.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
+		panel.setBackground(isSelected ? list2.getSelectionBackground() : list2.getBackground());
 		panel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD * 2 + 32, PAD, PAD));
 		
 		JLabel titleLabel = new JLabel();
-		titleLabel.setText(pack.getTitle());
-        titleLabel.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
+		titleLabel.setText("YOLO");
+        titleLabel.setForeground(isSelected ? list2.getSelectionForeground() : list2.getForeground());
 		Font font = titleLabel.getFont();
 		font = font.deriveFont((float) (font.getSize() * 1.3)).deriveFont(Font.BOLD);
 		titleLabel.setFont(font);
@@ -60,33 +60,36 @@ public class ModPacksCellRenderer implements ListCellRenderer {
 		String author;
 		author = pack.getAuthor();
 		JLabel infoLabel = new JLabel();
-		infoLabel.setText(author);
-		Color color = isSelected ? list.getSelectionForeground() : list.getForeground();
+				
+		infoLabel.setText("Indeed");
+		Color color = isSelected ? list2.getSelectionForeground() : list2.getForeground();
 		infoLabel.setForeground(color);
 		panel.add(infoLabel);
 		
 		return panel;
 	}
 	
-	private static class JIconPanel extends JPanel {
-		private static final long serialVersionUID = 6455230127195332368L;
-		private BufferedImage icon;
-		
-		public JIconPanel(BufferedImage icon) {
-			this.icon = icon;
-		}
-		
-		@Override
-		public void paintComponent(Graphics g) {
-			super.paintComponent(g);
-			Dimension dim = getPreferredSize();
-			if (icon != null) {
-				g.drawImage(icon, PAD, (int) ((dim.getHeight() -32) / 2 ), null);
-			} else if (defaultIcon != null) {
-                g.drawImage(defaultIcon, PAD, (int) ((dim.getHeight() - 32) / 2), null);
-			}
-		}
-	}
+    private static class JIconPanel extends JPanel {
+        
+        private static final long serialVersionUID = 6455230127195332368L;
+        private BufferedImage icon;
+        
+        public JIconPanel(BufferedImage icon) {
+            this.icon = icon;
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Dimension dim = getPreferredSize();
+            if (icon != null) {
+                g.drawImage(icon, PAD, (int) ((dim.getHeight() - 32) / 2), null);    
+            } else if (defaultIcon != null) {
+                g.drawImage(defaultIcon, PAD, (int) ((dim.getHeight() - 32) / 2), null);    
+            }
+        }
+        
+    }
 	
 	
 	

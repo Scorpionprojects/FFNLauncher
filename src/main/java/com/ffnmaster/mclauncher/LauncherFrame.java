@@ -458,9 +458,7 @@ public class LauncherFrame extends JFrame {
         modPackList = new JList(parser.getModpacks());
         modPackList.setFixedCellWidth(250);
         modPackList.setFixedCellHeight(50);
-        
-        
-        //modPackList.setCellRenderer(new ConfigurationCellRenderer());
+        modPackList.setCellRenderer(new ModPacksCellRenderer());
         modPackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane modPacksScroll = new JScrollPane(modPackList);
         modPacksPanel.add(modPacksScroll, BorderLayout.WEST);
