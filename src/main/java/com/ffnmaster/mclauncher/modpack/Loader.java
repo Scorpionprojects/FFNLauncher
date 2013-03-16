@@ -81,21 +81,7 @@ public class Loader extends Thread{
 				}
 				
 				NodeList modPacks = doc.getElementsByTagName("modpack");
-				for(int i = 0; i < modPacks.getLength(); i++) {
-					Node modPackNode = modPacks.item(i);
-					NamedNodeMap modPackattr = modPackNode.getAttributes();
-					try {
-						Pack.addPack(new Pack(modPackattr.getNamedItem("name").getTextContent(), modPackattr.getNamedItem("author").getTextContent(),
-								modPackattr.getNamedItem("repoVersion").getTextContent(), modPackattr.getNamedItem("logo").getTextContent(),
-								modPackattr.getNamedItem("url").getTextContent(), modPackattr.getNamedItem("dir").getTextContent(), modPackattr.getNamedItem("mcVersion").getTextContent(), 
-								modPackattr.getNamedItem("serverPack").getTextContent(), modPackattr.getNamedItem("description").getTextContent(),
-								modPackattr.getNamedItem("mods") != null ? modPackattr.getNamedItem("mods").getTextContent() : "", 
-								modPackattr.getNamedItem("oldVersions") != null ? modPackattr.getNamedItem("oldVersions").getTextContent() : ""));
-						counter++;
-					} catch (Exception e) {
-						System.out.println(e);
-					}
-				}
+
 				try {
 					modPackStream.close();
 				} catch (IOException e) { }

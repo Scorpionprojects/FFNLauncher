@@ -355,9 +355,13 @@ public class OptionsDialog extends JDialog {
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(label);
 
-        LinkButton btn = new LinkButton("http://www.finalfront.nl");
+        LinkButton btn = new LinkButton("http://sigmacoders.nl");
         btn.setAlignmentX(Component.LEFT_ALIGNMENT);
         panel.add(btn);
+        
+        LinkButton btn2 = new LinkButton("Source Code");
+        btn.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(btn2);
 
         panel.add(Box.createVerticalStrut(20));
 
@@ -380,8 +384,15 @@ public class OptionsDialog extends JDialog {
         btn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                UIUtil.openURL("http://www.finalfront.nl", self);
+                UIUtil.openURL("http://sigmacoders.nl", self);
             }
+        });
+        
+        btn2.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		UIUtil.openURL("http://github.com/ffnmaster/FFNLauncher", self);
+        	}
         });
         
         // Fetch notices

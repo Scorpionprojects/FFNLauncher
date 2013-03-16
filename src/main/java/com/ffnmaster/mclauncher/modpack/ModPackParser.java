@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,12 +17,16 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.ffnmaster.mclauncher.Launcher;
 import com.ffnmaster.mclauncher.util.SimpleNode;
 import com.ffnmaster.mclauncher.util.Util;
 import com.ffnmaster.mclauncher.modpack.Repository;
+import com.ffnmaster.mclauncher.modpack.FTBDownload;
 
 import static com.ffnmaster.mclauncher.util.XMLUtil.*;
 
@@ -34,7 +39,7 @@ import static com.ffnmaster.mclauncher.util.XMLUtil.*;
 public class ModPackParser {
 	private String str;
 	private File file;
-	private File settingsFile;
+	private static File settingsFile;
 	private ModPacksManager modpacksManager = new ModPacksManager();
 	private Repository repository = new Repository();
 	
@@ -95,7 +100,6 @@ public class ModPackParser {
 			XPathExpression repoVersionExpr = xpath.compile("repoVersion/text()");
 			XPathExpression logoExpr = xpath.compile("logo/text()");
 			XPathExpression urlExpr = xpath.compile("url/text()");
-			XPathExpression dirExpr = xpath.compile("dir/text()");
 			XPathExpression mcVersionExpr = xpath.compile("mcVersion/text()");
 			XPathExpression serverPackExpr = xpath.compile("serverPack/text()");
 			XPathExpression descriptionExpr = xpath.compile("description/text()");
@@ -111,7 +115,6 @@ public class ModPackParser {
 				String repoVersion = getString(node, repoVersionExpr);
 				String logo = getString(node, logoExpr);
 				String url = getString(node, urlExpr);
-				String dir = getString(node, dirExpr);
 				String mcVersion = getString(node, mcVersionExpr);
 				String serverPack = getString(node, serverPackExpr);
 				String description = getString(node, descriptionExpr);
@@ -123,7 +126,7 @@ public class ModPackParser {
 				
 				try {
 					Pack ModPack;
-					ModPack = new Pack(id, name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions, ftb);
+					ModPack = new Pack(id, name, author, repoVersion, logo, url, mcVersion, serverPack, description, mods, oldVersions, ftb);
 					modpacksManager.register(ModPack);
 					
 				} catch (MalformedURLException e) {
@@ -149,38 +152,156 @@ public class ModPackParser {
 		
 	}
 	
-	public void parseModPacks() throws IOException {
+	public static void parseModPacks() {
 		InputStream input = null;
-		
+		File configDir = Launcher.getConfigDir();
+		File optionsFile = new File(configDir, "config.xml");
 		
 		try {
+			// Writing Component
+			modPackXML.delete(); // MUHAHAHA
+			
 			Document doc = newXml();
-			input = new BufferedInputStream(new FileInputStream(settingsFile));
+			SimpleNode root = start(doc, "modpacks");
+			
+			// Reading Component
+			input = new BufferedInputStream(new FileInputStream(optionsFile));
+			
 			Document settingsDoc = parseXml(input);
+			XPath readPath = XPathFactory.newInstance().newXPath();
 			
 			
+			// FTB Import
+			File downloadDir = getTempDir();
+			downloadDir.mkdirs();
+			String FTBUrl = FTBDownload.getStaticCreeperhostLink("modpacks.xml");
+			File tempFile = new File(downloadDir, "tempfile.xml");
+			URL FTBUrl_ = new URL(FTBUrl);
+			FTBDownload.downloadToFile(FTBUrl_, tempFile);
+			// Reading the temporal XML file
+			InputStream tempFTBInput = null;
+			tempFTBInput = new BufferedInputStream(new FileInputStream(tempFile));
+			Document tempFTBDoc = parseXml(tempFTBInput);
 			
-			/*
-			 * 
-			 * INSERT FTB DOWNLOAD HERE
-			 * 
-			 */
 			
+			XPathExpression nameExpr = readPath.compile("name/text()");
+			XPathExpression authorExpr = readPath.compile("author/text()");
+			XPathExpression repoVersionExpr = readPath.compile("repoVersion/text()");
+			XPathExpression logoExpr = readPath.compile("logo/text()");
+			XPathExpression modPackurlExpr = readPath.compile("url/text()");
+			XPathExpression mcVersionExpr = readPath.compile("mcVersion/text()");
+			XPathExpression serverPackExpr = readPath.compile("serverPack/text()");
+			XPathExpression descriptionExpr = readPath.compile("description/text()");
+			XPathExpression modsExpr = readPath.compile("mods/text()");
+			XPathExpression oldVersionsExpr = readPath.compile("oldVersions/text()");
+			XPathExpression isFTBExpr = readPath.compile("isFTB/text()");
 			
-			for (String url : repository.getRepoNames()) {
-				
-				
-				
-				
-				
+			NodeList modPacks = tempFTBDoc.getElementsByTagName("modpack");
+			for (int i=0;i<modPacks.getLength(); i++) {
+				Node modPackNode = modPacks.item(i);
+				NamedNodeMap modPackAttr = modPackNode.getAttributes();
+				try {
+					String name = modPackAttr.getNamedItem("name").getTextContent();
+					String author = modPackAttr.getNamedItem("author").getTextContent();
+					String repoVersion = modPackAttr.getNamedItem("repoVersion").getTextContent();
+					String logo = modPackAttr.getNamedItem("logo").getTextContent();
+					String modPackurl = modPackAttr.getNamedItem("url").getTextContent();
+					String mcVersion = modPackAttr.getNamedItem("mcVersion").getTextContent();
+					String serverPack = modPackAttr.getNamedItem("serverPack").getTextContent();
+					String description = modPackAttr.getNamedItem("description").getTextContent();
+					String mods = modPackAttr.getNamedItem("mods").getTextContent();
+					String oldVersions = modPackAttr.getNamedItem("oldVersions").getTextContent();
+					String isFTB = "true";
+					
+					SimpleNode modpackNode = root.addNode("modpack");
+					modpackNode.addNode("name").addValue(name);
+					modpackNode.addNode("author").addValue(author);
+					modpackNode.addNode("repoVersion").addValue(repoVersion);
+					modpackNode.addNode("logo").addValue(logo);
+					modpackNode.addNode("url").addValue(modPackurl);
+					modpackNode.addNode("mcVersion").addValue(mcVersion);
+					modpackNode.addNode("serverPack").addValue(serverPack);
+					modpackNode.addNode("description").addValue(description);
+					modpackNode.addNode("mods").addValue(mods);
+					modpackNode.addNode("oldVersions").addValue(oldVersions);
+					modpackNode.addNode("isFTB").addValue(isFTB);
+					
+					System.out.println("DEBUG: Added modpack: " + name);
+				} catch (Exception e) {
+					System.out.println("ERROR: Problem in reading FTB modpacks.xml:: " + e);
+				}
 			}
+			tempFTBInput.close();
+			tempFile.delete();
 			
 			
+			// Go by repo by repo
+			for (Node node : getNodes(settingsDoc, readPath.compile("/launcher/repository/repo"))) {
+				XPathExpression urlExpr = readPath.compile("url/text()");
+				XPathExpression repoNameExpr = readPath.compile("name/text()");
+				String url = getString(node, urlExpr);
+				URL url_ = new URL(url);
+				
+				FTBDownload.downloadToFile(url_, tempFile); // DA DOWNLOAD
+				
+				// Reading the temporal XML file
+				InputStream tempInput = null;
+				tempInput = new BufferedInputStream(new FileInputStream(tempFile));
+				
+				Document tempDoc = parseXml(tempInput);
 			
+				// Go by modpack by modpack
+				for (Node modpackread : getNodes(tempDoc, readPath.compile("/modpacks/modpack"))) { 
+					String name = getString(modpackread, nameExpr);
+					String author = getString(modpackread, authorExpr); 
+					String repoVersion = getString(modpackread, repoVersionExpr);
+					String logo = getString(modpackread, logoExpr);
+					String modPackurl = getString(modpackread, modPackurlExpr);
+					String mcVersion = getString(modpackread, mcVersionExpr);
+					String serverPack = getString(modpackread, serverPackExpr);
+					String description = getString(modpackread, descriptionExpr);
+					String mods = getString(modpackread, modsExpr);
+					String oldVersions = getString(modpackread, oldVersionsExpr);
+					String isFTB = "false";
+					
+					
+					SimpleNode modpackNode = root.addNode("modpack");
+					modpackNode.addNode("name").addValue(name);
+					modpackNode.addNode("author").addValue(author);
+					modpackNode.addNode("repoVersion").addValue(repoVersion);
+					modpackNode.addNode("logo").addValue(logo);
+					modpackNode.addNode("url").addValue(modPackurl);
+					modpackNode.addNode("mcVersion").addValue(mcVersion);
+					modpackNode.addNode("serverPack").addValue(serverPack);
+					modpackNode.addNode("description").addValue(description);
+					modpackNode.addNode("mods").addValue(mods);
+					modpackNode.addNode("oldVersions").addValue(oldVersions);
+					modpackNode.addNode("isFTB").addValue(isFTB);
+					
+					System.out.println("DEBUG: Added modpack: " + name);
+					
+				}
+				tempInput.close();
+				tempFile.delete();
+			}
+				
+			writeXml(doc, modPackXML);
 			
 		} catch (Exception e) {
 			System.out.println("EXCEPTION:: " + e);
 		}
+	}
+	
+	public static File getTempDir() {
+		File tempDir = new File(".", "temp.xml");
+		String currentDir = new File(".").getAbsolutePath();
+		
+		if (tempDir.exists()) {
+			return new File(".");
+		}
+		
+		tempDir = new File(currentDir, "temp");
+		return tempDir;
 	}
 	
     /**

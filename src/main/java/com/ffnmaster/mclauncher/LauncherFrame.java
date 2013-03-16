@@ -107,6 +107,7 @@ public class LauncherFrame extends JFrame {
     private String autoConnect;
     private LinkButton expandBtn;
     private JButton playBtn;
+    private JButton renewBtn;
     private LauncherOptions options;
     private ModPackParser parser;
     private TaskWorker worker = new TaskWorker();
@@ -429,11 +430,13 @@ public class LauncherFrame extends JFrame {
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setLayout(new GridLayout(1, 3, 3, 0));
         playBtn = new JButton("Play");
+        renewBtn = new JButton("Refresh");
         final JButton optionsBtn = new JButton("Options...");
         JButton addonsBtn = new JButton("Addons...");
         buttonsPanel.add(playBtn);
         buttonsPanel.add(addonsBtn);
         buttonsPanel.add(optionsBtn);
+        //buttonsPanel.add(renewBtn);
         
         JButton installBtn = new JButton(">");
         JButton removeBtn = new JButton("<");
@@ -458,7 +461,7 @@ public class LauncherFrame extends JFrame {
         modPackList = new JList(parser.getModpacks());
         modPackList.setFixedCellWidth(250);
         modPackList.setFixedCellHeight(50);
-        modPackList.setCellRenderer(new ModPacksCellRenderer());
+       // modPackList.setCellRenderer(new ModPacksCellRenderer());
         modPackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane modPacksScroll = new JScrollPane(modPackList);
         modPacksPanel.add(modPacksScroll, BorderLayout.WEST);
@@ -481,6 +484,13 @@ public class LauncherFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 parseServer();
             }
+        });
+        
+        renewBtn.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+				ModPackParser.parseModPacks();
+        	}
         });
 
         playBtn.addMouseListener(new MouseAdapter() {

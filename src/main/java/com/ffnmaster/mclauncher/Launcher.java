@@ -378,6 +378,7 @@ public class Launcher {
 		configDir = new File(currentDir, "config");
 		return configDir;
 	}
+
 	
 	public static String getLauncherDir() {
 		File currentDir = new File(".");

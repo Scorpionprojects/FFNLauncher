@@ -4,7 +4,7 @@
   <groupId>com.ffnmaster</groupId>
   <artifactId>mclauncher</artifactId>
   <name>FFNMaster's Launcher</name>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.4-SNAPSHOT</version>
   <description>The Ultimate Minecraft launcher, in which you can control multiple versions of Minecraft, you can add Modpacks, including FTB Support. You can also directly connect to servers, manage mods in a special interface, and many more feautures!</description>
   <url>http://sigmacoders.nl</url>
   <scm>

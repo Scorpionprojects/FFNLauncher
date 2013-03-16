@@ -41,7 +41,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -50,6 +52,8 @@ import javax.swing.filechooser.FileFilter;
 
 import com.ffnmaster.mclauncher.config.Configuration;
 import com.ffnmaster.mclauncher.config.ConfigurationsManager;
+import com.ffnmaster.mclauncher.modpack.ModPackParser;
+import com.ffnmaster.mclauncher.modpack.ModPacksCellRenderer;
 import com.ffnmaster.mclauncher.util.SettingsList;
 import com.ffnmaster.mclauncher.util.UIUtil;
 
@@ -60,18 +64,23 @@ import com.ffnmaster.mclauncher.util.UIUtil;
  */
 public class ConfigurationDialog extends JDialog {
 
+    private static final int PAD = 12;
     private static final long serialVersionUID = -7347791965966294361L;
     private OptionsDialog optionsDialog;
     private ConfigurationsManager configsManager;
     private JButton browseBtn;
     private JTextField nameText;
     private JTextField pathText;
+    private JTextField subText;
     private JCheckBox customPathCheck;
     private JTextField urlText;
     private JCheckBox customUpdateCheck;
     private Configuration configuration;
     private SettingsList settings;
     private List<OptionsPanel> optionsPanels = new ArrayList<OptionsPanel>();
+    
+    private JList modPackList;
+    private ModPackParser parser;
     
     /**
      * Start editing a given configuration.
@@ -229,7 +238,7 @@ public class ConfigurationDialog extends JDialog {
         fullFieldConstraints.insets = new Insets(5, 2, 1, 2);
         
         if (configuration != null && configuration.isBuiltIn()) {
-            panel.add(new JLabel("This is a built-in configuration and editing is restricted."), fullFieldConstraints);
+            panel.add(new JLabel("This is the built-in configuration. You cannot edit."), fullFieldConstraints);
             panel.add(Box.createVerticalStrut(10), fullFieldConstraints);
         }
         
@@ -240,16 +249,23 @@ public class ConfigurationDialog extends JDialog {
         panel.add(nameText, fieldConstraints);
 
         JLabel pathLabel = new JLabel("Path:");
+        JLabel subtitleLabel = new JLabel("Description:");
         panel.add(pathLabel, labelConstraints);
+
         customPathCheck = new JCheckBox("Use a custom path");
         customPathCheck.setBorder(null);
-        panel.add(customPathCheck, fieldConstraints);
+        //panel.add(customPathCheck, fieldConstraints);
         panel.add(Box.createGlue(), labelConstraints);
         JPanel pathPanel = new JPanel();
+        JPanel subPanel = new JPanel();
+        subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.X_AXIS));
         pathPanel.setLayout(new BoxLayout(pathPanel, BoxLayout.X_AXIS));
         pathText = new JTextField(30);
+        subText = new JTextField(30);
         pathText.setMaximumSize(pathText.getPreferredSize());
+        subText.setMaximumSize(subText.getPreferredSize());
         nameLabel.setLabelFor(pathText);
+        pathLabel.setLabelFor(subText);
         browseBtn = new JButton("Browse...");
         browseBtn.setPreferredSize(new Dimension(
                 browseBtn.getPreferredSize().width,
@@ -257,20 +273,15 @@ public class ConfigurationDialog extends JDialog {
         pathPanel.add(pathText);
         pathPanel.add(Box.createHorizontalStrut(3));
         pathPanel.add(browseBtn);
+        subPanel.add(subText);
+        subPanel.add(Box.createHorizontalStrut(3));
         panel.add(pathPanel, fieldConstraints);
+        panel.add(subtitleLabel, labelConstraints);
+        panel.add(subPanel, fieldConstraints);
 
         panel.add(Box.createVerticalStrut(10), fullFieldConstraints);
 
-        JLabel urlLabel = new JLabel("Update URL:");
-        panel.add(urlLabel, labelConstraints);
-        customUpdateCheck = new JCheckBox("Use a custom update URL");
-        customUpdateCheck.setBorder(null);
-        panel.add(customUpdateCheck, fieldConstraints);
-        panel.add(Box.createGlue(), labelConstraints);
-        urlText = new JTextField("http://");
-        urlLabel.setLabelFor(urlText);
-        panel.add(urlText, fieldConstraints);
-        
+ 
         browseBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -278,24 +289,20 @@ public class ConfigurationDialog extends JDialog {
             }
         });
 
-        pathText.setEnabled(false);
-        browseBtn.setEnabled(false);
-        customPathCheck.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                pathText.setEnabled(((JCheckBox) e.getSource()).isSelected());
-                browseBtn.setEnabled(((JCheckBox) e.getSource()).isSelected());
-            }
-        });
+        pathText.setEnabled(true);
+        subText.setEnabled(true);
+        browseBtn.setEnabled(true);
         
-        urlText.setEnabled(false);
-        customUpdateCheck.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                urlText.setEnabled(((JCheckBox) e.getSource()).isSelected());
-            }
-        });
-
+        JPanel modPacksPanel = new JPanel();
+        modPacksPanel.setLayout(new BorderLayout(0,0));
+        modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
+        modPackList = new JList(parser.getModpacks());
+        //modPackList.setCellRenderer(new ModPacksCellRenderer());
+        JScrollPane modPacksScroll = new JScrollPane(modPackList);
+        modPacksPanel.add(modPacksScroll, BorderLayout.WEST);
+        panel.add(modPacksPanel, BorderLayout.WEST);
+        
+        
         JPanel container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         container.add(panel);

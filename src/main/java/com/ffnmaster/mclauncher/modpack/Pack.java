@@ -22,7 +22,7 @@ import com.ffnmaster.mclauncher.config.Configuration;
 import com.ffnmaster.mclauncher.modpack.Loader;
 
 public class Pack {
-	private String id, name, author, repoVersion, url, dir, mcVersion, serverPack, logoName, description, sep = File.separator;
+	private String id, name, author, repoVersion, url, mcVersion, serverPack, logoName, description, sep = File.separator;
 	boolean isFTB;
 	private String[] mods, oldVersions;
 	private Image logo;
@@ -99,7 +99,7 @@ public class Pack {
 	}
 	public static Pack getPack(String dir) {
 		for(Pack pack : packs) {
-			if(pack.getDir().equalsIgnoreCase(dir)) {
+			if(pack.getName().equalsIgnoreCase(dir)) {
 				return pack;
 			}
 		}
@@ -116,13 +116,12 @@ public class Pack {
 	 * @return
 	 */
 	// name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions
-	public Pack(String id, String name, String author, String repoVersion, String logo, String url, String dir, String mcVersion, String serverPack, String description, String mods, 
+	public Pack(String id, String name, String author, String repoVersion, String logo, String url, String mcVersion, String serverPack, String description, String mods, 
 			String oldVersions, boolean isFTB) throws IOException, NoSuchAlgorithmException {
 		this.id = id;
 		setName(name);
 		this.author = author;
 		this.repoVersion = repoVersion;
-		this.dir = dir;
 		this.mcVersion = mcVersion;
 		this.url = url;
 		this.serverPack = serverPack;
@@ -141,14 +140,14 @@ public class Pack {
 			this.oldVersions = oldVersions.split(";");
 		}
 		String installPath = Launcher.getLauncherDir();
-		File tempDir = new File(installPath, "ModPacks" + sep + dir);
+		File tempDir = new File(installPath, "ModPacks" + sep + name);
 		File verFile = new File(tempDir, "version");
 		URL url_;
 		if(!upToDate(verFile)) {
 			if(isFTB == true) {
 				url_ = new URL(FTBDownload.getStaticCreeperhostLink(logo));
 			} else {
-				url_ = new URL(Launcher.getUpdateLink(logo));
+				url_ = new URL(url + logo);
 			}
 
 			
@@ -163,7 +162,7 @@ public class Pack {
 				if(isFTB == true) {
 					url_ = new URL(FTBDownload.getStaticCreeperhostLink(logo));
 				} else {
-					url_ = new URL(Launcher.getUpdateLink(logo));
+					url_ = new URL(url + logo);
 				}
 				System.out.println(url_);
 				
@@ -222,7 +221,7 @@ public class Pack {
 			}
 			BufferedReader in = new BufferedReader(new FileReader(verFile));
 			String line;
-			if((line = in.readLine()) == null || Integer.parseInt(repoVersion.replace(".", "")) > Integer.parseInt(line.replace(".", ""))) {
+			if((line = in.readLine()) == null || Integer.parseInt(repoVersion.replace("_", "")) > Integer.parseInt(line.replace("_", ""))) {
 				BufferedWriter out = new BufferedWriter(new FileWriter(verFile));
 				out.write(repoVersion);
 				out.flush();
@@ -301,14 +300,6 @@ public class Pack {
 		return cachedIcon;
 	}
 
-
-	/**
-	 * Used to get the directory of the modpack
-	 * @return - the directory for the modpack
-	 */
-	public String getDir() {
-		return dir;
-	}
 
 	/**
 	 * Used to get the minecraft version required for the modpack

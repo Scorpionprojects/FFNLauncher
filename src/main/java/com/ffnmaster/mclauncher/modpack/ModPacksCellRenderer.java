@@ -21,6 +21,7 @@ import com.ffnmaster.mclauncher.Launcher;
 import com.ffnmaster.mclauncher.modpack.Pack;
 
 public class ModPacksCellRenderer implements ListCellRenderer {
+	
 	private static final int PAD = 5;
 	private static BufferedImage defaultIcon;
 	private JLabel logo;
@@ -57,8 +58,8 @@ public class ModPacksCellRenderer implements ListCellRenderer {
 		
 		panel.add(titleLabel);
 		
-		String author;
-		author = pack.getAuthor();
+		/*String author;
+		author = pack.getAuthor();*/
 		JLabel infoLabel = new JLabel();
 				
 		infoLabel.setText("Indeed");
@@ -90,7 +91,4 @@ public class ModPacksCellRenderer implements ListCellRenderer {
         }
         
     }
-	
-	
-	
 }

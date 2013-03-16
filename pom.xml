@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ffnmaster</groupId>
   <artifactId>mclauncher</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.4-SNAPSHOT</version>
   <name>FFNMaster's Launcher</name>
   <url>http://sigmacoders.nl</url>
   <scm>
