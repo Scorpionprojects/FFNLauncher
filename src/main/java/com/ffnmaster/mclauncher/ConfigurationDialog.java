@@ -297,7 +297,7 @@ public class ConfigurationDialog extends JDialog {
         modPacksPanel.setLayout(new BorderLayout(0,0));
         modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
         modPackList = new JList(parser.getModpacks());
-        //modPackList.setCellRenderer(new ModPacksCellRenderer());
+        modPackList.setCellRenderer(new ModPacksCellRenderer());
         JScrollPane modPacksScroll = new JScrollPane(modPackList);
         modPacksPanel.add(modPacksScroll, BorderLayout.WEST);
         panel.add(modPacksPanel, BorderLayout.WEST);

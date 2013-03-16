@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -201,6 +202,7 @@ public class ModPackParser {
 				Node modPackNode = modPacks.item(i);
 				NamedNodeMap modPackAttr = modPackNode.getAttributes();
 				try {
+		            String id = UUID.randomUUID().toString();
 					String name = modPackAttr.getNamedItem("name").getTextContent();
 					String author = modPackAttr.getNamedItem("author").getTextContent();
 					String repoVersion = modPackAttr.getNamedItem("repoVersion").getTextContent();
@@ -214,6 +216,7 @@ public class ModPackParser {
 					String isFTB = "true";
 					
 					SimpleNode modpackNode = root.addNode("modpack");
+					modpackNode.addNode("id").addValue(id);
 					modpackNode.addNode("name").addValue(name);
 					modpackNode.addNode("author").addValue(author);
 					modpackNode.addNode("repoVersion").addValue(repoVersion);
@@ -252,6 +255,7 @@ public class ModPackParser {
 			
 				// Go by modpack by modpack
 				for (Node modpackread : getNodes(tempDoc, readPath.compile("/modpacks/modpack"))) { 
+		            String id = UUID.randomUUID().toString();
 					String name = getString(modpackread, nameExpr);
 					String author = getString(modpackread, authorExpr); 
 					String repoVersion = getString(modpackread, repoVersionExpr);
@@ -266,6 +270,7 @@ public class ModPackParser {
 					
 					
 					SimpleNode modpackNode = root.addNode("modpack");
+					modpackNode.addNode("id").addValue(id);
 					modpackNode.addNode("name").addValue(name);
 					modpackNode.addNode("author").addValue(author);
 					modpackNode.addNode("repoVersion").addValue(repoVersion);

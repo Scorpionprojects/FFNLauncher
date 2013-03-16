@@ -82,6 +82,7 @@ import com.ffnmaster.mclauncher.config.ServerHotListManager;
 import com.ffnmaster.mclauncher.util.UIUtil;
 import com.ffnmaster.mclauncher.modpack.ModPackParser;
 import com.ffnmaster.mclauncher.modpack.ModPacksCellRenderer;
+import com.ffnmaster.mclauncher.modpack.Pack;
 
 /**
  * Main launcher GUI frame.
@@ -93,8 +94,8 @@ public class LauncherFrame extends JFrame {
     private static final long serialVersionUID = 4122023031876609883L;
     private static final int PAD = 12;
     private boolean allowOfflineName = true;
-    private JList configurationList;
-    private JList modPackList;
+    private JList<Configuration> configurationList;
+    private JList<Pack> modPackList;
     private JComboBox jarCombo;
     private JComboBox userText;
     private JTextField passText;
@@ -199,6 +200,8 @@ public class LauncherFrame extends JFrame {
             }
         }
         
+
+        
         populateJarEntries();
         setLastJar();
 
@@ -211,6 +214,19 @@ public class LauncherFrame extends JFrame {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+    
+    public void setModPack(Pack pack) {
+    	ListModel ModModel = modPackList.getModel();
+    	if (modPackList.getSelectedValue() != pack) {
+    		for(int i = 0; i< ModModel.getSize(); i++) {
+    			if (ModModel.getElementAt(i) == pack) {
+    				modPackList.setSelectedIndex(i);
+    				break;
+    			}
+    		}
+    	}
+    	
     }
 
     /**
@@ -348,19 +364,10 @@ public class LauncherFrame extends JFrame {
     
     private void showModPacks(JLayeredPane modPacksPanel) {
         final LauncherFrame self = this;
-        //modPacksPanel.setLayout(new NewsLayoutManager());
         modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, 0, PAD, PAD));
         JEditorPane newsView = new JEditorPane();
         newsView.setEditable(true);
         
-        /*newsView.addHyperlinkListener(new HyperlinkListener() {
-            @Override
-            public void hyperlinkUpdate(HyperlinkEvent e) {
-                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                    UIUtil.openURL(e.getURL(), self);
-                }
-            }
-        }); */
         JScrollPane newsScroll = new JScrollPane(newsView);
         modPacksPanel.add(newsScroll, new Integer(1));
         JProgressBar newsProgress = new JProgressBar();
@@ -378,41 +385,6 @@ public class LauncherFrame extends JFrame {
         boolean hidenews = options.getSettings().getBool(Def.LAUNCHER_HIDE_NEWS, false);
         allowOfflineName = options.getSettings().getBool(
                 Def.LAUNCHER_ALLOW_OFFLINE_NAME, true);
-        
-        if (!hidenews) {
-            if (options.getSettings().getBool(Def.LAUNCHER_NO_NEWS, false)) {
-                final JLayeredPane newsPanel = new JLayeredPane();
-                
-                newsPanel.setBorder(new CompoundBorder(BorderFactory
-                        .createEmptyBorder(PAD, 0, PAD, PAD), new CompoundBorder(
-                        BorderFactory.createEtchedBorder(), BorderFactory
-                                .createEmptyBorder(4, 4, 4, 4))));
-                newsPanel.setLayout(new BoxLayout(newsPanel, BoxLayout.Y_AXIS));
-                
-                final JButton showNews = new JButton("Show news");
-                showNews.setAlignmentX(Component.CENTER_ALIGNMENT);
-                showNews.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        showNews.setVisible(false);
-                        showModPacks(newsPanel);
-                    }
-                });
-                
-                // Center the button vertically.
-                newsPanel.add(new Box.Filler(new Dimension(0,0), 
-                        new Dimension(0,0), new Dimension(1000,1000)));
-                newsPanel.add(showNews);
-                newsPanel.add(new Box.Filler(new Dimension(0,0), 
-                        new Dimension(0,0), new Dimension(1000,1000)));
-                
-                add(newsPanel, BorderLayout.CENTER);
-            } else {
-                JLayeredPane newsPanel = new JLayeredPane();
-                showModPacks(newsPanel);
-                add(newsPanel, BorderLayout.CENTER);
-            }
-        }
         
         JPanel rightPanel = new JPanel();
         JPanel leftPanel = new JPanel();
@@ -436,7 +408,7 @@ public class LauncherFrame extends JFrame {
         buttonsPanel.add(playBtn);
         buttonsPanel.add(addonsBtn);
         buttonsPanel.add(optionsBtn);
-        //buttonsPanel.add(renewBtn);
+        buttonsPanel.add(renewBtn);
         
         JButton installBtn = new JButton(">");
         JButton removeBtn = new JButton("<");
@@ -458,10 +430,8 @@ public class LauncherFrame extends JFrame {
         JPanel modPacksPanel = new JPanel();
         modPacksPanel.setLayout(new BorderLayout(0,0));
         modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
-        modPackList = new JList(parser.getModpacks());
-        modPackList.setFixedCellWidth(250);
-        modPackList.setFixedCellHeight(50);
-       // modPackList.setCellRenderer(new ModPacksCellRenderer());
+        modPackList = new JList<Pack>(parser.getModpacks());
+        modPackList.setCellRenderer(new ModPacksCellRenderer());
         modPackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane modPacksScroll = new JScrollPane(modPackList);
         modPacksPanel.add(modPacksScroll, BorderLayout.WEST);
@@ -470,7 +440,7 @@ public class LauncherFrame extends JFrame {
         JPanel configurationsPanel = new JPanel();
         configurationsPanel.setLayout(new BorderLayout(0, 0));
         configurationsPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
-        configurationList = new JList(options.getConfigurations());
+        configurationList = new JList<Configuration>(options.getConfigurations());
         configurationList.setCellRenderer(new ConfigurationCellRenderer());
         configurationList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane configScroll = new JScrollPane(configurationList);
@@ -517,6 +487,13 @@ public class LauncherFrame extends JFrame {
             public void valueChanged(ListSelectionEvent e) {
                 setConfiguration((Configuration) ((JList) e.getSource()).getSelectedValue());
             }
+        });
+        
+        modPackList.addListSelectionListener(new ListSelectionListener() {
+        	@Override
+        	public void valueChanged(ListSelectionEvent e) {
+        		setModPack((Pack) ((JList) e.getSource()).getSelectedValue());
+        	}
         });
 
         optionsBtn.addActionListener(new ActionListener() {

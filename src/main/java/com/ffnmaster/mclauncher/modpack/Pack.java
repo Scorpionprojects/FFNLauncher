@@ -113,11 +113,15 @@ public class Pack {
 	
 	/**
 	 * The Modpack itself
-	 * @return
+	 * @return Modpack
 	 */
 	// name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions
 	public Pack(String id, String name, String author, String repoVersion, String logo, String url, String mcVersion, String serverPack, String description, String mods, 
 			String oldVersions, boolean isFTB) throws IOException, NoSuchAlgorithmException {
+        
+		if (!id.matches("^[A-Za-z0-9\\-]+{1,64}$")) {
+            throw new IllegalArgumentException("Invalid configuration name");
+        }
 		this.id = id;
 		setName(name);
 		this.author = author;

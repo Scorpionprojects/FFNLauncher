@@ -53,7 +53,6 @@ import com.ffnmaster.mclauncher.config.Def;
 import com.ffnmaster.mclauncher.config.LauncherOptions;
 import com.ffnmaster.mclauncher.modpack.FTBDownload;
 import com.ffnmaster.mclauncher.modpack.ModPackParser;
-import com.ffnmaster.mclauncher.modpack.ModPacksManager;
 import com.ffnmaster.mclauncher.security.X509KeyRing;
 import com.ffnmaster.mclauncher.update.UpdateCache;
 import com.ffnmaster.mclauncher.util.BasicArgsParser;

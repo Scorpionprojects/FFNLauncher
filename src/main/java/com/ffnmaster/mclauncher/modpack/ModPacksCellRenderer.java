@@ -38,32 +38,33 @@ public class ModPacksCellRenderer implements ListCellRenderer {
     }
 	
 	@Override
-	public Component getListCellRendererComponent(final JList list2, final Object value,
+	public Component getListCellRendererComponent(final JList list, final Object value,
 	        
     	int index, final boolean isSelected, boolean cellHasFocus) {
-		final Pack pack = (Pack) value;
+        final Pack pack = (Pack) value;
+        System.out.println(value);
 		
-		
-		JIconPanel panel = new JIconPanel(null);
+        JIconPanel panel = new JIconPanel(null);
 		panel.setLayout(new GridLayout(2, 1, 0, 1));
-		panel.setBackground(isSelected ? list2.getSelectionBackground() : list2.getBackground());
+		panel.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
 		panel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD * 2 + 32, PAD, PAD));
 		
 		JLabel titleLabel = new JLabel();
-		titleLabel.setText("YOLO");
-        titleLabel.setForeground(isSelected ? list2.getSelectionForeground() : list2.getForeground());
+		titleLabel.setText("Title");
+        titleLabel.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
 		Font font = titleLabel.getFont();
 		font = font.deriveFont((float) (font.getSize() * 1.3)).deriveFont(Font.BOLD);
 		titleLabel.setFont(font);
 		
 		panel.add(titleLabel);
 		
-		/*String author;
-		author = pack.getAuthor();*/
+		//String author;
+		//author = pack2.getAuthor();
+		
 		JLabel infoLabel = new JLabel();
 				
-		infoLabel.setText("Indeed");
-		Color color = isSelected ? list2.getSelectionForeground() : list2.getForeground();
+		infoLabel.setText("Subtitle");
+		Color color = isSelected ? list.getSelectionForeground() : list.getForeground();
 		infoLabel.setForeground(color);
 		panel.add(infoLabel);
 		

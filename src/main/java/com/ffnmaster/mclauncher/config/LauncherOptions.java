@@ -353,12 +353,6 @@ public class LauncherOptions {
                 //int versionint = Integer.parseInt(version);
                 int versionint = Integer.parseInt(version);
                 
-                if (ftbstring == "true") {
-                	boolean ftb = true;
-                } else {
-                	boolean ftb = false;
-                }
-                
                 try {
                 	URL updateUrl = urlString != null ? new URL(urlString) : null;
                     Configuration config;

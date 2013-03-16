@@ -53,7 +53,6 @@
           <include>update.xml</include>
           <include>defaults.xml</include>
           <include>*.png</include>
-          <include>modpacks.xml</include>
         </includes>
       </resource>
       <resource>

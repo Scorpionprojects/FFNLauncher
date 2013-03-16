@@ -48,6 +48,7 @@ import com.ffnmaster.mclauncher.config.Configuration;
 import com.ffnmaster.mclauncher.config.ConfigurationsManager;
 import com.ffnmaster.mclauncher.config.LauncherOptions;
 import com.ffnmaster.mclauncher.modpack.ModPackParser;
+import com.ffnmaster.mclauncher.modpack.RepoParser;
 import com.ffnmaster.mclauncher.util.UIUtil;
 
 /**
@@ -60,9 +61,10 @@ public class OptionsDialog extends JDialog {
     private static final long serialVersionUID = -1889866989693082182L;
     private LauncherOptions options;
     private JTable configsTable;
-    private JTable modPacksTable;
+    private JTable RepoTable;
     private JTabbedPane tabs;
     private List<OptionsPanel> optionsPanels = new ArrayList<OptionsPanel>();
+    private RepoParser repoparser;
     
     //DEVEL
     private ModPackParser parser;
@@ -199,18 +201,18 @@ public class OptionsDialog extends JDialog {
         panel.add(buttonsPanel);
         
         panel.add(Box.createVerticalStrut(3));
-        modPacksTable = new JTable();
-        modPacksTable.setShowGrid(false);
-        modPacksTable.setRowHeight(modPacksTable.getRowHeight() +2);
-        modPacksTable.setIntercellSpacing(new Dimension(0,0));
-        modPacksTable.setFillsViewportHeight(true);
-        modPacksTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        //modPacksTable.setModel(parser.getModpacks());
-        //modPacksTable.getColumnModel().getColumn(0).setPreferredWidth(30);
-        JScrollPane tableScroll = new JScrollPane(modPacksTable);
+        /*RepoTable = new JTable();
+        RepoTable.setShowGrid(false);
+        RepoTable.setRowHeight(RepoTable.getRowHeight() +2);
+        RepoTable.setIntercellSpacing(new Dimension(0,0));
+        RepoTable.setFillsViewportHeight(true);
+        RepoTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        //RepoTable.setModel(repoparser.getRepos());
+        RepoTable.getColumnModel().getColumn(0).setPreferredWidth(30);
+        JScrollPane tableScroll = new JScrollPane(RepoTable);
         panel.add(tableScroll, BorderLayout.CENTER);
         
-        UIUtil.removeOpaqueness(modPacksTable);
+        UIUtil.removeOpaqueness(RepoTable);*/
         
     	return panel;
     }

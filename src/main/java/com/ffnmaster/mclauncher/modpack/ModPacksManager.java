@@ -53,6 +53,7 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 	public void register(Pack pack) {
 		int index = modPackList.indexOf(pack);
 		modpacks.put(pack.getId(), pack);
+
 		
 		if(index == -1) {
 			modPackList.add(pack);
@@ -82,6 +83,22 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 		return true;
 	}
 	
+    /**
+     * Notify that a ModPack has been updated.
+     * 
+     * @param configuration
+     * @return true if it was in the list
+     */
+	public boolean update(Pack pack) {
+		int index = modPackList.indexOf(pack);
+		if (index == -1) {
+			return false;
+		}
+		fireTableChanged(new TableModelEvent(this, index));
+		fireListChanged(new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, index, index));
+		return true;
+	}
+	
 	/**
 	 * Get the map of modpacks
 	 * @return Modpacks map
@@ -102,6 +119,7 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 	/**
 	 * Get iterator
 	 */
+	@Override
 	public Iterator<Pack> iterator() {
 		return modpacks.values().iterator();
 	}
@@ -140,6 +158,18 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 		}
 	}
 	
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        switch (columnIndex) {
+        case 0:
+            return true;
+        case 1:
+            return false;
+        default:
+            return false;
+        }
+    }
+	
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Pack pack = modPackList.get(rowIndex);
@@ -151,6 +181,21 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 			return pack.getName();
 		default:
 			return null;
+		}
+	}
+	
+	@Override
+	public void setValueAt(Object value, int rowIndex, int columnIndex) {
+		Pack pack = modPackList.get(rowIndex);
+		if (pack == null) {
+			return;
+		}
+		switch (columnIndex) {
+		case 0:
+			pack.setName((String) value);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -202,32 +247,6 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 		listenerList.remove(ListDataListener.class, l);
 	}
 
-	@Override
-	public boolean isCellEditable(int rowIndex, int columnIndex) {
-		switch (columnIndex) {
-		case 0:
-			return true;
-		case 1:
-			return false;
-		default:
-			return false;
-		}
-	}
-
-	@Override
-	public void setValueAt(Object value, int rowIndex, int columnIndex) {
-		Pack pack = modPackList.get(rowIndex);
-		if (pack == null) {
-			return;
-		}
-		switch (columnIndex) {
-		case 0:
-			pack.setName((String) value);
-			break;
-		default:
-			break;
-		}
-	}
 
 	@Override
 	public void addTableModelListener(TableModelListener l) {
