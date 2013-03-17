@@ -224,7 +224,7 @@ public class OptionsDialog extends JDialog {
      */
     private JPanel buildConfigurationsPanel() {
         final OptionsDialog self = this;
-
+        
         JPanel panel = new JPanel();
         panel.setOpaque(false);
         panel.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));

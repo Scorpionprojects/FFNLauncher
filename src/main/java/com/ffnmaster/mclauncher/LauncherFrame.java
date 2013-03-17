@@ -114,12 +114,14 @@ public class LauncherFrame extends JFrame {
     private TaskWorker worker = new TaskWorker();
     
 
+    
+
     /**
      * Construct the launcher.
      */
     public LauncherFrame() {
         setTitle("FFNLauncher v" + Launcher.VERSION);
-        setSize(500, 500);
+        setSize(575, 500);
         setResizable(false);
         
         if (isResizable() == true) {
@@ -244,6 +246,15 @@ public class LauncherFrame extends JFrame {
         }
         
         return configuration;
+    }
+    
+    /**
+     * Get the selected ModPack
+     * @return Selected pack
+     */
+    public Pack getSelectedMP() {
+    	Pack pack = (Pack) modPackList.getSelectedValue();
+    	return pack;
     }
 
     /**
@@ -382,7 +393,6 @@ public class LauncherFrame extends JFrame {
     private void buildUI() {
         final LauncherFrame self = this;
         setLayout(new BorderLayout(0, 0));
-        boolean hidenews = options.getSettings().getBool(Def.LAUNCHER_HIDE_NEWS, false);
         allowOfflineName = options.getSettings().getBool(
                 Def.LAUNCHER_ALLOW_OFFLINE_NAME, true);
         
@@ -400,6 +410,9 @@ public class LauncherFrame extends JFrame {
    
 
         JPanel buttonsPanel = new JPanel();
+        JPanel rightOfLeft = new JPanel();
+        
+        rightOfLeft.setLayout(new BoxLayout(rightOfLeft, BoxLayout.Y_AXIS));
         buttonsPanel.setLayout(new GridLayout(1, 3, 3, 0));
         playBtn = new JButton("Play");
         renewBtn = new JButton("Refresh");
@@ -408,15 +421,13 @@ public class LauncherFrame extends JFrame {
         buttonsPanel.add(playBtn);
         buttonsPanel.add(addonsBtn);
         buttonsPanel.add(optionsBtn);
-        buttonsPanel.add(renewBtn);
+        rightOfLeft.add(renewBtn);
         
-        JButton installBtn = new JButton(">");
-        JButton removeBtn = new JButton("<");
-	    installBtn.setPreferredSize(new Dimension(5,5));
-	    removeBtn.setPreferredSize(new Dimension(5,5));
+        JButton installBtn = new JButton("Install");
+        JButton removeBtn = new JButton("Remove");
         
-        //middlePanel.add(installBtn, BorderLayout.WEST);
-        //middlePanel.add(removeBtn, BorderLayout.WEST);
+        rightOfLeft.add(installBtn);
+        rightOfLeft.add(removeBtn);
         
         JPanel root = new JPanel();
         root.setBorder(BorderFactory.createEmptyBorder(0, PAD, PAD, PAD));
@@ -424,18 +435,21 @@ public class LauncherFrame extends JFrame {
         root.add(createLoginPanel());
         root.add(buttonsPanel);
         leftPanel.add(root, BorderLayout.SOUTH);
-        leftPanel.add(middlePanel, BorderLayout.EAST);
 
         
         JPanel modPacksPanel = new JPanel();
         modPacksPanel.setLayout(new BorderLayout(0,0));
         modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
         modPackList = new JList<Pack>(parser.getModpacks());
+        modPackList.setFixedCellWidth(250);
         modPackList.setCellRenderer(new ModPacksCellRenderer());
         modPackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane modPacksScroll = new JScrollPane(modPackList);
         modPacksPanel.add(modPacksScroll, BorderLayout.WEST);
         leftPanel.add(modPacksPanel, BorderLayout.WEST);
+        leftPanel.add(rightOfLeft, BorderLayout.CENTER);
+
+
 
         JPanel configurationsPanel = new JPanel();
         configurationsPanel.setLayout(new BorderLayout(0, 0));
@@ -448,6 +462,30 @@ public class LauncherFrame extends JFrame {
         rightPanel.add(configurationsPanel, BorderLayout.EAST);
         
         
+        
+        // ModPack Buttons Listeners
+        renewBtn.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+				ModPackParser.parseModPacks();
+        	}
+        });
+        
+        installBtn.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		new ConfigurationDialog(self, options.getConfigurations(), getSelectedMP())
+                .setVisible(true);
+        	}
+        });
+        
+        removeBtn.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		
+        	}
+        });
+        
         // Add listener
         playBtn.addActionListener(new ActionListener() {
             @Override
@@ -456,13 +494,6 @@ public class LauncherFrame extends JFrame {
             }
         });
         
-        renewBtn.addActionListener(new ActionListener() {
-        	@Override
-        	public void actionPerformed(ActionEvent e) {
-				ModPackParser.parseModPacks();
-        	}
-        });
-
         playBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {

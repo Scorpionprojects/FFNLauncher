@@ -54,6 +54,7 @@ import com.ffnmaster.mclauncher.config.Configuration;
 import com.ffnmaster.mclauncher.config.ConfigurationsManager;
 import com.ffnmaster.mclauncher.modpack.ModPackParser;
 import com.ffnmaster.mclauncher.modpack.ModPacksCellRenderer;
+import com.ffnmaster.mclauncher.modpack.Pack;
 import com.ffnmaster.mclauncher.util.SettingsList;
 import com.ffnmaster.mclauncher.util.UIUtil;
 
@@ -67,6 +68,7 @@ public class ConfigurationDialog extends JDialog {
     private static final int PAD = 12;
     private static final long serialVersionUID = -7347791965966294361L;
     private OptionsDialog optionsDialog;
+    private LauncherFrame launcherFrame;
     private ConfigurationsManager configsManager;
     private JButton browseBtn;
     private JTextField nameText;
@@ -76,6 +78,7 @@ public class ConfigurationDialog extends JDialog {
     private JTextField urlText;
     private JCheckBox customUpdateCheck;
     private Configuration configuration;
+    private Pack pack;
     private SettingsList settings;
     private List<OptionsPanel> optionsPanels = new ArrayList<OptionsPanel>();
     
@@ -96,6 +99,18 @@ public class ConfigurationDialog extends JDialog {
         this.settings = configuration.getSettings();
         setup(owner, configsManager);
     }
+    
+    /**
+     * Open ConfigsManager with selected Modpack as template
+     * @param owner
+     * @param configsManager
+     * @param pack
+     */
+    public ConfigurationDialog(LauncherFrame owner, ConfigurationsManager configsManager, Pack pack) {
+    	super(owner, "New Version", true);
+    	this.pack = pack;
+    	setup(owner, configsManager);
+    }
 
     /**
      * Start a new configuration.
@@ -109,6 +124,12 @@ public class ConfigurationDialog extends JDialog {
         setup(owner, configsManager);
     }
     
+    public ConfigurationDialog(LauncherFrame owner, ConfigurationsManager configsManager) {
+    	super(owner, "New Configuration", true);
+    	this.settings = new SettingsList();
+    	setup(owner, configsManager);
+    }
+    
     /**
      * Setup.
      * 
@@ -117,6 +138,49 @@ public class ConfigurationDialog extends JDialog {
      */
     private void setup(OptionsDialog owner, ConfigurationsManager configsManager) {
         this.optionsDialog = owner;
+        this.configsManager = configsManager;
+        
+        setResizable(false);
+        buildUI();
+        pack();
+        setSize(400, 500);
+        setLocationRelativeTo(owner);
+
+        for (OptionsPanel panel : optionsPanels) {
+            panel.copySettingsToFields();
+        }
+
+        if (configuration != null) {
+            nameText.setText(configuration.getName());
+            if (configuration.isBuiltIn()) {
+                customPathCheck.setSelected(true);
+                pathText.setText(configuration.getBaseDir().getPath());
+            } else {
+                boolean usingDefault = configuration.isUsingDefaultPath();
+                customPathCheck.setSelected(!usingDefault);
+                if (!usingDefault) {
+                    File f = configuration.getBaseDir();
+                    pathText.setText(f != null ? f.getPath() : "");
+                }
+            }
+            URL updateUrl = configuration.getUpdateUrl();
+            customUpdateCheck.setSelected(updateUrl != null);
+            urlText.setEnabled(updateUrl != null);
+            urlText.setText(updateUrl != null ? updateUrl.toString() : "");
+            
+            if (configuration.isBuiltIn()) {
+                nameText.setEnabled(false);
+                customPathCheck.setEnabled(false);
+                pathText.setEnabled(false);
+                customUpdateCheck.setEnabled(false);
+                urlText.setEnabled(false);
+                browseBtn.setEnabled(false);
+            }
+        }
+    }
+    
+    private void setup(LauncherFrame owner, ConfigurationsManager configsManager) {
+        this.launcherFrame = owner;
         this.configsManager = configsManager;
         
         setResizable(false);
@@ -293,14 +357,14 @@ public class ConfigurationDialog extends JDialog {
         subText.setEnabled(true);
         browseBtn.setEnabled(true);
         
-        JPanel modPacksPanel = new JPanel();
-        modPacksPanel.setLayout(new BorderLayout(0,0));
-        modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
-        modPackList = new JList(parser.getModpacks());
-        modPackList.setCellRenderer(new ModPacksCellRenderer());
-        JScrollPane modPacksScroll = new JScrollPane(modPackList);
-        modPacksPanel.add(modPacksScroll, BorderLayout.WEST);
-        panel.add(modPacksPanel, BorderLayout.WEST);
+        //JPanel modPacksPanel = new JPanel();
+        //modPacksPanel.setLayout(new BorderLayout(0,0));
+        //modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
+        //modPackList = new JList(parser.getModpacks());
+        //modPackList.setCellRenderer(new ModPacksCellRenderer());
+        //JScrollPane modPacksScroll = new JScrollPane(modPackList);
+        //modPacksPanel.add(modPacksScroll, BorderLayout.WEST);
+        //panel.add(modPacksPanel, BorderLayout.WEST);
         
         
         JPanel container = new JPanel();
@@ -320,10 +384,7 @@ public class ConfigurationDialog extends JDialog {
         boolean builtIn = configuration != null && configuration.isBuiltIn();
 
         String name = nameText.getText().trim();
-        String pathStr = customPathCheck.isSelected() ? pathText.getText()
-                .trim() : null;
-        String updateURLStr = customUpdateCheck.isSelected() ? urlText
-                .getText() : null;
+        String pathStr = pathText.getText();
         URL updateUrl = null;
         File f = null;
         
@@ -338,19 +399,7 @@ public class ConfigurationDialog extends JDialog {
                 return false;
             }
             
-            if (updateURLStr != null && updateURLStr.length() == 0) {
-                UIUtil.showError(this, "No URL", "An update URL must be entered.");
-                return false;
-            }
             
-            if (updateURLStr != null) {
-                try {
-                    updateUrl = new URL(updateURLStr);
-                } catch (MalformedURLException e) {
-                    UIUtil.showError(this, "Invalid URL", "The update URL that you entered is invalid.");
-                    return false;
-                }
-            }
 
             if (pathStr != null) {
                 f = new File(pathStr);
