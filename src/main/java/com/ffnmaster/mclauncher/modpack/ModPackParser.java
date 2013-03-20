@@ -153,7 +153,7 @@ public class ModPackParser {
 		
 	}
 	
-	public static void parseModPacks() {
+	public boolean parseModPacks() {
 		InputStream input = null;
 		File configDir = Launcher.getConfigDir();
 		File optionsFile = new File(configDir, "config.xml");
@@ -229,13 +229,19 @@ public class ModPackParser {
 					modpackNode.addNode("oldVersions").addValue(oldVersions);
 					modpackNode.addNode("isFTB").addValue(isFTB);
 					
+					Pack pack = new Pack(id, name, author, repoVersion, logo, modPackurl, mcVersion, serverPack, description, mods, oldVersions, true);
+					modpacksManager.register(pack);
 					System.out.println("DEBUG: Added modpack: " + name);
+					
+
 				} catch (Exception e) {
 					System.out.println("ERROR: Problem in reading FTB modpacks.xml:: " + e);
+					return false;
 				}
 			}
 			tempFTBInput.close();
 			tempFile.delete();
+			
 			
 			
 			// Go by repo by repo
@@ -283,6 +289,9 @@ public class ModPackParser {
 					modpackNode.addNode("oldVersions").addValue(oldVersions);
 					modpackNode.addNode("isFTB").addValue(isFTB);
 					
+					Pack pack = new Pack(id, name, author, repoVersion, logo, modPackurl, mcVersion, serverPack, description, mods, oldVersions, false);
+					modpacksManager.register(pack);
+					
 					System.out.println("DEBUG: Added modpack: " + name);
 					
 				}
@@ -294,7 +303,10 @@ public class ModPackParser {
 			
 		} catch (Exception e) {
 			System.out.println("EXCEPTION:: " + e);
+			return false;
 		}
+		
+		return true;
 	}
 	
 	public static File getTempDir() {

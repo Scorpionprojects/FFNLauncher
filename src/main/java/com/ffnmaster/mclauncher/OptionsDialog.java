@@ -49,6 +49,7 @@ import com.ffnmaster.mclauncher.config.ConfigurationsManager;
 import com.ffnmaster.mclauncher.config.LauncherOptions;
 import com.ffnmaster.mclauncher.modpack.ModPackParser;
 import com.ffnmaster.mclauncher.modpack.RepoParser;
+import com.ffnmaster.mclauncher.modpack.ModPackInstaller;
 import com.ffnmaster.mclauncher.util.UIUtil;
 
 /**
@@ -201,18 +202,6 @@ public class OptionsDialog extends JDialog {
         panel.add(buttonsPanel);
         
         panel.add(Box.createVerticalStrut(3));
-        /*RepoTable = new JTable();
-        RepoTable.setShowGrid(false);
-        RepoTable.setRowHeight(RepoTable.getRowHeight() +2);
-        RepoTable.setIntercellSpacing(new Dimension(0,0));
-        RepoTable.setFillsViewportHeight(true);
-        RepoTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        //RepoTable.setModel(repoparser.getRepos());
-        RepoTable.getColumnModel().getColumn(0).setPreferredWidth(30);
-        JScrollPane tableScroll = new JScrollPane(RepoTable);
-        panel.add(tableScroll, BorderLayout.CENTER);
-        
-        UIUtil.removeOpaqueness(RepoTable);*/
         
     	return panel;
     }

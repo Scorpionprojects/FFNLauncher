@@ -322,7 +322,6 @@ public class LauncherOptions {
             XPathExpression idExpr = xpath.compile("id/text()");
             XPathExpression appDirExpr = xpath.compile("appDir/text()");
             XPathExpression basePathExpr = xpath.compile("basePath/text()");
-            XPathExpression updateURLExpr = xpath.compile("updateURL/text()");
             XPathExpression lastJarExpr = xpath.compile("lastJar/text()");
             XPathExpression settingsExpr = xpath.compile("settings");
             
@@ -340,7 +339,6 @@ public class LauncherOptions {
                 String name = getString(node, nameExpr);
                 String appDir = getStringOrNull(node, appDirExpr);
                 String basePath = getStringOrNull(node, basePathExpr);
-                String urlString = getStringOrNull(node, updateURLExpr);
                 String lastJar = getStringOrNull(node, lastJarExpr);
                                 
                 // FTB Compat
@@ -354,12 +352,11 @@ public class LauncherOptions {
                 int versionint = Integer.parseInt(version);
                 
                 try {
-                	URL updateUrl = urlString != null ? new URL(urlString) : null;
                     Configuration config;
                     if (basePath != null) {
-                        config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, icon, new File(basePath), updateUrl);
+                        config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, icon, new File(basePath));
                     } else {
-                        config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, icon, appDir, updateUrl);
+                        config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, icon, appDir);
                     }
                     
                     Node settingsNode = XMLUtil.getNode(node, settingsExpr);
@@ -371,8 +368,6 @@ public class LauncherOptions {
                     
                     config.setLastActiveJar(lastJar);
                     configsManager.register(config);
-                } catch (MalformedURLException e) {
-                    logger.log(Level.WARNING, "Could not read configuration '" + id + "', bad URL '" + urlString + "'", e);
                 } catch (IllegalArgumentException e) {
                     logger.log(Level.WARNING, "Could not read configuration '" + id + "'", e);
                 }
@@ -466,12 +461,9 @@ public class LauncherOptions {
                 configurationNode.addNode("appDir").addValue(config.getAppDir());
                 configurationNode.addNode("basePath").addValue(f != null ? f.getPath() : null);
                 configurationNode.addNode("icon");
-                configurationNode.addNode("subtitle");
+                configurationNode.addNode("subtitle").addValue(config.getSubtitle());
                 configurationNode.addNode("version").addValue("0");
-                configurationNode.addNode("serverURL");
                 configurationNode.addNode("ftb");
-                configurationNode.addNode("updateURL").addValue(config.getUpdateUrl() != null ?
-                        config.getUpdateUrl().toString() : null);
                 configurationNode.addNode("lastJar").addValue(config.getLastActiveJar());
                 config.getSettings().write(configurationNode.addNode("settings").getNode());
             }

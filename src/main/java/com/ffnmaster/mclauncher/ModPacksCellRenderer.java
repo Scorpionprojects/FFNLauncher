@@ -1,4 +1,4 @@
-package com.ffnmaster.mclauncher.modpack;
+package com.ffnmaster.mclauncher;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -17,7 +17,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 
-import com.ffnmaster.mclauncher.Launcher;
 import com.ffnmaster.mclauncher.modpack.Pack;
 
 public class ModPacksCellRenderer implements ListCellRenderer {
@@ -42,15 +41,14 @@ public class ModPacksCellRenderer implements ListCellRenderer {
 	        
     	int index, final boolean isSelected, boolean cellHasFocus) {
         final Pack pack = (Pack) value;
-        System.out.println(value);
 		
-        JIconPanel panel = new JIconPanel(null);
+        JIconPanel panel = new JIconPanel(pack.getIcon());
 		panel.setLayout(new GridLayout(2, 1, 0, 1));
 		panel.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
 		panel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD * 2 + 32, PAD, PAD));
 		
 		JLabel titleLabel = new JLabel();
-		titleLabel.setText("Title");
+		titleLabel.setText(pack.getTitle());
         titleLabel.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
 		Font font = titleLabel.getFont();
 		font = font.deriveFont((float) (font.getSize() * 1.3)).deriveFont(Font.BOLD);
@@ -58,12 +56,10 @@ public class ModPacksCellRenderer implements ListCellRenderer {
 		
 		panel.add(titleLabel);
 		
-		//String author;
-		//author = pack2.getAuthor();
 		
 		JLabel infoLabel = new JLabel();
 				
-		infoLabel.setText("Subtitle");
+		infoLabel.setText(pack.getAuthor());
 		Color color = isSelected ? list.getSelectionForeground() : list.getForeground();
 		infoLabel.setForeground(color);
 		panel.add(infoLabel);

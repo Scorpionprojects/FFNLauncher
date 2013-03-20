@@ -135,6 +135,7 @@ public class Launcher {
         parser = new ModPackParser("modpack.xml");
         
         options.load();
+        options.save();
         parser.load();
         
         // If the options file does not exist, try to import old data

@@ -81,8 +81,8 @@ import com.ffnmaster.mclauncher.config.LauncherOptions;
 import com.ffnmaster.mclauncher.config.ServerHotListManager;
 import com.ffnmaster.mclauncher.util.UIUtil;
 import com.ffnmaster.mclauncher.modpack.ModPackParser;
-import com.ffnmaster.mclauncher.modpack.ModPacksCellRenderer;
 import com.ffnmaster.mclauncher.modpack.Pack;
+import com.ffnmaster.mclauncher.modpack.ModPackInstaller;
 
 /**
  * Main launcher GUI frame.
@@ -467,7 +467,10 @@ public class LauncherFrame extends JFrame {
         renewBtn.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-				ModPackParser.parseModPacks();
+				boolean refresh = parser.parseModPacks();
+				if (refresh == true) {
+					System.out.println("DEBUG:: Parsing Modpacks Succesfull");
+				}
         	}
         });
         

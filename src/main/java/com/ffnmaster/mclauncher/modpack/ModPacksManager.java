@@ -234,7 +234,7 @@ public class ModPacksManager implements Iterable<Pack>, TableModel, ListModel {
 	
 	@Override
 	public Object getElementAt(int index) {
-		return modpacks.get(index);
+		return modPackList.get(index);
 	}
 	
 	@Override

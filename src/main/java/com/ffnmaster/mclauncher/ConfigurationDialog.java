@@ -19,13 +19,18 @@
 package com.ffnmaster.mclauncher;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,20 +48,17 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
 import com.ffnmaster.mclauncher.config.Configuration;
 import com.ffnmaster.mclauncher.config.ConfigurationsManager;
 import com.ffnmaster.mclauncher.modpack.ModPackParser;
-import com.ffnmaster.mclauncher.modpack.ModPacksCellRenderer;
 import com.ffnmaster.mclauncher.modpack.Pack;
 import com.ffnmaster.mclauncher.util.SettingsList;
 import com.ffnmaster.mclauncher.util.UIUtil;
+import com.ffnmaster.mclauncher.modpack.ModPackInstaller;
 
 /**
  * Dialog for adding or modifying a {@link Configuration}.
@@ -74,9 +76,8 @@ public class ConfigurationDialog extends JDialog {
     private JTextField nameText;
     private JTextField pathText;
     private JTextField subText;
+    private Pack selectedPack;
     private JCheckBox customPathCheck;
-    private JTextField urlText;
-    private JCheckBox customUpdateCheck;
     private Configuration configuration;
     private Pack pack;
     private SettingsList settings;
@@ -107,9 +108,11 @@ public class ConfigurationDialog extends JDialog {
      * @param pack
      */
     public ConfigurationDialog(LauncherFrame owner, ConfigurationsManager configsManager, Pack pack) {
-    	super(owner, "New Version", true);
+    	super(owner, "New Version from Template", true);
+    	this.settings = new SettingsList();
     	this.pack = pack;
-    	setup(owner, configsManager);
+    	
+    	setup(owner, configsManager, pack);
     }
 
     /**
@@ -124,11 +127,6 @@ public class ConfigurationDialog extends JDialog {
         setup(owner, configsManager);
     }
     
-    public ConfigurationDialog(LauncherFrame owner, ConfigurationsManager configsManager) {
-    	super(owner, "New Configuration", true);
-    	this.settings = new SettingsList();
-    	setup(owner, configsManager);
-    }
     
     /**
      * Setup.
@@ -163,23 +161,17 @@ public class ConfigurationDialog extends JDialog {
                     pathText.setText(f != null ? f.getPath() : "");
                 }
             }
-            URL updateUrl = configuration.getUpdateUrl();
-            customUpdateCheck.setSelected(updateUrl != null);
-            urlText.setEnabled(updateUrl != null);
-            urlText.setText(updateUrl != null ? updateUrl.toString() : "");
             
             if (configuration.isBuiltIn()) {
                 nameText.setEnabled(false);
                 customPathCheck.setEnabled(false);
                 pathText.setEnabled(false);
-                customUpdateCheck.setEnabled(false);
-                urlText.setEnabled(false);
                 browseBtn.setEnabled(false);
             }
         }
     }
     
-    private void setup(LauncherFrame owner, ConfigurationsManager configsManager) {
+    private void setup(LauncherFrame owner, ConfigurationsManager configsManager, Pack pack) {
         this.launcherFrame = owner;
         this.configsManager = configsManager;
         
@@ -188,13 +180,15 @@ public class ConfigurationDialog extends JDialog {
         pack();
         setSize(400, 500);
         setLocationRelativeTo(owner);
-
+        
         for (OptionsPanel panel : optionsPanels) {
             panel.copySettingsToFields();
         }
 
         if (configuration != null) {
             nameText.setText(configuration.getName());
+            subText.setText(configuration.getSubtitle());
+            selectedPack = pack;
             if (configuration.isBuiltIn()) {
                 customPathCheck.setSelected(true);
                 pathText.setText(configuration.getBaseDir().getPath());
@@ -206,17 +200,11 @@ public class ConfigurationDialog extends JDialog {
                     pathText.setText(f != null ? f.getPath() : "");
                 }
             }
-            URL updateUrl = configuration.getUpdateUrl();
-            customUpdateCheck.setSelected(updateUrl != null);
-            urlText.setEnabled(updateUrl != null);
-            urlText.setText(updateUrl != null ? updateUrl.toString() : "");
             
             if (configuration.isBuiltIn()) {
                 nameText.setEnabled(false);
                 customPathCheck.setEnabled(false);
                 pathText.setEnabled(false);
-                customUpdateCheck.setEnabled(false);
-                urlText.setEnabled(false);
                 browseBtn.setEnabled(false);
             }
         }
@@ -244,8 +232,8 @@ public class ConfigurationDialog extends JDialog {
         container.setLayout(new BorderLayout(3, 3));
         
         JTabbedPane tabs = new JTabbedPane();
-        tabs.addTab("Configuration", buildConfigurationPanel());
-        tabs.addTab("Environment", wrap(new EnvironmentOptionsPanel(settings, true)));
+        tabs.addTab("Pack", buildConfigurationPanel());
+        tabs.addTab("Advanced", wrap(new EnvironmentOptionsPanel(settings, true)));
         container.add(tabs, BorderLayout.CENTER);
         
         JPanel buttonsPanel = new JPanel();
@@ -314,6 +302,7 @@ public class ConfigurationDialog extends JDialog {
 
         JLabel pathLabel = new JLabel("Path:");
         JLabel subtitleLabel = new JLabel("Description:");
+        JLabel selectedMP = new JLabel("Selected Template:");
         panel.add(pathLabel, labelConstraints);
 
         customPathCheck = new JCheckBox("Use a custom path");
@@ -322,12 +311,17 @@ public class ConfigurationDialog extends JDialog {
         panel.add(Box.createGlue(), labelConstraints);
         JPanel pathPanel = new JPanel();
         JPanel subPanel = new JPanel();
+        JPanel selectedMPPanel = new JPanel();
         subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.X_AXIS));
+        selectedMPPanel.setLayout(new BoxLayout(selectedMPPanel, BoxLayout.X_AXIS));
         pathPanel.setLayout(new BoxLayout(pathPanel, BoxLayout.X_AXIS));
         pathText = new JTextField(30);
         subText = new JTextField(30);
+        
+        
+        JLabel selMP = new JLabel(pack.getTitle());
+        
         pathText.setMaximumSize(pathText.getPreferredSize());
-        subText.setMaximumSize(subText.getPreferredSize());
         nameLabel.setLabelFor(pathText);
         pathLabel.setLabelFor(subText);
         browseBtn = new JButton("Browse...");
@@ -339,10 +333,13 @@ public class ConfigurationDialog extends JDialog {
         pathPanel.add(browseBtn);
         subPanel.add(subText);
         subPanel.add(Box.createHorizontalStrut(3));
+        selectedMPPanel.add(selMP);
         panel.add(pathPanel, fieldConstraints);
         panel.add(subtitleLabel, labelConstraints);
         panel.add(subPanel, fieldConstraints);
-
+        panel.add(selectedMP, labelConstraints);
+        panel.add(selectedMPPanel, fieldConstraints);
+        
         panel.add(Box.createVerticalStrut(10), fullFieldConstraints);
 
  
@@ -353,19 +350,13 @@ public class ConfigurationDialog extends JDialog {
             }
         });
 
-        pathText.setEnabled(true);
         subText.setEnabled(true);
+        pathText.setEnabled(true);
         browseBtn.setEnabled(true);
         
-        //JPanel modPacksPanel = new JPanel();
-        //modPacksPanel.setLayout(new BorderLayout(0,0));
-        //modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
-        //modPackList = new JList(parser.getModpacks());
-        //modPackList.setCellRenderer(new ModPacksCellRenderer());
-        //JScrollPane modPacksScroll = new JScrollPane(modPackList);
-        //modPacksPanel.add(modPacksScroll, BorderLayout.WEST);
-        //panel.add(modPacksPanel, BorderLayout.WEST);
-        
+
+		
+		
         
         JPanel container = new JPanel();
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
@@ -381,14 +372,12 @@ public class ConfigurationDialog extends JDialog {
      * @return true if successful
      */
     private boolean complete() {
-        boolean builtIn = configuration != null && configuration.isBuiltIn();
-
         String name = nameText.getText().trim();
+        String subtitle = subText.getText().trim();
         String pathStr = pathText.getText();
-        URL updateUrl = null;
         File f = null;
         
-        if (!builtIn) {
+
             if (name.length() == 0) {
                 UIUtil.showError(this, "No name", "A name must be entered.");
                 return false;
@@ -399,8 +388,11 @@ public class ConfigurationDialog extends JDialog {
                 return false;
             }
             
+            if (subtitle.length() == 0) {
+            	subtitle = "User Configuration";
+            }
             
-
+            
             if (pathStr != null) {
                 f = new File(pathStr);
                 if (!f.isDirectory()) {
@@ -408,7 +400,7 @@ public class ConfigurationDialog extends JDialog {
                     return false;
                 }
             }
-        }
+
         
         for (OptionsPanel panel : optionsPanels) {
             panel.copyFieldsToSettings();
@@ -419,16 +411,13 @@ public class ConfigurationDialog extends JDialog {
             
             // String id, String name, String author, int version, String serverURL, String ftb, String iconaddress, File customBasePath, URL updateUrl
             
-            Configuration config = new Configuration(id, name, "", 0, "", "", "",  f, updateUrl);
+            Configuration config = new Configuration(id, name, subtitle, 0, "", "", "",  f);
             config.setSettings(settings);
             configsManager.register(config);
             this.configuration = config;
         } else {
-            if (!builtIn) {
-                configuration.setName(name);
-                configuration.setCustomBasePath(f);
-                configuration.setUpdateUrl(updateUrl);
-            }
+            configuration.setName(name);
+            configuration.setCustomBasePath(f);
         }
         
         optionsDialog.save(false);
@@ -462,5 +451,4 @@ public class ConfigurationDialog extends JDialog {
             pathText.setText(chooser.getSelectedFile().getPath());
         }
     }
-
 }
