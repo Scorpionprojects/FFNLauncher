@@ -236,7 +236,6 @@ public class ModPackParser {
 
 				} catch (Exception e) {
 					System.out.println("ERROR: Problem in reading FTB modpacks.xml:: " + e);
-					return false;
 				}
 			}
 			tempFTBInput.close();
@@ -303,7 +302,6 @@ public class ModPackParser {
 			
 		} catch (Exception e) {
 			System.out.println("EXCEPTION:: " + e);
-			return false;
 		}
 		
 		return true;

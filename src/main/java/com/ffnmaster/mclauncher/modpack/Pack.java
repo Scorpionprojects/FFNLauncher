@@ -20,7 +20,11 @@ import javax.imageio.ImageIO;
 import com.ffnmaster.mclauncher.Launcher;
 import com.ffnmaster.mclauncher.config.Configuration;
 import com.ffnmaster.mclauncher.modpack.Loader;
-
+/**
+ * Model for the Modpack variable
+ * @author FFNMaster
+ *
+ */
 public class Pack {
 	private String id, name, author, repoVersion, url, mcVersion, serverPack, logoName, description, sep = File.separator;
 	boolean isFTB;
@@ -295,7 +299,7 @@ public class Pack {
 		} else {
 			title = name + " | " + repoVersion;
 		}*/
-		title = name + "|" + repoVersion;
+		title = name + "| v" + repoVersion;
 		
 		return title;
 	}

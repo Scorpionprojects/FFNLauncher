@@ -1,8 +1,10 @@
 package com.ffnmaster.mclauncher.modpack;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,8 +13,23 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import com.ffnmaster.mclauncher.modpack.Pack;
+import com.ffnmaster.mclauncher.util.FileUtils;
+import com.ffnmaster.mclauncher.modpack.ModPackParser;
 
 public class ModPackInstaller {
+	
+	private static String sep = File.separator;
+	private static String curVersion = "";
+	private Pack pack;
+	
+	private ModPackParser parser;
+	
+	
+	public ModPackInstaller(Pack installPack, File installDir) throws NoSuchAlgorithmException, IOException {
+		this.pack = installPack;
+		installFTBTemplate(installPack, installDir);
+	}
+	
 	
 	/**
 	 * Installs template from pack to given directory
@@ -22,7 +39,7 @@ public class ModPackInstaller {
 	 * @throws NoSuchAlgorithmException
 	 * @throws IOException
 	 */
-	public boolean installTemplate(Pack installPack, File installDir) throws NoSuchAlgorithmException, IOException {
+	public static boolean installFTBTemplate(Pack installPack, File installDir) throws NoSuchAlgorithmException, IOException {
 		System.out.println("DEBUG:: Installing Template");
 		
 		// Temporal Directory
@@ -32,13 +49,9 @@ public class ModPackInstaller {
 		String downloadURL;
 		File tempFile;
 		
-		if (installPack.isFTB == true) {
-			downloadURL = FTBDownload.getCreeperhostLink(installPack.getUrl());
-			tempFile = new File(downloadDir, installPack.getUrl());
-		} else {
-			downloadURL = installPack.getUrl();
-			tempFile = new File(downloadDir, "MP.zip");
-		}
+		downloadURL = FTBDownload.getCreeperhostLink(installPack.getUrl());
+		tempFile = new File(downloadDir, installPack.getUrl());
+
 		
 		URL downloadURL_;
 		try {
@@ -48,13 +61,27 @@ public class ModPackInstaller {
 			return false;
 		}
 		
-		
-		
 		// Download the ModPack Zip
 		FTBDownload.downloadToFile(downloadURL_, tempFile);
 		zipExtracteur(tempFile, installDir);
 		
+		// Integrated function modpacks
+		File modsFolder = new File(installDir + sep + "minecraft" + sep + "mods");
+		for(String file : modsFolder.list()) {
+			if(file.toLowerCase().endsWith(".zip") || file.toLowerCase().endsWith(".jar") || file.toLowerCase().endsWith(".disabled") || file.toLowerCase().endsWith(".litemod")) {
+				FileUtils.delete(new File(modsFolder, file));
+			}
+		}
 		
+		FileUtils.delete(new File(installDir + sep + ".minecraft" + sep + "coremods"));
+		FileUtils.delete(new File(installDir + sep + ".minecraft" + sep + "addons"));
+		File version = new File(installDir + sep + "version");
+		BufferedWriter out = new BufferedWriter(new FileWriter(version));
+		out.write(curVersion.replace("_", "."));
+		out.flush();
+		out.close();
+		
+		FileUtils.delete(tempFile);
 		
 		return true;
 	}
@@ -113,12 +140,13 @@ public class ModPackInstaller {
      */
     public void install(Pack installPack, File installDir) throws NoSuchAlgorithmException {
         try {
-            installTemplate(installPack, installDir);
+            installFTBTemplate(installPack, installDir);
         } catch (IOException e) {
             System.out.println("ERROR: Problem loading modpackParser:: " + e);
         	e.printStackTrace();
         }
     }
+    
 	
 	
 	

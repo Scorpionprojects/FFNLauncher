@@ -467,7 +467,10 @@ public class LauncherFrame extends JFrame {
         renewBtn.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-				boolean refresh = parser.parseModPacks();
+				modPackList.removeAll();
+        		boolean refresh = parser.parseModPacks();
+				
+				
 				if (refresh == true) {
 					System.out.println("DEBUG:: Parsing Modpacks Succesfull");
 				}

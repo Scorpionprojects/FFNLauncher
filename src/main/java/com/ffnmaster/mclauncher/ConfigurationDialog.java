@@ -32,8 +32,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -73,6 +75,7 @@ public class ConfigurationDialog extends JDialog {
     private LauncherFrame launcherFrame;
     private ConfigurationsManager configsManager;
     private JButton browseBtn;
+    private JButton tempBtn;
     private JTextField nameText;
     private JTextField pathText;
     private JTextField subText;
@@ -82,6 +85,8 @@ public class ConfigurationDialog extends JDialog {
     private Pack pack;
     private SettingsList settings;
     private List<OptionsPanel> optionsPanels = new ArrayList<OptionsPanel>();
+    public static boolean test = false;
+    
     
     private JList modPackList;
     private ModPackParser parser;
@@ -324,13 +329,18 @@ public class ConfigurationDialog extends JDialog {
         pathText.setMaximumSize(pathText.getPreferredSize());
         nameLabel.setLabelFor(pathText);
         pathLabel.setLabelFor(subText);
+        tempBtn = new JButton("Test Install");
         browseBtn = new JButton("Browse...");
         browseBtn.setPreferredSize(new Dimension(
                 browseBtn.getPreferredSize().width,
                 pathText.getPreferredSize().height));
+        tempBtn.setPreferredSize(new Dimension(
+        		tempBtn.getPreferredSize().width,
+        		pathText.getPreferredSize().height));
         pathPanel.add(pathText);
         pathPanel.add(Box.createHorizontalStrut(3));
         pathPanel.add(browseBtn);
+        pathPanel.add(tempBtn);
         subPanel.add(subText);
         subPanel.add(Box.createHorizontalStrut(3));
         selectedMPPanel.add(selMP);
@@ -348,6 +358,16 @@ public class ConfigurationDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 openPathBrowser();
             }
+        });
+        
+        tempBtn.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+                String pathStr2 = pathText.getText();
+                File file = new File(pathStr2);
+				ModPackInstaller.installFTBTemplate(selectedPack, file);
+				
+        	}
         });
 
         subText.setEnabled(true);
