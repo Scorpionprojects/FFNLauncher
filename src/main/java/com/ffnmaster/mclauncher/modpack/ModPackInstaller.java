@@ -21,13 +21,14 @@ public class ModPackInstaller {
 	private static String sep = File.separator;
 	private static String curVersion = "";
 	private Pack pack;
+	private String link;
 	
 	private ModPackParser parser;
 	
 	
-	public ModPackInstaller(Pack installPack, File installDir) throws NoSuchAlgorithmException, IOException {
-		this.pack = installPack;
-		installFTBTemplate(installPack, installDir);
+	public ModPackInstaller(String installLink, File installDir, String linkDir) throws NoSuchAlgorithmException, IOException {
+		this.link = installLink;
+		installFTBTemplate(installLink, installDir, linkDir);
 	}
 	
 	
@@ -39,8 +40,11 @@ public class ModPackInstaller {
 	 * @throws NoSuchAlgorithmException
 	 * @throws IOException
 	 */
-	public static boolean installFTBTemplate(Pack installPack, File installDir) throws NoSuchAlgorithmException, IOException {
+	public static boolean installFTBTemplate(String installLink, File installDir, String linkDir) throws NoSuchAlgorithmException, IOException {
 		System.out.println("DEBUG:: Installing Template");
+		
+		System.out.println("DEBUG:: " + installLink);
+		
 		
 		// Temporal Directory
 		File downloadDir = getTempDir();
@@ -48,14 +52,19 @@ public class ModPackInstaller {
 		
 		String downloadURL;
 		File tempFile;
+		System.out.println("LINKDIR:: " + linkDir);
 		
-		downloadURL = FTBDownload.getCreeperhostLink(installPack.getUrl());
-		tempFile = new File(downloadDir, installPack.getUrl());
+		String baseLink = ("modpacks%5E" + linkDir + /*"%5E" + curVersion +*/ "%5E");
+		
+		downloadURL = FTBDownload.getCreeperhostLink(baseLink + installLink);
+		tempFile = new File(downloadDir, installLink);
 
 		
 		URL downloadURL_;
+	
 		try {
 			downloadURL_ = new URL(downloadURL);
+			System.out.println("URL " + downloadURL_);
 		} catch (MalformedURLException e) {
 			System.out.println("ERROR: URL is not valid!");
 			return false;
@@ -73,14 +82,33 @@ public class ModPackInstaller {
 			}
 		}
 		
-		FileUtils.delete(new File(installDir + sep + ".minecraft" + sep + "coremods"));
-		FileUtils.delete(new File(installDir + sep + ".minecraft" + sep + "addons"));
+		FileUtils.delete(new File(installDir + sep + "minecraft" + sep + "coremods"));
+		FileUtils.delete(new File(installDir + sep + "minecraft" + sep + "addons"));
 		File version = new File(installDir + sep + "version");
 		BufferedWriter out = new BufferedWriter(new FileWriter(version));
 		out.write(curVersion.replace("_", "."));
 		out.flush();
 		out.close();
 		
+		File source = new File(installDir + sep + "instMods");
+		File target = new File(installDir + sep + "minecraft" + sep + "addons");
+		try {
+			FileUtils.copyFolder(source, target);
+			
+		} catch (IOException e) {
+			System.out.println("ERROR: Could not move mods to working dir::" + e);
+		}
+		File mcSource = new File(installDir + sep + "minecraft");
+		File mcTarget = new File(installDir + sep + ".minecraft");
+		mcTarget.mkdirs();
+		try {
+			FileUtils.copyFolder(mcSource, mcTarget);
+		} catch (IOException e) {
+			System.out.println("ERROR:: Could not copy from minecraft to .minecraft");
+		}
+		
+		
+		// Remove Modpack ZIP file
 		FileUtils.delete(tempFile);
 		
 		return true;
@@ -138,9 +166,9 @@ public class ModPackInstaller {
      * @return true if successful
      * @throws NoSuchAlgorithmException 
      */
-    public void install(Pack installPack, File installDir) throws NoSuchAlgorithmException {
+    public void install(String installLink, File installDir, String linkDir) throws NoSuchAlgorithmException {
         try {
-            installFTBTemplate(installPack, installDir);
+            installFTBTemplate(installLink, installDir, linkDir);
         } catch (IOException e) {
             System.out.println("ERROR: Problem loading modpackParser:: " + e);
         	e.printStackTrace();

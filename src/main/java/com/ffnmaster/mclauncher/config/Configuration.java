@@ -70,6 +70,7 @@ public class Configuration {
     private String subtitle;
     private int version;
     private String ftb;
+    private String ftbDir;
     private String serverURL;
     private String iconaddress;
     
@@ -77,21 +78,20 @@ public class Configuration {
      * Construct a configuration.
      * @param id id
      * @param name name
-     * @param author of the modpack
+     * @param subtitle of the modpack
      * @param int version of the modpack
      * @param serverURL of the server software
      * @param Bool isFTB
      * @param String iconaddress
-     * @param appDir data directory name
-     * @param updateUrl URL to update from, or null to use default
+     * @param f data directory name
      */
-    public Configuration(String id, String name, String subtitle, int version, String serverURL, String ftb, String iconaddress, String appDir) {
+    public Configuration(String id, String name, String subtitle, int version, String serverURL, String ftb, String iconaddress, String f) {
         if (!id.matches("^[A-Za-z0-9\\-]+{1,64}$")) {
             throw new IllegalArgumentException("Invalid configuration name");
         }
         this.id = id;
         setName(name);
-        setAppDir(appDir);
+        setAppDir(f);
         setUpdateUrl(updateUrl);
         
         // FTB Compat
@@ -118,6 +118,10 @@ public class Configuration {
     	this.ftb = ftb;
     }
     
+    public void setFtbDir(String ftbDir) {
+    	this.ftbDir = ftbDir;
+    }
+    
     public void setIconAddress(String iconaddress) {
     	this.iconaddress = iconaddress;
     }
@@ -137,16 +141,15 @@ public class Configuration {
      * 
      * @param id id
      * @param name name
-     * @param author of the modpack
+     * @param subtitle of the modpack
      * @param int version of the modpack
      * @param serverURL of the server software
      * @param String isFTB
      * @param String iconaddress
+     * @param String ftbDir
      * @param customBasePath base path to use
-     * @param updateUrl URL to update from, or null to use default
-     * @param
      */
-    public Configuration(String id, String name, String subtitle, int version, String serverURL, String ftb, String iconaddress, File customBasePath) {
+    public Configuration(String id, String name, String subtitle, int version, String serverURL, String ftb, String iconaddress, String ftbDir, File customBasePath) {
         if (!id.matches("^[A-Za-z0-9\\-]+{1,64}$")) {
             throw new IllegalArgumentException("Invalid configuration name");
         }
@@ -165,6 +168,7 @@ public class Configuration {
         setServerURL(serverURL);
         setFTB(ftb);
         setIconAddress(iconaddress);
+        setFtbDir(ftbDir);
     }
 
     /**
@@ -197,6 +201,10 @@ public class Configuration {
     
     public String getName() {
     	return name;
+    }
+    
+    public String getFtbDir() {
+    	return ftbDir;
     }
 
     /**

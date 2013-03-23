@@ -79,6 +79,7 @@ public class ConfigurationDialog extends JDialog {
     private JTextField nameText;
     private JTextField pathText;
     private JTextField subText;
+    private boolean withPack = false;
     private Pack selectedPack;
     private JCheckBox customPathCheck;
     private Configuration configuration;
@@ -116,6 +117,7 @@ public class ConfigurationDialog extends JDialog {
     	super(owner, "New Version from Template", true);
     	this.settings = new SettingsList();
     	this.pack = pack;
+    	this.withPack = true;
     	
     	setup(owner, configsManager, pack);
     }
@@ -323,8 +325,13 @@ public class ConfigurationDialog extends JDialog {
         pathText = new JTextField(30);
         subText = new JTextField(30);
         
+        JLabel selMP;
         
-        JLabel selMP = new JLabel(pack.getTitle());
+        if (withPack == true) {
+        	selMP = new JLabel(pack.getTitle());
+        } else {
+        	selMP = new JLabel("No Template Selected");
+        }
         
         pathText.setMaximumSize(pathText.getPreferredSize());
         nameLabel.setLabelFor(pathText);
@@ -342,8 +349,8 @@ public class ConfigurationDialog extends JDialog {
         pathPanel.add(browseBtn);
         pathPanel.add(tempBtn);
         subPanel.add(subText);
-        subPanel.add(Box.createHorizontalStrut(3));
-        selectedMPPanel.add(selMP);
+        subPanel.add(Box.createHorizontalStrut(3));  
+       	selectedMPPanel.add(selMP);
         panel.add(pathPanel, fieldConstraints);
         panel.add(subtitleLabel, labelConstraints);
         panel.add(subPanel, fieldConstraints);
@@ -365,7 +372,16 @@ public class ConfigurationDialog extends JDialog {
         	public void actionPerformed(ActionEvent e) {
                 String pathStr2 = pathText.getText();
                 File file = new File(pathStr2);
-				ModPackInstaller.installFTBTemplate(selectedPack, file);
+				try {
+					System.out.println("GETLINK" + pack.getLinkDir());
+					ModPackInstaller.installFTBTemplate(pack.getUrl(), file, pack.getLinkDir());
+				} catch (NoSuchAlgorithmException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
         	}
         });
@@ -428,10 +444,7 @@ public class ConfigurationDialog extends JDialog {
         
         if (configuration == null) { // New configuration
             String id = UUID.randomUUID().toString();
-            
-            // String id, String name, String author, int version, String serverURL, String ftb, String iconaddress, File customBasePath, URL updateUrl
-            
-            Configuration config = new Configuration(id, name, subtitle, 0, "", "", "",  f);
+            Configuration config = new Configuration(id, name, subtitle, 0, "", "", "", "", f);
             config.setSettings(settings);
             configsManager.register(config);
             this.configuration = config;

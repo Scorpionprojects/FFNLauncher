@@ -26,7 +26,7 @@ import com.ffnmaster.mclauncher.modpack.Loader;
  *
  */
 public class Pack {
-	private String id, name, author, repoVersion, url, mcVersion, serverPack, logoName, description, sep = File.separator;
+	private String id, name, author, repoVersion, url, mcVersion, serverPack, logoName, description, sep = File.separator, linkDir;
 	boolean isFTB;
 	private String[] mods, oldVersions;
 	private Image logo;
@@ -119,9 +119,9 @@ public class Pack {
 	 * The Modpack itself
 	 * @return Modpack
 	 */
-	// name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions
+	// name, author, repoVersion, logo, url, dir, mcVersion, serverPack, description, mods, oldVersions, isFTB, dir
 	public Pack(String id, String name, String author, String repoVersion, String logo, String url, String mcVersion, String serverPack, String description, String mods, 
-			String oldVersions, boolean isFTB) throws IOException, NoSuchAlgorithmException {
+			String oldVersions, boolean isFTB, String dir) throws IOException, NoSuchAlgorithmException {
         
 		if (!id.matches("^[A-Za-z0-9\\-]+{1,64}$")) {
             throw new IllegalArgumentException("Invalid configuration name");
@@ -134,6 +134,7 @@ public class Pack {
 		this.url = url;
 		this.serverPack = serverPack;
 		this.isFTB = isFTB;
+		this.linkDir = dir;
 		logoName = logo;
 		this.description = description;
 		
@@ -250,6 +251,10 @@ public class Pack {
 	 */
 	public int getIndex() {
 		return index;
+	}
+	
+	public String getLinkDir() {
+		return linkDir;
 	}
 
 	/**

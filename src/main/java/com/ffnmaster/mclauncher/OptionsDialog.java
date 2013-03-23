@@ -146,7 +146,7 @@ public class OptionsDialog extends JDialog {
         tabs.addTab("Environment",
                 wrap(new EnvironmentOptionsPanel(options.getSettings(), false)));
         tabs.addTab("Configurations", buildConfigurationsPanel());
-        tabs.addTab("ModPacks", modPackControl());
+        //tabs.addTab("ModPacks", modPackControl());
         tabs.addTab("About", buildAboutPanel());
         container.add(tabs, BorderLayout.CENTER);
 

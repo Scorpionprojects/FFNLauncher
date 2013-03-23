@@ -331,6 +331,7 @@ public class LauncherOptions {
             XPathExpression versionExpr = xpath.compile("version/text()");
             XPathExpression serverURLExpr = xpath.compile("serverurl/text()");
             XPathExpression ftbboolExpr = xpath.compile("ftb/text()");
+            XPathExpression ftbDir = xpath.compile("ftbdir/text()");
             
             
             // Read all the <configuration> elements
@@ -347,6 +348,7 @@ public class LauncherOptions {
                 String version = getString(node, versionExpr);
                 String serverURL = getString(node, serverURLExpr);
                 String ftbstring = getString(node, ftbboolExpr);
+                String ftbDirectory = getString(node, ftbDir);
                 
                 //int versionint = Integer.parseInt(version);
                 int versionint = Integer.parseInt(version);
@@ -354,9 +356,9 @@ public class LauncherOptions {
                 try {
                     Configuration config;
                     if (basePath != null) {
-                        config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, icon, new File(basePath));
+                        config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, ftbDirectory, icon, new File(basePath));
                     } else {
-                        config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, icon, appDir);
+                    	config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, icon, appDir);
                     }
                     
                     Node settingsNode = XMLUtil.getNode(node, settingsExpr);
@@ -465,6 +467,7 @@ public class LauncherOptions {
                 configurationNode.addNode("version").addValue("0");
                 configurationNode.addNode("ftb");
                 configurationNode.addNode("lastJar").addValue(config.getLastActiveJar());
+                configurationNode.addNode("ftbDir").addValue(config.getFtbDir());
                 config.getSettings().write(configurationNode.addNode("settings").getNode());
             }
             

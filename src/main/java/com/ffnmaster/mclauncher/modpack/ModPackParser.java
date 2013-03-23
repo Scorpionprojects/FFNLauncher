@@ -107,6 +107,7 @@ public class ModPackParser {
 			XPathExpression modsExpr = xpath.compile("mods/text()");
 			XPathExpression oldVersionsExpr = xpath.compile("oldVersions/text()");
 			XPathExpression isFTBExpr = xpath.compile("isFTB/text()");
+			XPathExpression FtbDirExpr = xpath.compile("ftbLink/text()");
 
 			
 			for (Node node : getNodes(doc, xpath.compile("/modpacks/modpack"))) {
@@ -123,11 +124,11 @@ public class ModPackParser {
 				String oldVersions = getString(node, oldVersionsExpr);
 				String isFTB = getString(node, isFTBExpr);
 				boolean ftb = Boolean.parseBoolean(isFTB);
-				//Adding more is possible
+				String FtbDirectory = getString(node, FtbDirExpr);
 				
 				try {
 					Pack ModPack;
-					ModPack = new Pack(id, name, author, repoVersion, logo, url, mcVersion, serverPack, description, mods, oldVersions, ftb);
+					ModPack = new Pack(id, name, author, repoVersion, logo, url, mcVersion, serverPack, description, mods, oldVersions, ftb, FtbDirectory);
 					modpacksManager.register(ModPack);
 					
 				} catch (MalformedURLException e) {
@@ -196,6 +197,7 @@ public class ModPackParser {
 			XPathExpression modsExpr = readPath.compile("mods/text()");
 			XPathExpression oldVersionsExpr = readPath.compile("oldVersions/text()");
 			XPathExpression isFTBExpr = readPath.compile("isFTB/text()");
+			XPathExpression ftbDirExpr = readPath.compile("dir/text()");
 			
 			NodeList modPacks = tempFTBDoc.getElementsByTagName("modpack");
 			for (int i=0;i<modPacks.getLength(); i++) {
@@ -214,6 +216,7 @@ public class ModPackParser {
 					String mods = modPackAttr.getNamedItem("mods").getTextContent();
 					String oldVersions = modPackAttr.getNamedItem("oldVersions").getTextContent();
 					String isFTB = "true";
+					String ftbDirectory = modPackAttr.getNamedItem("dir").getTextContent() + "%5E" + modPackAttr.getNamedItem("repoVersion").getTextContent();
 					
 					SimpleNode modpackNode = root.addNode("modpack");
 					modpackNode.addNode("id").addValue(id);
@@ -228,8 +231,9 @@ public class ModPackParser {
 					modpackNode.addNode("mods").addValue(mods);
 					modpackNode.addNode("oldVersions").addValue(oldVersions);
 					modpackNode.addNode("isFTB").addValue(isFTB);
+					modpackNode.addNode("ftbLink").addValue(ftbDirectory);
 					
-					Pack pack = new Pack(id, name, author, repoVersion, logo, modPackurl, mcVersion, serverPack, description, mods, oldVersions, true);
+					Pack pack = new Pack(id, name, author, repoVersion, logo, modPackurl, mcVersion, serverPack, description, mods, oldVersions, true, ftbDirectory);
 					modpacksManager.register(pack);
 					System.out.println("DEBUG: Added modpack: " + name);
 					
@@ -272,6 +276,7 @@ public class ModPackParser {
 					String mods = getString(modpackread, modsExpr);
 					String oldVersions = getString(modpackread, oldVersionsExpr);
 					String isFTB = "false";
+					String ftbDirectory = "null";
 					
 					
 					SimpleNode modpackNode = root.addNode("modpack");
@@ -288,7 +293,7 @@ public class ModPackParser {
 					modpackNode.addNode("oldVersions").addValue(oldVersions);
 					modpackNode.addNode("isFTB").addValue(isFTB);
 					
-					Pack pack = new Pack(id, name, author, repoVersion, logo, modPackurl, mcVersion, serverPack, description, mods, oldVersions, false);
+					Pack pack = new Pack(id, name, author, repoVersion, logo, modPackurl, mcVersion, serverPack, description, mods, oldVersions, false, ftbDirectory);
 					modpacksManager.register(pack);
 					
 					System.out.println("DEBUG: Added modpack: " + name);
