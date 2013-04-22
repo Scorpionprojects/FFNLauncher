@@ -72,7 +72,7 @@ public class Launcher {
     
     private static final Logger logger = Logger.getLogger(Launcher.class.getCanonicalName());
     public static final String VERSION;
-	public static int buildNumber = 104;
+	public static int buildNumber = 105;
     private static String noticesText;
     private static boolean skipupdate = true;
 

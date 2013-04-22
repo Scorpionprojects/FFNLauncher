@@ -470,6 +470,7 @@ public class Configuration {
 
                 retn.put(name, ip);
             }
+            nbt.close();
         }
         return retn;
     }
