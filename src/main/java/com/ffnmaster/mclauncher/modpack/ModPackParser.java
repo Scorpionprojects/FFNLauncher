@@ -159,6 +159,8 @@ public class ModPackParser {
 		File configDir = Launcher.getConfigDir();
 		File optionsFile = new File(configDir, "config.xml");
 		
+		System.out.println("DEBUG: Writing to -->" + modPackXML.getAbsolutePath());
+		
 		try {
 			// Writing Component
 			modPackXML.delete(); // MUHAHAHA
@@ -196,8 +198,6 @@ public class ModPackParser {
 			XPathExpression descriptionExpr = readPath.compile("description/text()");
 			XPathExpression modsExpr = readPath.compile("mods/text()");
 			XPathExpression oldVersionsExpr = readPath.compile("oldVersions/text()");
-			XPathExpression isFTBExpr = readPath.compile("isFTB/text()");
-			XPathExpression ftbDirExpr = readPath.compile("dir/text()");
 			
 			NodeList modPacks = tempFTBDoc.getElementsByTagName("modpack");
 			for (int i=0;i<modPacks.getLength(); i++) {
@@ -250,7 +250,6 @@ public class ModPackParser {
 			// Go by repo by repo
 			for (Node node : getNodes(settingsDoc, readPath.compile("/launcher/repository/repo"))) {
 				XPathExpression urlExpr = readPath.compile("url/text()");
-				XPathExpression repoNameExpr = readPath.compile("name/text()");
 				String url = getString(node, urlExpr);
 				URL url_ = new URL(url);
 				

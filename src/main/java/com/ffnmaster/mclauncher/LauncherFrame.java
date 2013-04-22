@@ -440,8 +440,8 @@ public class LauncherFrame extends JFrame {
         JPanel modPacksPanel = new JPanel();
         modPacksPanel.setLayout(new BorderLayout(0,0));
         modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
-        modPackList = new JList<Pack>(parser.getModpacks());
-        modPackList.setFixedCellWidth(250);
+        modPackList = new JList(parser.getModpacks());
+        //modPackList.setFixedCellWidth(250);
         modPackList.setCellRenderer(new ModPacksCellRenderer());
         modPackList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane modPacksScroll = new JScrollPane(modPackList);
@@ -454,7 +454,7 @@ public class LauncherFrame extends JFrame {
         JPanel configurationsPanel = new JPanel();
         configurationsPanel.setLayout(new BorderLayout(0, 0));
         configurationsPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
-        configurationList = new JList<Configuration>(options.getConfigurations());
+        configurationList = new JList(options.getConfigurations());
         configurationList.setCellRenderer(new ConfigurationCellRenderer());
         configurationList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane configScroll = new JScrollPane(configurationList);
