@@ -782,7 +782,7 @@ public class LauncherFrame extends JFrame {
     private void popupServerHotListMenu(Component component, int x, int y) {
         final ServerHotListManager servers = options.getServers();
         Set<String> names = servers.getServerNames();
-
+        
         JPopupMenu popup = new JPopupMenu();
         JMenuItem menuItem;
 
@@ -804,6 +804,17 @@ public class LauncherFrame extends JFrame {
         }
 
         popup.show(component, x, y);
+    }
+    
+    /**
+     * Server hotlist in main menu
+     * @author FFNMaster
+     */
+    private void ServerHotListMenu() {
+    	final ServerHotListManager servers = options.getServers();
+    	Set<String> names = servers.getServerNames();
+    	
+    	/*TODO: add list to main menu*/
     }
 
     /**
