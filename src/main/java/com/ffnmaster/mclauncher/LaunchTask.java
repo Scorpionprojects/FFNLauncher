@@ -44,6 +44,7 @@ import com.ffnmaster.mclauncher.LoginSession.OutdatedLauncherException;
 import com.ffnmaster.mclauncher.addons.Addon;
 import com.ffnmaster.mclauncher.addons.AddonsProfile;
 import com.ffnmaster.mclauncher.config.Configuration;
+import com.ffnmaster.mclauncher.config.Constants;
 import com.ffnmaster.mclauncher.config.Def;
 import com.ffnmaster.mclauncher.config.LauncherOptions;
 import com.ffnmaster.mclauncher.launch.GameLauncher;
@@ -640,6 +641,8 @@ public class LaunchTask extends Task {
         
         updater = new Updater(packageStream, rootDir, cache);
         updater.setReinstall(forced);
+        updater.setVerifying(configuration.getUpdateUrl() == null
+        		|| Constants.VERIFY_CUSTOM_DOWNLOADS);
         updater.registerParameter("user", username);
         updater.registerParameter("ticket", "deprecated"); // Now deprecated
         for (ProgressListener listener : getProgressListenerList()) {

@@ -65,6 +65,7 @@ public class Updater implements DownloadListener {
     
     private static final Logger logger = Logger.getLogger(Updater.class.getCanonicalName());
 
+    private boolean verifying = true;
     private InputStream packageStream;
     private File rootDir;
     private UpdateCache cache;
@@ -95,6 +96,25 @@ public class Updater implements DownloadListener {
         this.rootDir = rootDir;
         this.cache = cache;
     }
+    
+    /**
+     * Returns wheter signatures are verified after download
+     * @return true if verifying
+     */
+    public boolean isVerifying() {
+    	return verifying;
+    }
+    
+    /**
+     * Sets verifying or no
+     * @param verifying
+     */
+    public void setVerifying(boolean verifying) {
+    	this.verifying = verifying;
+    }
+    
+    
+    
     
     /**
      * Get the number of download tries.
@@ -332,7 +352,11 @@ public class Updater implements DownloadListener {
      * @throws UpdateException 
      */
     private void verify() throws UpdateException {
-        currentIndex = 0;
+        if (!isVerifying()) {
+        	return;
+        }
+    	
+    	currentIndex = 0;
         
         SignatureVerifier signatureVerifier = new SignatureVerifier(
                 Launcher.getInstance().getKeyRing().getKeyStore(Ring.UPDATE));

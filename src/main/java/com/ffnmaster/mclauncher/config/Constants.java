@@ -36,7 +36,9 @@ import com.ffnmaster.mclauncher.security.X509KeyRing.Ring;
  * @author sk89q
  */
 public class Constants {
-
+	
+	
+	public static final boolean VERIFY_CUSTOM_DOWNLOADS = false;
     public static final URL NEWS_URL;
         
     private static final String NEWS_URL_BASE = "http://download.sigmacoders.nl/FFNLauncher/newsfeed/news.php?v=%version%&%uniqueid%";
