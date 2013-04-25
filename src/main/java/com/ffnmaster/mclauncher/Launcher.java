@@ -51,6 +51,7 @@ import javax.swing.SwingUtilities;
 import com.ffnmaster.mclauncher.config.Constants;
 import com.ffnmaster.mclauncher.config.Def;
 import com.ffnmaster.mclauncher.config.LauncherOptions;
+import com.ffnmaster.mclauncher.dialog.FileErrorDialog;
 import com.ffnmaster.mclauncher.modpack.FTBDownload;
 import com.ffnmaster.mclauncher.modpack.ModPackParser;
 import com.ffnmaster.mclauncher.security.X509KeyRing;
@@ -80,6 +81,7 @@ public class Launcher {
     private LauncherOptions options;
     private X509KeyRing keyRing;
     private static Launcher instance;
+	private static boolean FILECANNOTWRITE;
     public static final String server = "download.sigmacoders.nl";
     
     private ModPackParser parser;    
@@ -567,14 +569,15 @@ public class Launcher {
         // DEBUG
     	System.out.println("DEBUG: Starting FFNLauncher build: " + VERSION);
     	
-    	int yomamarocks = 2;  
+    	/*
+    	File f = new File(getConfigDir() + "test.file");
+    	System.out.println("DEBUG:: " + f.getAbsolutePath());
+    	if(f.canWrite()) {
+    	  FILECANNOTWRITE = false;
+    	} else {
+    	  FILECANNOTWRITE = true;
+    	}*/
     	
-    	if (yomamarocks == 1) {
-    		StupidTest mainFrame = new StupidTest();
-    		mainFrame.setVisible(true);   		
-    	}
-    	else {
-        
     	BasicArgsParser parser = new BasicArgsParser();
         parser.addValueArg("address");
         parser.addValueArg("username");
@@ -607,7 +610,16 @@ public class Launcher {
             			UpdateDialog p = new UpdateDialog(updateChecker);
             			p.setVisible(true);
             		}  
-                } 
+                }
+                
+                /*if (FILECANNOTWRITE == true) {
+                	System.out.println("DEBUG: File permissions not right.");
+                	FileErrorDialog p = new FileErrorDialog();
+                	p.setVisible(true);
+                }*/
+                
+                
+                
                 else {
                 	System.out.println("WARNING. AUTO-UPDATER HAS BEEN DISABLED BY DEVELOPER. ENABLE THIS LATER");
                 }
@@ -627,7 +639,6 @@ public class Launcher {
             }
         });
     	}
-    }
     
     /**
      * Start the launcher frame.

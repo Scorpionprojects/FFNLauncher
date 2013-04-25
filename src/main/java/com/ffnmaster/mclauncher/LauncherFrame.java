@@ -154,6 +154,7 @@ public class LauncherFrame extends JFrame {
         // Setup
         setConfiguration(options.getStartupConfiguration());
         populateIdentities();
+        populateServers();
         setLastUsername();
 
         if (options.getSettings().getBool(Def.LAUNCHER_ALWAYS_MORE_OPTIONS,
@@ -177,7 +178,7 @@ public class LauncherFrame extends JFrame {
         });
     }
 
-    /**
+	/**
      * Sets the configuration to use.
      * 
      * @param configuration
@@ -805,17 +806,6 @@ public class LauncherFrame extends JFrame {
 
         popup.show(component, x, y);
     }
-    
-    /**
-     * Server hotlist in main menu
-     * @author FFNMaster
-     */
-    private void ServerHotListMenu() {
-    	final ServerHotListManager servers = options.getServers();
-    	Set<String> names = servers.getServerNames();
-    	
-    	/*TODO: add list to main menu*/
-    }
 
     /**
      * Populate the list of JAR versions to use.
@@ -864,6 +854,23 @@ public class LauncherFrame extends JFrame {
         userText.setSelectedItem(selectedName);
         passText.setText(password);
         rememberPass.setSelected(remember);
+    }
+    
+    /**
+     * Fills the serverList with the server get from the Configs
+     */
+    private void populateServers() {
+    	Object selectedServer = serverText.getSelectedItem();
+    	serverText.removeAllItems();
+    	
+    	final ServerHotListManager servers = options.getServers();
+    	Set<String> names = servers.getServerNames();
+    	
+    	for (String name : names) {
+    		serverText.addItem(name);
+    	}
+    	
+    	serverText.setSelectedItem(selectedServer);
     }
 
     /**

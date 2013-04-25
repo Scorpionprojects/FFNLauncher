@@ -78,6 +78,7 @@ public class ModPackParser {
 		}
 		
 		configDir = new File(currentDir, "config");
+		configDir.mkdirs();
 		
         File optionsFile = new File(configDir, "modpacks.xml");
 		return optionsFile;
