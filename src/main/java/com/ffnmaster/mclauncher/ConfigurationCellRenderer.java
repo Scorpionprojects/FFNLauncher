@@ -12,7 +12,6 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -24,11 +23,10 @@ public class ConfigurationCellRenderer implements ListCellRenderer {
     
     private static final int PAD = 5;
     private static BufferedImage defaultIcon;
-    private JLabel logo;
     
     static {
         try {
-        	InputStream in = Launcher.class
+            InputStream in = Launcher.class
                     .getResourceAsStream("/resources/config_icon.png");
             if (in != null) {
                 defaultIcon = ImageIO.read(in);
@@ -36,35 +34,32 @@ public class ConfigurationCellRenderer implements ListCellRenderer {
         } catch (IOException e) {
         }
     }
-    
+
     @Override
     public Component getListCellRendererComponent(final JList list, final Object value,
-        
-    	int index, final boolean isSelected, boolean cellHasFocus) {
+            int index, final boolean isSelected, boolean cellHasFocus) {
         final Configuration configuration = (Configuration) value;
         
-       
         JIconPanel panel = new JIconPanel(configuration.getIcon());
         panel.setLayout(new GridLayout(2, 1, 0, 1));
         panel.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
         panel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD * 2 + 32, PAD, PAD));
         
         JLabel titleLabel = new JLabel();
-        titleLabel.setText(configuration.getTitle());
+        titleLabel.setText(configuration.getName());
         titleLabel.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
         Font font = titleLabel.getFont();
         font = font.deriveFont((float) (font.getSize() * 1.3)).deriveFont(Font.BOLD);
         titleLabel.setFont(font);
-        
         panel.add(titleLabel);
         
         String infoText;
         if (configuration.isUsingDefaultPath()) {
             infoText = "Default Minecraft installation";
-        } else if (configuration.getSubtitle() != null) {
-            infoText = configuration.getSubtitle(); }
-        else {
-        	infoText = "Custom Installation";
+        } else if (configuration.getUpdateUrl() != null) {
+            infoText = "via " + configuration.getUpdateUrl().getHost();
+        } else {
+            infoText = "Custom installation";
         }
         
         JLabel infoLabel = new JLabel();

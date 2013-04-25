@@ -121,7 +121,8 @@ public class LauncherFrame extends JFrame {
      */
     public LauncherFrame() {
         setTitle("FFNLauncher v" + Launcher.VERSION);
-        setSize(575, 500);
+        setSize(300,500);
+        //setSize(575, 500);
         setResizable(false);
         
         if (isResizable() == true) {
@@ -405,9 +406,9 @@ public class LauncherFrame extends JFrame {
         //middlePanel.setLayout(new BorderLayout());
         
         //add(leftPanel, BorderLayout.LINE_START);
-        add(leftPanel, BorderLayout.WEST);
-        add(middlePanel, BorderLayout.CENTER);
-        add(rightPanel, BorderLayout.EAST);
+        add(leftPanel, BorderLayout.CENTER);
+        //add(middlePanel, BorderLayout.CENTER);
+        //add(rightPanel, BorderLayout.EAST);
    
 
         JPanel buttonsPanel = new JPanel();
@@ -422,13 +423,13 @@ public class LauncherFrame extends JFrame {
         buttonsPanel.add(playBtn);
         buttonsPanel.add(addonsBtn);
         buttonsPanel.add(optionsBtn);
-        rightOfLeft.add(renewBtn);
+        //rightOfLeft.add(renewBtn);
         
         JButton installBtn = new JButton("Install");
         JButton removeBtn = new JButton("Remove");
         
-        rightOfLeft.add(installBtn);
-        rightOfLeft.add(removeBtn);
+        //rightOfLeft.add(installBtn);
+        //rightOfLeft.add(removeBtn);
         
         JPanel root = new JPanel();
         root.setBorder(BorderFactory.createEmptyBorder(0, PAD, PAD, PAD));
@@ -438,7 +439,7 @@ public class LauncherFrame extends JFrame {
         leftPanel.add(root, BorderLayout.SOUTH);
 
         
-        JPanel modPacksPanel = new JPanel();
+        /*JPanel modPacksPanel = new JPanel();
         modPacksPanel.setLayout(new BorderLayout(0,0));
         modPacksPanel.setBorder(BorderFactory.createEmptyBorder(PAD, PAD, PAD, PAD));
         modPackList = new JList(parser.getModpacks());
@@ -448,8 +449,7 @@ public class LauncherFrame extends JFrame {
         JScrollPane modPacksScroll = new JScrollPane(modPackList);
         modPacksPanel.add(modPacksScroll, BorderLayout.WEST);
         leftPanel.add(modPacksPanel, BorderLayout.WEST);
-        leftPanel.add(rightOfLeft, BorderLayout.CENTER);
-
+        leftPanel.add(rightOfLeft, BorderLayout.CENTER);*/
 
 
         JPanel configurationsPanel = new JPanel();
@@ -460,8 +460,7 @@ public class LauncherFrame extends JFrame {
         configurationList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane configScroll = new JScrollPane(configurationList);
         configurationsPanel.add(configScroll, BorderLayout.CENTER);
-        rightPanel.add(configurationsPanel, BorderLayout.EAST);
-        
+        leftPanel.add(configurationsPanel, BorderLayout.CENTER);
         
         
         // ModPack Buttons Listeners
@@ -527,12 +526,12 @@ public class LauncherFrame extends JFrame {
             }
         });
         
-        modPackList.addListSelectionListener(new ListSelectionListener() {
+        /*modPackList.addListSelectionListener(new ListSelectionListener() {
         	@Override
         	public void valueChanged(ListSelectionEvent e) {
         		setModPack((Pack) ((JList) e.getSource()).getSelectedValue());
         	}
-        });
+        });*/
 
         optionsBtn.addActionListener(new ActionListener() {
             @Override

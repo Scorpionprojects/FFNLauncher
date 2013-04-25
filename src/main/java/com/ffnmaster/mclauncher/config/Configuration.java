@@ -85,7 +85,7 @@ public class Configuration {
      * @param String iconaddress
      * @param f data directory name
      */
-    public Configuration(String id, String name, String subtitle, int version, String serverURL, String ftb, String iconaddress, String f) {
+    public Configuration(String id, String name, String subtitle, int version, String serverURL, String ftb, String iconaddress, String f, URL updateUrl) {
         if (!id.matches("^[A-Za-z0-9\\-]+{1,64}$")) {
             throw new IllegalArgumentException("Invalid configuration name");
         }
@@ -149,7 +149,7 @@ public class Configuration {
      * @param String ftbDir
      * @param customBasePath base path to use
      */
-    public Configuration(String id, String name, String subtitle, int version, String serverURL, String ftb, String iconaddress, String ftbDir, File customBasePath) {
+    public Configuration(String id, String name, String subtitle, int version, String serverURL, String ftb, String iconaddress, String ftbDir, File customBasePath, URL updateUrl) {
         if (!id.matches("^[A-Za-z0-9\\-]+{1,64}$")) {
             throw new IllegalArgumentException("Invalid configuration name");
         }

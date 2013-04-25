@@ -55,6 +55,7 @@
         <includes>
           <include>mcupdate.cer</include>
           <include>mclogin.cer</include>
+          <include>sigma.cer</include>
           <include>update.xml</include>
           <include>defaults.xml</include>
           <include>*.png</include>

@@ -52,6 +52,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
 import com.ffnmaster.mclauncher.config.Configuration;
@@ -76,12 +78,10 @@ public class ConfigurationDialog extends JDialog {
     private ConfigurationsManager configsManager;
     private JButton browseBtn;
     private JButton tempBtn;
-    private JTextField nameText;
-    private JTextField pathText;
-    private JTextField subText;
+    private JTextField nameText, pathText, subText, urlText;
     private boolean withPack = false;
     private Pack selectedPack;
-    private JCheckBox customPathCheck;
+    private JCheckBox customPathCheck, customUpdateCheck;
     private Configuration configuration;
     private Pack pack;
     private SettingsList settings;
@@ -336,26 +336,45 @@ public class ConfigurationDialog extends JDialog {
         pathText.setMaximumSize(pathText.getPreferredSize());
         nameLabel.setLabelFor(pathText);
         pathLabel.setLabelFor(subText);
-        tempBtn = new JButton("Test Install");
+        //tempBtn = new JButton("Test Install");
         browseBtn = new JButton("Browse...");
         browseBtn.setPreferredSize(new Dimension(
                 browseBtn.getPreferredSize().width,
                 pathText.getPreferredSize().height));
-        tempBtn.setPreferredSize(new Dimension(
-        		tempBtn.getPreferredSize().width,
-        		pathText.getPreferredSize().height));
+        //tempBtn.setPreferredSize(new Dimension(
+        //		tempBtn.getPreferredSize().width,
+        //		pathText.getPreferredSize().height));
         pathPanel.add(pathText);
         pathPanel.add(Box.createHorizontalStrut(3));
         pathPanel.add(browseBtn);
-        pathPanel.add(tempBtn);
+        //pathPanel.add(tempBtn);
         subPanel.add(subText);
         subPanel.add(Box.createHorizontalStrut(3));  
        	selectedMPPanel.add(selMP);
         panel.add(pathPanel, fieldConstraints);
         panel.add(subtitleLabel, labelConstraints);
         panel.add(subPanel, fieldConstraints);
-        panel.add(selectedMP, labelConstraints);
-        panel.add(selectedMPPanel, fieldConstraints);
+        
+        JLabel urlLabel = new JLabel("Custom modpack: ");
+        panel.add(urlLabel, labelConstraints);
+        customUpdateCheck = new JCheckBox("Use a custom update URL");
+        customUpdateCheck.setBorder(null);
+        panel.add(customUpdateCheck, fieldConstraints);
+        panel.add(Box.createGlue(), labelConstraints);
+        urlText = new JTextField("http://");
+        urlLabel.setLabelFor(urlText);
+        panel.add(urlText, fieldConstraints);
+        
+        urlText.setEnabled(false);
+        customUpdateCheck.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                urlText.setEnabled(((JCheckBox) e.getSource()).isSelected());
+            }
+        });
+        
+        //panel.add(selectedMP, labelConstraints);
+        //panel.add(selectedMPPanel, fieldConstraints);
         
         panel.add(Box.createVerticalStrut(10), fullFieldConstraints);
 
@@ -367,7 +386,7 @@ public class ConfigurationDialog extends JDialog {
             }
         });
         
-        tempBtn.addActionListener(new ActionListener() {
+        /*tempBtn.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
                 String pathStr2 = pathText.getText();
@@ -384,7 +403,7 @@ public class ConfigurationDialog extends JDialog {
 				}
 				
         	}
-        });
+        });*/
 
         subText.setEnabled(true);
         pathText.setEnabled(true);
@@ -411,6 +430,11 @@ public class ConfigurationDialog extends JDialog {
         String name = nameText.getText().trim();
         String subtitle = subText.getText().trim();
         String pathStr = pathText.getText();
+        
+        String updateURLStr = customUpdateCheck.isSelected() ? urlText
+                .getText() : null;
+        URL updateUrl = null;
+        
         File f = null;
         
 
@@ -426,6 +450,20 @@ public class ConfigurationDialog extends JDialog {
             
             if (subtitle.length() == 0) {
             	subtitle = "User Configuration";
+            }
+            
+            if (updateURLStr != null && updateURLStr.length() == 0) {
+                UIUtil.showError(this, "No URL", "An update URL must be entered.");
+                return false;
+            }
+            
+            if (updateURLStr != null) {
+                try {
+                    updateUrl = new URL(updateURLStr);
+                } catch (MalformedURLException e) {
+                    UIUtil.showError(this, "Invalid URL", "The update URL that you entered is invalid.");
+                    return false;
+                }
             }
             
             
@@ -444,13 +482,14 @@ public class ConfigurationDialog extends JDialog {
         
         if (configuration == null) { // New configuration
             String id = UUID.randomUUID().toString();
-            Configuration config = new Configuration(id, name, subtitle, 0, "", "", "", "", f);
+            Configuration config = new Configuration(id, name, subtitle, 0, "", "", "", "", f, updateUrl);
             config.setSettings(settings);
             configsManager.register(config);
             this.configuration = config;
         } else {
             configuration.setName(name);
             configuration.setCustomBasePath(f);
+            configuration.setUpdateUrl(updateUrl);
         }
         
         optionsDialog.save(false);

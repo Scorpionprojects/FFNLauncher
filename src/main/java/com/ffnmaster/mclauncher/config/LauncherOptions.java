@@ -324,6 +324,7 @@ public class LauncherOptions {
             XPathExpression basePathExpr = xpath.compile("basePath/text()");
             XPathExpression lastJarExpr = xpath.compile("lastJar/text()");
             XPathExpression settingsExpr = xpath.compile("settings");
+            XPathExpression updateURLExpr = xpath.compile("updateURL/text()");
             
             // FTB Compatibility, icon, author, version, url, serverUrl, ftbbool
             XPathExpression iconExpr = xpath.compile("icon/text()");
@@ -341,6 +342,7 @@ public class LauncherOptions {
                 String appDir = getStringOrNull(node, appDirExpr);
                 String basePath = getStringOrNull(node, basePathExpr);
                 String lastJar = getStringOrNull(node, lastJarExpr);
+                String urlString = getStringOrNull(node, updateURLExpr);
                                 
                 // FTB Compat
                 String icon = getString(node, iconExpr);
@@ -354,11 +356,13 @@ public class LauncherOptions {
                 int versionint = Integer.parseInt(version);
                 
                 try {
-                    Configuration config;
+                    URL updateUrl = urlString != null ? new URL(urlString) : null;
+                	
+                	Configuration config;
                     if (basePath != null) {
-                        config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, ftbDirectory, icon, new File(basePath));
+                        config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, ftbDirectory, icon, new File(basePath), updateUrl);
                     } else {
-                    	config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, icon, appDir);
+                    	config = new Configuration(id, name, subtitle, versionint, serverURL, ftbstring, icon, appDir, updateUrl);
                     }
                     
                     Node settingsNode = XMLUtil.getNode(node, settingsExpr);
@@ -462,6 +466,8 @@ public class LauncherOptions {
                 configurationNode.addNode("name").addValue(config.getName());
                 configurationNode.addNode("appDir").addValue(config.getAppDir());
                 configurationNode.addNode("basePath").addValue(f != null ? f.getPath() : null);
+                configurationNode.addNode("updateURL").addValue(config.getUpdateUrl() != null ?
+                		config.getUpdateUrl().toString() : null);
                 configurationNode.addNode("icon");
                 configurationNode.addNode("subtitle").addValue(config.getSubtitle());
                 configurationNode.addNode("version").addValue("0");
