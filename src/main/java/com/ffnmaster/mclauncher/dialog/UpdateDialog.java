@@ -21,6 +21,7 @@ public class UpdateDialog extends JDialog {
 	private JButton showChangeLog;
 	private JButton update;
 	private JButton abort;
+	final UpdateDialog self = this;
 	
 	public UpdateDialog(final UpdateChecker updateChecker) {
 		
@@ -38,6 +39,7 @@ public class UpdateDialog extends JDialog {
 			public void actionPerformed(ActionEvent arg0) {
 				setVisible(false);
 				updateChecker.update();
+				self.dispose();
 			}
 		});
 		
@@ -45,6 +47,7 @@ public class UpdateDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				setVisible(false);
+				self.dispose();
 			}
 		});
 	}

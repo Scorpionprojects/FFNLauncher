@@ -73,9 +73,9 @@ public class Launcher {
     
     private static final Logger logger = Logger.getLogger(Launcher.class.getCanonicalName());
     public static final String VERSION;
-	public static int buildNumber = 106;
+	public static int buildNumber = 107;
     private static String noticesText;
-    private static boolean skipupdate = true;
+    private static boolean skipupdate = false;
 
     private static volatile ConsoleFrame consoleFrame;
     private LauncherOptions options;
