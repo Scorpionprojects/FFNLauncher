@@ -1,4 +1,4 @@
-package com.ffnmaster.mclauncher.autoupdate;
+package com.ffnmaster.mclauncher.dialog;
 
 import java.awt.Container;
 import java.awt.Toolkit;

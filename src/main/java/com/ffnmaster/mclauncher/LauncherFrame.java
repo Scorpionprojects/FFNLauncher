@@ -99,7 +99,7 @@ public class LauncherFrame extends JFrame {
     private JComboBox jarCombo;
     private JComboBox userText;
     private JTextField passText;
-    private JComboBox serverText;
+    private JComboBox<String> serverText;
     private JCheckBox rememberPass;
     private JCheckBox forceUpdateCheck;
     private JCheckBox playOfflineCheck;
@@ -869,7 +869,7 @@ public class LauncherFrame extends JFrame {
     	for (String name : names) {
     		serverText.addItem(name);
     	}
-    	
+    	    	
     	serverText.setSelectedItem(selectedServer);
     }
 

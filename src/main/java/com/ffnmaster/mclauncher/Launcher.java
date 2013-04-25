@@ -52,6 +52,7 @@ import com.ffnmaster.mclauncher.config.Constants;
 import com.ffnmaster.mclauncher.config.Def;
 import com.ffnmaster.mclauncher.config.LauncherOptions;
 import com.ffnmaster.mclauncher.dialog.FileErrorDialog;
+import com.ffnmaster.mclauncher.dialog.UpdateDialog;
 import com.ffnmaster.mclauncher.modpack.FTBDownload;
 import com.ffnmaster.mclauncher.modpack.ModPackParser;
 import com.ffnmaster.mclauncher.security.X509KeyRing;
@@ -62,7 +63,6 @@ import com.ffnmaster.mclauncher.util.ConsoleFrame;
 import com.ffnmaster.mclauncher.util.Util;
 
 import com.ffnmaster.mclauncher.autoupdate.UpdateChecker;
-import com.ffnmaster.mclauncher.autoupdate.UpdateDialog;
 
 /**
  * Launcher entry point.
