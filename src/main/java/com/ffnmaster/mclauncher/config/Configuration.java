@@ -65,6 +65,7 @@ public class Configuration {
     private boolean builtIn = false;
     private BufferedImage cachedIcon;
     private Image logo, image;
+    private String iconAddress;
     
     // FTB
     private String subtitle;
@@ -72,7 +73,6 @@ public class Configuration {
     private String ftb;
     private String ftbDir;
     private String serverURL;
-    private String iconaddress;
     
     /**
      * Construct a configuration.
@@ -99,7 +99,7 @@ public class Configuration {
         setVersion(version);
         setServerURL(serverURL);
         setFTB(ftb);
-        setIconAddress(iconaddress);
+        setIcon(iconaddress);
     }
     
     public void setSubtitle(String subtitle) {
@@ -121,11 +121,7 @@ public class Configuration {
     public void setFtbDir(String ftbDir) {
     	this.ftbDir = ftbDir;
     }
-    
-    public void setIconAddress(String iconaddress) {
-    	this.iconaddress = iconaddress;
-    }
-    
+        
     public String getSubtitle() {
     	/*if (subtitle == "") {
     		return null;
@@ -167,8 +163,8 @@ public class Configuration {
         setVersion(version);
         setServerURL(serverURL);
         setFTB(ftb);
-        setIconAddress(iconaddress);
         setFtbDir(ftbDir);
+        setIcon(iconaddress);
     }
 
     /**
@@ -425,8 +421,16 @@ public class Configuration {
      * 
      * @return icon or null
      */
-    public BufferedImage getIcon() {
-    	return cachedIcon;
+    public String getIcon() {
+    	return iconAddress;
+    }
+    
+    /**
+     * Set the icon location
+     * @param iconAddress
+     */
+    public void setIcon(String iconAddress) {
+    	this.iconAddress = iconAddress;
     }
     
     public Image getLogo() {

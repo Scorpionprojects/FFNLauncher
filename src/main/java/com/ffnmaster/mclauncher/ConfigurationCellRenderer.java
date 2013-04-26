@@ -76,7 +76,7 @@ public class ConfigurationCellRenderer implements ListCellRenderer {
         private static final long serialVersionUID = 6455230127195332368L;
         private BufferedImage icon;
         
-        public JIconPanel(BufferedImage icon) {
+        public JIconPanel(String iconAddress) {
             this.icon = icon;
         }
 

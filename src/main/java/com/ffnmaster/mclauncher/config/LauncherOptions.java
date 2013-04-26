@@ -468,7 +468,7 @@ public class LauncherOptions {
                 configurationNode.addNode("basePath").addValue(f != null ? f.getPath() : null);
                 configurationNode.addNode("updateURL").addValue(config.getUpdateUrl() != null ?
                 		config.getUpdateUrl().toString() : null);
-                configurationNode.addNode("icon");
+                configurationNode.addNode("icon").addValue(config.getIcon());
                 configurationNode.addNode("subtitle").addValue(config.getSubtitle());
                 configurationNode.addNode("version").addValue("0");
                 configurationNode.addNode("ftb");
