@@ -86,7 +86,7 @@ public class ConfigurationCellRenderer implements ListCellRenderer {
             Dimension dim = getPreferredSize();
             if (icon != null) {
                 g.drawImage(icon, PAD, (int) ((dim.getHeight() - 32) / 2), null);    
-            } else if (defaultIcon != null) {
+            } else {
                 g.drawImage(defaultIcon, PAD, (int) ((dim.getHeight() - 32) / 2), null);    
             }
         }
