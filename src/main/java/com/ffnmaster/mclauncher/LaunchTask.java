@@ -297,6 +297,8 @@ public class LaunchTask extends Task {
         
         // Add classpath
         params.add("-classpath");
+        
+        // TODO: Add support for 1.6.* +
         params.add(launcherPath + (extraClasspath != null ? File.pathSeparator + extraClasspath : ""));
         
         // Class to run
